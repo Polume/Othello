@@ -1,60 +1,54 @@
 #include "GUI.h"
 
-void createWindow(int width, int height)
+SDL_Window *createWindow(int width, int height)
 {
-    int open = 1; // sert à garder la fenetre ouverte
     SDL_Window *window = SDL_CreateWindow("Othello",
                                           0,
                                           0,
                                           width, height,
-                                          0); // fenetre placee en haut a gauche de l'ecran
+                                          SDL_WINDOW_RESIZABLE); // fenetre placee en haut a gauche de l'ecran
     if (!window)
     {
-        printf("Creation de la fenetre impossible\n");
-        exit(1);
+        Error("createWindow");
     }
-
-    SDL_Surface *window_surface = SDL_GetWindowSurface(window);
-
-    if (!window_surface)
-    {
-        printf("Recuperation de la surface de la fenetre impossible\n");
-        exit(1);
-    }
-
-    while (open)
-    {
-        SDL_Event e;
-        while (SDL_PollEvent(&e) > 0)
-        {
-            if (e.type == SDL_QUIT)
-            {
-                open = 0;
-            }
-            SDL_UpdateWindowSurface(window);
-        }
-    }
+    return window;
 }
 
-SDL_Rect newSDL_Rect(int x, int y, int width, int height)
+SDL_Rect newRect(int x, int y, int width, int height)
+// Fonction qui permet de créer un rectangle sur un canvas
 {
-    SDL_Rect rectangular;
-    rectangular.x = x;
-    rectangular.y = y;
-    rectangular.w = width;
-    rectangular.h = height;
-    return rectangular;
+    SDL_Rect rect;
+    rect.x = x;
+    rect.y = y;
+    rect.w = width;
+    rect.h = height;
+    return rect;
 }
 
-void fillBoard(SDL_Window *window)
+void fillBoard(SDL_Window *window, SDL_Renderer *renderer)
+// Remplit une fenetre pour afficher le plateau de l'othello
 {
-    SDL_Renderer *renderer = NULL;
-    renderer = SDL_CreateRenderer(window, 0, SDL_RENDERER_ACCELERATED); // renderer utilise pour les couleurs
+    if (renderer == NULL)
+        Error("Renderer");
 
-    SDL_SetRenderDrawColor(renderer, 51, 102, 153, 255);
-    SDL_RenderClear(renderer);
+    if (SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255) != 0) // couleur de dessin, ici rouge
+        Error("Couleur fond");
 
-    SDL_Rect rect = newSDL_Rect(20, 20, 40, 40);
-    SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255); // code RGB
-    SDL_RenderFillRect(renderer, &rect);
+    // SDL_RenderClear(renderer);
+
+    SDL_Rect rect = newRect(20, 20, 40, 40);
+    if (SDL_RenderFillRect(renderer, &rect) != 0)
+    {
+        Error("Rectangle");
+    }
+    // SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255); // couleur des rectangles
+    // SDL_RenderFillRect(renderer, &rect);
+    SDL_RenderPresent(renderer);
+}
+
+void Error(char *chaine)
+// Renvoie un message d'erreur en fonction de la fonction
+{
+    SDL_Log("%s %s\n", chaine, SDL_GetError());
+    exit(1);
 }

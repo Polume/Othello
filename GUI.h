@@ -5,7 +5,10 @@
 #include <stdlib.h>
 #include <SDL2/SDL.h>
 
-void createWindow(int width, int height);
-void fillBoard(SDL_Window *window);
+SDL_Window *createWindow(int width, int height);
+SDL_Rect newRect(int x, int y, int width, int height);
+void fillBoard(SDL_Window *window, SDL_Renderer *renderer);
+
+void Error(char *chaine);
 
 #endif
