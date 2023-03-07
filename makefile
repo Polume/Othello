@@ -4,14 +4,14 @@ IFLAGS = -I lSDL2main -lSDL2
 
 all: run
 
-run: othello
-	./othello
+run: game
+	./game
 
-othello: othello.o main.o
+game: othello.o GUI.o main.o
 	$(CC) $(CFLAGS) $^ -o $@ $(IFLAGS)
 
 %.o: %.c
 	$(CC) -c $(CFLAGS) $< -o $@ $(IFLAGS)
 
 clean:
-	rm -f *.o othello *.exe
+	rm -f *.o game *.exe
