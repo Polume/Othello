@@ -20,6 +20,6 @@ void printBoard(int **board);
 void freeBoard(int **board);
 
 void createWindow(int width, int height);
-void fillBoard();
+void fillBoard(SDL_Window *window);
 
 #endif

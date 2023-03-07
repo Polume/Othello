@@ -11,7 +11,9 @@ int main(int argc, char *argv[])
         exit(1);
     }
     createWindow(700, 700);
-    fillBoard();
+    SDL_Window *window = SDL_GL_GetCurrentWindow();
+    fillBoard(window);
+    SDL_UpdateWindowSurface(window);
     SDL_Quit();
     return 0;
 }

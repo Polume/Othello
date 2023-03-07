@@ -82,9 +82,8 @@ SDL_Rect newSDL_Rect(int x, int y, int width, int height)
     return rectangular;
 }
 
-void fillBoard()
+void fillBoard(SDL_Window *window)
 {
-    SDL_Window *window = SDL_GL_GetCurrentWindow();
     SDL_Renderer *renderer = NULL;
     renderer = SDL_CreateRenderer(window, 0, SDL_RENDERER_ACCELERATED); // renderer utilise pour les couleurs
 
@@ -94,5 +93,4 @@ void fillBoard()
     SDL_Rect rect = newSDL_Rect(20, 20, 40, 40);
     SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255); // code RGB
     SDL_RenderFillRect(renderer, &rect);
-    SDL_UpdateWindowSurface(window);
 }
