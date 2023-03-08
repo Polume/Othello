@@ -24,8 +24,11 @@ typedef struct
 cell **initializeBoard();
 void printBoard(cell **board);
 void freeBoard(cell **board);
-int valid_cell(cell **board, int i, int j);
-void fill_lines(cell **board, int i, int color, int pos);
-void fill_rows(cell **board, int j, int color, int pos);
+int is_valid(cell **board, int i, int j, int color);
+int check_neighbors(cell **board, int i, int j, int color);
+
+int check_lines(cell **board, int i, int color);
+int check_rows(cell **board, int j, int color);
+// int fill_diag(cell **board, int d, int color);
 
 #endif

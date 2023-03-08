@@ -6,10 +6,13 @@
 int main(int argc, char *argv[])
 {
     run();
-    cell **plateau = initializeBoard();
-    plateau[4][2].color = 2;
-    fill_lines(plateau, 4, 2, 4);
-    printBoard(plateau);
+    cell **board = initializeBoard();
+    board[5][4].color = BLANC;
+    board[6][4].color = BLANC;
+    printf("Valide ? %d", is_valid(board, 7, 4, NOIR));
+    printBoard(board);
+
+    freeBoard(board);
 
     return EXIT_SUCCESS;
 }
