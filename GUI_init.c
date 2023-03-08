@@ -24,7 +24,7 @@ SDL_Rect newRect(int x, int y, int width, int height)
     return rect;
 }
 
-int Place_Rect(SDL_Window *window, SDL_Renderer *renderer, int width, int height, int * BG_color)
+int Place_BG(SDL_Window *window, SDL_Renderer *renderer, int width, int height, int * BG_color)
 // Remplit une fenetre pour afficher le plateau de l'othello
 {
     if (renderer == NULL)
@@ -34,6 +34,24 @@ int Place_Rect(SDL_Window *window, SDL_Renderer *renderer, int width, int height
         Error("Couleur fond");
 
     SDL_Rect rect = newRect(0, 0, width, height);
+    if (SDL_RenderFillRect(renderer, &rect) != 0)
+        Error("Rectangle - Couleur de fond");
+
+    SDL_RenderPresent(renderer);
+
+    return EXIT_SUCCESS;
+}
+
+int Place_Rect(SDL_Window *window, SDL_Renderer *renderer, int place_x, int place_y, int width_rect, int height_rect, int * BG_color)
+// Remplit une fenetre pour afficher le plateau de l'othello
+{
+    if (renderer == NULL)
+        Error("Renderer");
+
+    if (SDL_SetRenderDrawColor(renderer, BG_color[0], BG_color[1], BG_color[2], 255) != 0) // couleur de dessin
+        Error("Couleur fond");
+
+    SDL_Rect rect = newRect(place_x, place_y, width_rect, height_rect);
     if (SDL_RenderFillRect(renderer, &rect) != 0)
         Error("Rectangle - Couleur de fond");
 
@@ -70,7 +88,7 @@ int get_ScreenSize(int * width, int * height) //Permet de récuperer la taille d
 
 int init_GUI(SDL_Window * window,SDL_Renderer * renderer, int * BG_color ) //On devra placer le tableau de matrice representant les cases de l'othello.
 {
-    int width, height;
+    int width, height, Border_Othello[3] = NOIR, Interior_Othello[3] = VERT;
     SDL_Texture * texture = NULL;
     SDL_Surface * BG_image = NULL;
     
@@ -81,28 +99,37 @@ int init_GUI(SDL_Window * window,SDL_Renderer * renderer, int * BG_color ) //On 
         Error("get_ScreenSize faild.");
 
     window = createWindow(width, height); //On créé la fenetre
-    renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_SOFTWARE); //On créé la surface de dessin
-    
+    renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED); //On créé la surface de dessin
+
     if (BG_color == NULL)
-    {
+    {//Utiliser pour mettre une image en fond
         BG_image = SDL_LoadBMP("BG_Othello.bmp");
         if (BG_image == NULL)
             Error("Image non trouvée.");
 
         texture = SDL_CreateTextureFromSurface (renderer,BG_image);
-        SDL_FreeSurface(BG_image);
-
         if (texture == NULL)
             Error("Texture non chargée."); 
 
-        if(SDL_QueryTexture(texture, NULL, NULL, &width, &height))
+        SDL_FreeSurface(BG_image);
+        Uint32 format;
+        if(SDL_QueryTexture(texture, &format, NULL, &width, &height))
             Error("Texture non placée.");
     }
     else
-    {
-        if(Place_Rect(window, renderer, width, height, BG_color) != 0) //On met un fond
+    {//Utiliser pour mettre un fond de couleur unie
+        if(Place_BG(window, renderer, width, height, BG_color) != 0) //On met un fond
             Error("Initialisation Place_Rect.");
     }
+
+    //placement du fond de l'Othello On fractionne notre écran en 13x13 parties
+    if(Place_Rect(window, renderer, 
+                    (width * (float)(3/13)), 
+                    (height * (float)(1.5/13)), 
+                    (width * (float)(0.5/13)), 
+                    (height * (float)(11/13)),
+                    Border_Othello) != 0) //On met un fond
+            Error("Placement du contour 1 de l'Othello.");
 
     
 
