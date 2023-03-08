@@ -3,6 +3,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include "string.h"
 
 #define VERT 0
 #define BLANC 1
@@ -14,8 +15,17 @@ typedef struct liste
     struct liste *svt;
 } *liste;
 
-int **initializeBoard();
-void printBoard(int **board);
-void freeBoard(int **board);
+typedef struct
+{
+    int color;
+    char id_cell[2];
+} cell;
+
+cell **initializeBoard();
+void printBoard(cell **board);
+void freeBoard(cell **board);
+int valid_cell(cell **board, int i, int j);
+void fill_lines(cell **board, int i, int color, int pos);
+void fill_rows(cell **board, int j, int color, int pos);
 
 #endif
