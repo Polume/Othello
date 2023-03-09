@@ -9,6 +9,8 @@
 #define BLANC 1
 #define NOIR 2
 
+#define SIZE_MAX 8
+
 typedef struct liste
 {
     int num;
@@ -24,11 +26,20 @@ typedef struct
 cell **initializeBoard();
 void printBoard(cell **board);
 void freeBoard(cell **board);
+
 int is_valid(cell **board, int i, int j, int color);
-int check_neighbors(cell **board, int i, int j, int color);
+int check_neighbors_lines(cell **board, int i, int j, int color);
+int check_neighbors_rows(cell **board, int i, int j, int color);
+int check_diag(cell **board, int i, int j, int color);
 
 int check_lines(cell **board, int i, int color);
 int check_rows(cell **board, int j, int color);
-// int fill_diag(cell **board, int d, int color);
+
+int check_diag_t_left(cell **board, int i, int j, int color);
+int check_diag_t_right(cell **board, int i, int j, int color);
+int check_diag_b_left(cell **board, int i, int j, int color);
+int check_diag_b_right(cell **board, int i, int j, int color);
+
+void print_valid(cell **board, int color);
 
 #endif
