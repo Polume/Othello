@@ -21,7 +21,7 @@ cell **initializeBoard()
         c = 'A';
     }
     board[3][3].color = BLANC;
-    board[3][4].color = NOIR; // Attention ! i colonne j lignes
+    board[3][4].color = NOIR;
     board[4][4].color = BLANC;
     board[4][3].color = NOIR;
 
@@ -68,7 +68,7 @@ int is_valid(cell **board, int i, int j, int color)
    Renvoie 1 si la case est valide et 0 sinon
 */
 {
-    if (board[i][j].color == VERT && check_neighbors_lines(board, i, j, color) && check_lines(board, i, color))
+    if (board[i][j].color == VERT && check_neighbors_lines(board, i, j, color) && check_lines(board, i, color) >= 0)
     {
         return 1;
     }
@@ -115,10 +115,10 @@ int check_lines(cell **board, int i, int color)
     {
         if (board[i][j].color == color)
         {
-            return 1;
+            return j;
         }
     }
-    return 0;
+    return -1;
 }
 
 int check_rows(cell **board, int j, int color)
@@ -225,6 +225,26 @@ void print_valid(cell **board, int color)
             if (is_valid(board, i, j, color))
             {
                 printf("Case %s valide\n", board[i][j].id_cell);
+            }
+        }
+    }
+}
+
+void fill(cell **board, int i, int j, int color)
+{
+    int line_index = 0;
+    int row_index = 0;
+    int diag_index = 0;
+    if (is_valid(board, i, j, color))
+    {
+        line_index = check_lines(board, i, color);
+        if (j > line_index)
+        {
+            int k = j;
+            while (k < SIZE_MAX - 1 && board[i][k].color != color)
+            {
+                board[i][k].color = color;
+                k++;
             }
         }
     }

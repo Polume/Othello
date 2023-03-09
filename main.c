@@ -15,7 +15,9 @@ int main(int argc, char *argv[])
     board[5][6].color = NOIR;
 
     print_valid(board, NOIR);
-
+    printBoard(board);
+    printf("\n");
+    fill(board, 5, 3, NOIR);
     printBoard(board);
 
     freeBoard(board);
