@@ -231,20 +231,39 @@ void print_valid(cell **board, int color)
 }
 
 void fill(cell **board, int i, int j, int color)
+/* Fonction qui permet de remplir le plateau et de modifier les pions ennemis
+   en fonction du coloriage d'une case a la position i j */
 {
     int line_index = 0;
-    int row_index = 0;
-    int diag_index = 0;
-    if (is_valid(board, i, j, color))
+    int line_index2 = 0;
+    if (is_valid(board, i, j, color)) // on doit d'abord avoir une case valide
     {
-        line_index = check_lines(board, i, color);
-        if (j > line_index)
+        line_index = check_lines(board, i, color); // indice de la ou se trouve la premiere couleur color sur une ligne i
+        line_index2 = line_index + 1;
+        while (board[i][line_index2].color != color && line_index2 < SIZE_MAX)
+            line_index2++;    // indice de la deuxieme couleur sur la ligne, pour pouvoir boucler entre les indices
+        if (line_index2 != 8) // cas où la case valide est entre plusieurs pions de sa couleur
         {
-            int k = j;
-            while (k < SIZE_MAX - 1 && board[i][k].color != color)
+            while (line_index < line_index2)
             {
-                board[i][k].color = color;
-                k++;
+                board[i][line_index].color = color;
+                line_index++;
+            }
+        }
+        else if (j > line_index) // cas ou on doit retourner les pions de gauche à droite
+        {
+            while (line_index <= j)
+            {
+                board[i][line_index].color = color; // et tant qu on ne retrouve pas la meme couleur, on remplit avec celle-ci
+                line_index++;
+            }
+        }
+        else if (j < line_index) // cas ou on doit retourner les pions de droite à gauche
+        {
+            while (line_index >= j)
+            {
+                board[i][line_index].color = color;
+                line_index--;
             }
         }
     }
