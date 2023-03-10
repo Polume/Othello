@@ -72,7 +72,7 @@ int is_valid(cell **board, int i, int j, int color)
     {
         return 1;
     }
-    else if (board[i][j].color == VERT && check_neighbors_rows(board, i, j, color) && check_rows(board, j, color))
+    else if (board[i][j].color == VERT && check_neighbors_rows(board, i, j, color) && check_rows(board, j, color) >= 0)
     {
         return 1;
     }
@@ -99,6 +99,7 @@ int check_neighbors_lines(cell **board, int i, int j, int color)
 }
 
 int check_neighbors_rows(cell **board, int i, int j, int color)
+// Version pour les colonnes
 {
     int top = 0;
     int bottom = 0;
@@ -110,6 +111,7 @@ int check_neighbors_rows(cell **board, int i, int j, int color)
 }
 
 int check_lines(cell **board, int i, int color)
+// Verifie si color se trouve sur la ligne i et renvoie son inidice
 {
     for (int j = 0; j < SIZE_MAX; j++)
     {
@@ -122,23 +124,24 @@ int check_lines(cell **board, int i, int color)
 }
 
 int check_rows(cell **board, int j, int color)
+// Verifie si color se trouve sur la colonne j et renvoie son inidice
 {
     for (int i = 0; i < SIZE_MAX; i++)
     {
         if (board[i][j].color == color)
         {
-            return 1;
+            return i;
         }
     }
-    return 0;
+    return -1;
 }
 
 int check_diag_t_left(cell **board, int i, int j, int color)
+// Verifie si color se trouve sur la diagonale superieure gauche
 {
     int cpy_i = i;
     int cpy_j = j;
     while (cpy_i != 0 && cpy_j != 0)
-    // diagonale superieure gauche
     {
         if (board[cpy_i][cpy_j].color == color)
             return 1;
@@ -149,12 +152,11 @@ int check_diag_t_left(cell **board, int i, int j, int color)
 }
 
 int check_diag_t_right(cell **board, int i, int j, int color)
+// Verifie si color se trouve sur la diagonale superieure droite
 {
-
     int cpy_i = i;
     int cpy_j = j;
     while (cpy_i != 0 && cpy_j != SIZE_MAX - 1)
-    // diagonale superieure droite
     {
         if (board[cpy_i][cpy_j].color == color)
             return 1;
@@ -166,6 +168,7 @@ int check_diag_t_right(cell **board, int i, int j, int color)
 }
 
 int check_diag_b_left(cell **board, int i, int j, int color)
+// Verifie si color se trouve sur la diagonale inferieure gauche
 {
     int cpy_i = i;
     int cpy_j = j;
@@ -181,6 +184,7 @@ int check_diag_b_left(cell **board, int i, int j, int color)
 }
 
 int check_diag_b_right(cell **board, int i, int j, int color)
+// Verifie si color se trouve sur la diagonale inferieure droite
 {
     int cpy_i = i;
     int cpy_j = j;
@@ -217,6 +221,7 @@ int check_diag(cell **board, int i, int j, int color)
 }
 
 void print_valid(cell **board, int color)
+// Affiche toutes les cases valides du plateau
 {
     for (int i = 0; i < SIZE_MAX; i++)
     {
@@ -231,20 +236,28 @@ void print_valid(cell **board, int color)
 }
 
 void fill(cell **board, int i, int j, int color)
-/* Fonction qui permet de remplir le plateau et de modifier les pions ennemis
-   en fonction du coloriage d'une case a la position i j */
 {
-    int line_index = 0;
-    int line_index2 = 0;
-    if (is_valid(board, i, j, color)) // on doit d'abord avoir une case valide
+    fill_lines(board, i, j, color);
+    fill_rows(board, i, j, color);
+    board[i][j].color = color; // On colorie la case actuelle a la fin
+}
+
+void fill_lines(cell **board, int i, int j, int color)
+/* Fonction qui permet de remplir le plateau et de modifier les pions ennemis
+   en fonction du coloriage d'une case a la position i j
+   Version concernant uniquement les lignes */
+{
+    int line_index = check_lines(board, i, color); // indice de la ou se trouve la premiere couleur color sur une ligne i
+    int second_color = 0;
+    if (is_valid(board, i, j, color) && line_index >= 0) // on doit d'abord avoir une case valide
     {
-        line_index = check_lines(board, i, color); // indice de la ou se trouve la premiere couleur color sur une ligne i
-        line_index2 = line_index + 1;
-        while (board[i][line_index2].color != color && line_index2 < SIZE_MAX)
-            line_index2++;    // indice de la deuxieme couleur sur la ligne, pour pouvoir boucler entre les indices
-        if (line_index2 != 8) // cas où la case valide est entre plusieurs pions de sa couleur
+        second_color = line_index + 1;
+        while (second_color < SIZE_MAX && board[i][second_color].color != color)
+            second_color++; // indice de la deuxieme couleur sur la ligne, pour pouvoir boucler entre les indices
+
+        if (second_color != 8) // cas ou la case valide est entre plusieurs pions de sa couleur
         {
-            while (line_index < line_index2)
+            while (line_index < second_color)
             {
                 board[i][line_index].color = color;
                 line_index++;
@@ -252,7 +265,7 @@ void fill(cell **board, int i, int j, int color)
         }
         else if (j > line_index) // cas ou on doit retourner les pions de gauche à droite
         {
-            while (line_index <= j)
+            while (line_index < j)
             {
                 board[i][line_index].color = color; // et tant qu on ne retrouve pas la meme couleur, on remplit avec celle-ci
                 line_index++;
@@ -260,7 +273,7 @@ void fill(cell **board, int i, int j, int color)
         }
         else if (j < line_index) // cas ou on doit retourner les pions de droite à gauche
         {
-            while (line_index >= j)
+            while (line_index > j)
             {
                 board[i][line_index].color = color;
                 line_index--;
@@ -269,15 +282,42 @@ void fill(cell **board, int i, int j, int color)
     }
 }
 
-// else if (board[d][d].color == color && i > pos)
-// {
+void fill_rows(cell **board, int i, int j, int color)
+/* Fonction qui permet de remplir le plateau et de modifier les pions ennemis
+   en fonction du coloriage d'une case a la position i j
+   Version concernant uniquement les lignes */
+{
+    int row_index = check_rows(board, j, color); // indice de la ou se trouve la premiere couleur color sur une colonne j
+    int row_index2 = 0;
+    if (is_valid(board, i, j, color) && row_index >= 0) // on doit d'abord avoir une case valide
+    {
+        row_index2 = row_index + 1;
+        while (row_index2 < SIZE_MAX && board[row_index2][j].color != color)
+            row_index2++; // indice de la deuxieme couleur sur la colonne, pour pouvoir boucler entre les indices
 
-//             for (int k = pos; k < i; k++)
-//             {
-//                 if (board[k][k].color != VERT)
-//                 {
-//                     board[k][k].color = color;
-//                 }
-//             }
-//             return 1;
-//         }
+        if (row_index2 != 8) // cas ou la case valide est entre plusieurs pions de sa couleur
+        {
+            while (row_index < row_index2)
+            {
+                board[row_index][j].color = color;
+                row_index++;
+            }
+        }
+        else if (i > row_index) // cas ou on doit retourner les pions de haut en bas
+        {
+            while (row_index < i)
+            {
+                board[row_index][j].color = color; // et tant qu on ne retrouve pas la meme couleur, on remplit avec celle-ci
+                row_index++;
+            }
+        }
+        else if (i < row_index) // cas ou on doit retourner les pions de bas en haut
+        {
+            while (row_index > i)
+            {
+                board[row_index][j].color = color;
+                row_index--;
+            }
+        }
+    }
+}

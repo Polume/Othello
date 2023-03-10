@@ -16,11 +16,12 @@ int main(int argc, char *argv[])
 
     board[3][5].color = BLANC;
     board[3][6].color = BLANC;
+    board[1][3].color = NOIR;
 
     print_valid(board, NOIR);
     printBoard(board);
+    fill(board, 3, 2, NOIR);
     printf("\n");
-    fill(board, 3, 7, NOIR);
     printBoard(board);
 
     freeBoard(board);

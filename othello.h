@@ -11,17 +11,17 @@
 
 #define SIZE_MAX 8
 
-typedef struct liste
-{
-    int num;
-    struct liste *svt;
-} *liste;
-
 typedef struct
 {
     int color;
     char id_cell[2];
 } cell;
+
+typedef struct liste
+{
+    int num;
+    struct liste *svt;
+} *liste;
 
 cell **initializeBoard();
 void printBoard(cell **board);
@@ -42,5 +42,7 @@ int check_diag(cell **board, int i, int j, int color);
 void print_valid(cell **board, int color);
 
 void fill(cell **board, int i, int j, int color);
+void fill_lines(cell **board, int i, int j, int color);
+void fill_rows(cell **board, int i, int j, int color);
 
 #endif
