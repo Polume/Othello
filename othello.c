@@ -235,6 +235,8 @@ void print_valid(cell **board, int color)
 }
 
 void fill(cell **board, int i, int j, int color)
+/* Fonction qui permet de remplir le plateau et de modifier les pions ennemis
+   en fonction du coloriage d'une case a la position i j */
 {
     if (is_valid(board, i, j, color))
     {
@@ -246,9 +248,7 @@ void fill(cell **board, int i, int j, int color)
 }
 
 void fill_lines(cell **board, int i, int j, int color)
-/* Fonction qui permet de remplir le plateau et de modifier les pions ennemis
-   en fonction du coloriage d'une case a la position i j
-   Version concernant uniquement les lignes */
+// Fonction de remplissage concernant uniquement les lignes
 {
     int line_index = check_lines(board, i, color); // indice de la ou se trouve la premiere couleur color sur une ligne i
     int second_color = 0;
@@ -286,9 +286,7 @@ void fill_lines(cell **board, int i, int j, int color)
 }
 
 void fill_rows(cell **board, int i, int j, int color)
-/* Fonction qui permet de remplir le plateau et de modifier les pions ennemis
-   en fonction du coloriage d'une case a la position i j
-   Version concernant uniquement les lignes */
+// Fonction de remplissage concernant uniquement les colonnes
 {
     int row_index = check_rows(board, j, color); // indice de la ou se trouve la premiere couleur color sur une colonne j
     int second_color = 0;
@@ -326,6 +324,7 @@ void fill_rows(cell **board, int i, int j, int color)
 }
 
 void fill_diag(cell **board, int i, int j, int color)
+// Fonction de remplissage concernant uniquement les diagonales
 {
     int cpy_i = i;
     int cpy_j = j;

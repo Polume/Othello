@@ -23,7 +23,7 @@ int main(int argc, char *argv[])
 
     print_valid(board, NOIR);
     printBoard(board);
-    fill(board, 7, 3, NOIR);
+    fill(board, 5, 6, NOIR);
     printf("\n");
     printBoard(board);
 
