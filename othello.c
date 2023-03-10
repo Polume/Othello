@@ -68,11 +68,15 @@ int is_valid(cell **board, int i, int j, int color)
    Renvoie 1 si la case est valide et 0 sinon
 */
 {
-    if (board[i][j].color == VERT && check_neighbors_lines(board, i, j, color) && check_lines(board, i, color) >= 0)
+    if (board[i][j].color == VERT &&
+        check_neighbors_lines(board, i, j, color) &&
+        check_lines(board, i, color) >= 0)
     {
         return 1;
     }
-    else if (board[i][j].color == VERT && check_neighbors_rows(board, i, j, color) && check_rows(board, j, color) >= 0)
+    else if (board[i][j].color == VERT &&
+             check_neighbors_rows(board, i, j, color) &&
+             check_rows(board, j, color) >= 0)
     {
         return 1;
     }
@@ -209,13 +213,21 @@ int check_diag(cell **board, int i, int j, int color)
     // on verifie d'abord qu'on est pas en dehors du plateau
     if (i != 0 && j != 0)
         // Puis on check chaque diagonale une par une
-        top_left = board[i - 1][j - 1].color != color && board[i - 1][j - 1].color != VERT && check_diag_t_left(board, i, j, color, &cpy_i, &cpy_j);
+        top_left = board[i - 1][j - 1].color != color &&
+                   board[i - 1][j - 1].color != VERT &&
+                   check_diag_t_left(board, i, j, color, &cpy_i, &cpy_j);
     if (i != 0 && j != SIZE_MAX - 1)
-        top_right = board[i - 1][j + 1].color != color && board[i - 1][j + 1].color != VERT && check_diag_t_right(board, i, j, color, &cpy_i, &cpy_j);
+        top_right = board[i - 1][j + 1].color != color &&
+                    board[i - 1][j + 1].color != VERT &&
+                    check_diag_t_right(board, i, j, color, &cpy_i, &cpy_j);
     if (i != SIZE_MAX - 1 && j != 0)
-        bottom_left = board[i + 1][j - 1].color != color && board[i + 1][j - 1].color != VERT && check_diag_b_left(board, i, j, color, &cpy_i, &cpy_j);
+        bottom_left = board[i + 1][j - 1].color != color &&
+                      board[i + 1][j - 1].color != VERT &&
+                      check_diag_b_left(board, i, j, color, &cpy_i, &cpy_j);
     if (i != SIZE_MAX - 1 && j != SIZE_MAX - 1)
-        bottom_right = board[i + 1][j + 1].color != color && board[i + 1][j + 1].color != VERT && check_diag_b_right(board, i, j, color, &cpy_i, &cpy_j);
+        bottom_right = board[i + 1][j + 1].color != color &&
+                       board[i + 1][j + 1].color != VERT &&
+                       check_diag_b_right(board, i, j, color, &cpy_i, &cpy_j);
     return top_right || top_left || bottom_right || bottom_left;
 }
 
