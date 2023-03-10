@@ -4,7 +4,7 @@
 void init_pakage(void)
 {
     // Initialisation de SDL2
-    if(SDL_Init(SDL_INIT_VIDEO))
+    if(SDL_Init(SDL_INIT_EVERYTHING))
         Error("Initialisation des paramètres de la fenêtre !");
     //Initialisation des types d'images
     if(! IMG_Init(IMG_INIT_PNG|IMG_INIT_JPG))

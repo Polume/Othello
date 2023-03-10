@@ -3,8 +3,33 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 
+
+void Affiche_Othello(SDL_Window * window, SDL_Renderer * renderer, 
+                     SDL_Surface * image_BG, SDL_Texture * texture_BG,
+                     SDL_Surface * image_sides, SDL_Texture * texture_sides, points ** mat_rect_Othello)// Dernier attribut a modifier !!!!!!!
+{
+        // Affichage de l'image de fond
+    if(init_BG_image(window, renderer, image_BG, texture_BG))
+        Error("Affichage de l'image de fond échouée.");
+
+    // Affichage de l'image des bordures de l'Othello
+    if(init_sides_Othello(window, renderer, image_sides, texture_sides))
+        Error("Affichage de l'image des bordures de l'Othello échouée.");
+
+    // Affichage de l'interieur de l'Othello
+    if(init_Othello(window, renderer))
+        Error("Affichage de l'interieur de l'Othello échouée.");
+
+    // Affichage interne de l'Othello
+    mat_rect_Othello = Rect_in_Othello(window, renderer);
+}
+
+
 void run()
 {
+    SDL_Window * window = NULL;
+    SDL_Renderer * renderer = NULL;
+
     SDL_Surface * image_BG = NULL;
     SDL_Texture * texture_BG = NULL;
     SDL_Surface * image_sides = NULL;
@@ -15,53 +40,44 @@ void run()
     ////////////////////////////////////////////////////////// INITIALISATION DE L'INTERFACE GRAPHIQUE //////////////////////////////////////////////////////////
     init_pakage();
     // Création de la fenêtre
-    SDL_Window * window = SDL_CreateWindow("Othello", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, WIDTH, HEIGHT, SDL_WINDOW_SHOWN);
+    window = SDL_CreateWindow("Othello", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, WIDTH, HEIGHT, SDL_WINDOW_SHOWN);
     if(window == NULL)
         Error("Création fenête échouée !");
     // Creation du rendue
-    SDL_Renderer * renderer = SDL_CreateRenderer(window, -1, 0);
+    renderer = SDL_CreateRenderer(window, -1, 0);
     if (renderer == NULL)
         Error("Création du rendue échoué !");
 
+    points ** mat_rect_Othello = NULL;
     ////////////////////////////////////////////////////////// FIN INITIALISATION DE L'INTERFACE GRAPHIQUE //////////////////////////////////////////////////////////
  
-
-    // Affichage de l'image de fond
-    if(init_BG_image(window, renderer, image_BG, texture_BG))
-        Error("Affichage de l'image de fond échouée.");
-    
-    // Affichage de l'image des bordures de l'Othello
-    if(init_sides_Othello(window, renderer, image_sides, texture_sides))
-        Error("Affichage de l'image des bordures de l'Othello échouée.");
-    
-    // Affichage de l'interieur de l'Othello
-    if(init_Othello(window, renderer))
-        Error("Affichage de l'interieur de l'Othello échouée.");
-
-    // Affichage interne de l'Othello
-    points ** mat_rect_Othello = Rect_in_Othello(window, renderer);
-
-    SDL_RenderPresent(renderer);
     //-------------------------------------------------------
     /* || Code after init : Event Code  || */
     int quit = 0;
     while (!quit) {
         while (SDL_PollEvent(&e))
         {
-            printf("oui\n");
-            switch (e.type) {
-                case SDL_MOUSEBUTTONDOWN :
-                    printf ("Espace appuyé !\n");
+            if(e.type != 512 && e.type != 1024)
+            {
+                printf("\t%d\n",e.type);
+                switch (e.type) {
+                case SDL_MOUSEBUTTONDOWN: // Click de souris 
+                    SDL_Log("+clic");
                     break;
-
+                case SDL_MOUSEBUTTONUP: // Click de souris relâché
+                    SDL_Log("-clic");
+                    break;
                 case SDL_QUIT:
                     quit = 1;
                     break;
+                }
+
+                SDL_RenderClear(renderer);
+                Affiche_Othello(window, renderer, image_BG, texture_BG, image_sides, texture_sides, mat_rect_Othello);// Dernier attribut a modifier !!!!!!!);
+                SDL_RenderPresent(renderer);
             }
         }
-        // SDL_RenderClear(renderer);
 
-        // SDL_RenderPresent(renderer);
     }
     //-------------------------------------------------------
 

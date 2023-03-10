@@ -1,6 +1,6 @@
 CC = gcc
-CFLAGS = -Wall -g
-IFLAGS = -I lSDL2main -lSDL2 -lSDL2_image
+CFLAGS = -Wall -std=c99
+IFLAGS = -lSDL2 -lSDL2_image
 
 all: run
 
