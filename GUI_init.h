@@ -4,14 +4,26 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
 
-SDL_Window *createWindow(int width, int height);
-SDL_Rect newRect(int x, int y, int width, int height);
-int Place_Rect(SDL_Window * window, SDL_Renderer * renderer, int width, int height, int * BG_color);
+#define WIDTH 1100
+#define HEIGHT 1000
+
+typedef struct 
+{
+    int x1, x2, y1, y2;
+} points;
+
+void init_pakage(void);
+
+int init_BG_image       (SDL_Window * window, SDL_Renderer * renderer, SDL_Surface* image_BG,      SDL_Texture* texture_BG);
+int init_sides_Othello  (SDL_Window * window, SDL_Renderer * renderer, SDL_Surface* image_sides,   SDL_Texture* texture_sides);
+int init_Othello        (SDL_Window * window, SDL_Renderer * renderer);
+
+void Destroy_texture(SDL_Surface* image, SDL_Texture* texture);
 void Quit_GUI(SDL_Window * window, SDL_Renderer * renderer);
-int init_GUI(SDL_Window * window,SDL_Renderer * renderer, int * BG_color); //On devra placer le tableau de matrice representant les cases de l'othello.
-
 
 void Error(char *chaine);
+points ** Rect_in_Othello(SDL_Window * window, SDL_Renderer * renderer);
 
 #endif
