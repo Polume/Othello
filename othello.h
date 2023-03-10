@@ -33,10 +33,10 @@ int check_neighbors_rows(cell **board, int i, int j, int color);
 int check_lines(cell **board, int i, int color);
 int check_rows(cell **board, int j, int color);
 
-int check_diag_t_left(cell **board, int i, int j, int color);
-int check_diag_t_right(cell **board, int i, int j, int color);
-int check_diag_b_left(cell **board, int i, int j, int color);
-int check_diag_b_right(cell **board, int i, int j, int color);
+int check_diag_t_left(cell **board, int i, int j, int color, int *cpy_i, int *cpy_j);
+int check_diag_t_right(cell **board, int i, int j, int color, int *cpy_i, int *cpy_j);
+int check_diag_b_left(cell **board, int i, int j, int color, int *cpy_i, int *cpy_j);
+int check_diag_b_right(cell **board, int i, int j, int color, int *cpy_i, int *cpy_j);
 int check_diag(cell **board, int i, int j, int color);
 
 void print_valid(cell **board, int color);
@@ -44,5 +44,6 @@ void print_valid(cell **board, int color);
 void fill(cell **board, int i, int j, int color);
 void fill_lines(cell **board, int i, int j, int color);
 void fill_rows(cell **board, int i, int j, int color);
+void fill_diag(cell **board, int i, int j, int color);
 
 #endif
