@@ -49,23 +49,96 @@ points get_coord(points ** mat_rect_Othello)
     return ret_coords;
 }
 /////////////////////////////////////////////////////////////////////////////////////////////////////EN COURS
-int draw_circle(SDL_Window * window, SDL_Renderer * renderer, int x, int y, int team)
+int draw_circle(SDL_Window * window, SDL_Renderer * renderer, 
+                SDL_Surface * image_pion, SDL_Texture * texture_poin, 
+                int x, int y, int team, int mode)
 {
-    // Récupération de l'image
-    image_sides = IMG_Load("Picture/Blanc1.jpg");
-    if (image_sides == NULL)
-        Error("Récupération de l'image_sides échoué !");
+    if(mode != UwU)
+    {
+        if(team == 1)
+        {
+            // Récupération de l'image
+            image_pion = IMG_Load("Pictures/White1.png");
+            if (image_pion == NULL)
+                Error("Récupération de l'image_pion échoué !");
 
-    // Créer la texture avec l'image
-    texture_sides = SDL_CreateTextureFromSurface(renderer, image_sides);
-    if (texture_sides == NULL)
-        Error("Chargement de la texture_sides échoué !");
+            // Créer la texture avec l'image
+            texture_poin = SDL_CreateTextureFromSurface(renderer, image_pion);
+            if (texture_poin == NULL)
+                Error("Chargement de la texture_poin échoué !");
 
-    // Définir un rectangle pour l'emplacement et la taille de l'image
-    SDL_Rect rect_sides = { 110, 90, 880, 880 };
-    // Dessiner la texture dans le rendue
-    SDL_RenderCopy(renderer, texture_sides, NULL, &rect_sides);
+            // Définir un rectangle pour l'emplacement et la taille de l'image
+            SDL_Rect rect_pion = { x, y, 100, 100 };
+            // Dessiner la texture dans le rendue
+            SDL_RenderCopy(renderer, texture_poin, NULL, &rect_pion);
+        }
+        else if(team == 2)
+        {
+            // Récupération de l'image
+            image_pion = IMG_Load("Pictures/Black1.png");
+            if (image_pion == NULL)
+                Error("Récupération de l'image_pion échoué !");
 
+            // Créer la texture avec l'image
+            texture_poin = SDL_CreateTextureFromSurface(renderer, image_pion);
+            if (texture_poin == NULL)
+                Error("Chargement de la texture_poin échoué !");
+
+            // Définir un rectangle pour l'emplacement et la taille de l'image
+            SDL_Rect rect_pion = { x, y, 100, 100 };
+            // Dessiner la texture dans le rendue
+            SDL_RenderCopy(renderer, texture_poin, NULL, &rect_pion);  
+        }
+        else 
+        {
+            return EXIT_FAILURE;
+        }
+    }
+    else if (mode == UwU)
+    {
+        if(team == 1)
+        {
+            // Récupération de l'image
+            image_pion = IMG_Load("Pictures/White.png");
+            if (image_pion == NULL)
+                Error("Récupération de l'image_pion échoué !");
+
+            // Créer la texture avec l'image
+            texture_poin = SDL_CreateTextureFromSurface(renderer, image_pion);
+            if (texture_poin == NULL)
+                Error("Chargement de la texture_poin échoué !");
+
+            // Définir un rectangle pour l'emplacement et la taille de l'image
+            SDL_Rect rect_pion = { x, y, 100, 100 };
+            // Dessiner la texture dans le rendue
+            SDL_RenderCopy(renderer, texture_poin, NULL, &rect_pion);
+        }
+        else if(team == 2)
+        {
+            // Récupération de l'image
+            image_pion = IMG_Load("Pictures/Black.png");
+            if (image_pion == NULL)
+                Error("Récupération de l'image_pion échoué !");
+
+            // Créer la texture avec l'image
+            texture_poin = SDL_CreateTextureFromSurface(renderer, image_pion);
+            if (texture_poin == NULL)
+                Error("Chargement de la texture_poin échoué !");
+
+            // Définir un rectangle pour l'emplacement et la taille de l'image
+            SDL_Rect rect_pion = { x, y, 100, 100 };
+            // Dessiner la texture dans le rendue
+            SDL_RenderCopy(renderer, texture_poin, NULL, &rect_pion);  
+        }
+        else
+        {
+            return EXIT_FAILURE;
+        }
+    }  
+    else
+    {
+        return EXIT_FAILURE;
+    } 
     return EXIT_SUCCESS;
 }
 /////////////////////////////////////////////////////////////////////////////////////////////////////EN COURS
@@ -78,15 +151,17 @@ void run()
     SDL_Texture * texture_BG = NULL;
     SDL_Surface * image_sides = NULL;
     SDL_Texture * texture_sides = NULL;
-    
+    SDL_Surface * image_pion = NULL;
+    SDL_Texture * texture_pion = NULL;
+
     SDL_Event e;
     points clic_rect;
     cell ** matrice_Othello;
-    int mode = UwU;
+    int mode , team = 1;
 
     ////////////////////////////////////////////////////////// INITIALISATION DE L'INTERFACE GRAPHIQUE //////////////////////////////////////////////////////////
     init_pakage();
-    // Création de la fenêtre
+    // Création de la fenêtre                                                                                                                                                                                                                                   
     window = SDL_CreateWindow("Othello", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, WIDTH, HEIGHT, SDL_WINDOW_SHOWN);
     if(window == NULL)
         Error("Création fenête échouée !");
@@ -110,30 +185,48 @@ void run()
     while (!quit) {
         while (SDL_PollEvent(&e))
         {
-            
             if(e.type != 512 && e.type != 1024)
             {
-                
                 switch (e.type) {
                 case SDL_MOUSEBUTTONDOWN: // Click de souris 
                     clic_rect = get_coord(mat_rect_Othello);
+                    //Place un pion de l'équipe ayant pas joué précédement
+                    if(team == 1)
+                        team = 2;
+                    else    
+                        team = 1;
                     break;
                 case SDL_QUIT:
                     quit = 1;
                     break;
                 }
+                //-------------------Rénitialisation des variables de textures-------------------//
                 SDL_RenderClear(renderer);
+                Destroy_texture(image_pion, texture_pion);
+                Destroy_texture(image_sides, texture_sides);
+                Destroy_texture(image_BG, texture_BG);
+                //------------------Redessinner les textures et les formes-----------------------//
                 Affiche_Othello(window, renderer, image_BG, texture_BG, image_sides, texture_sides, mode);// Dernier attribut a modifier !!!!!!!);
+                if(e.type == SDL_MOUSEBUTTONDOWN)
+                {
+                    if(clic_rect.x1 != 0)
+                    {
+                        if(draw_circle(window, renderer, image_pion, texture_pion, clic_rect.x1, clic_rect.y1, team, mode))
+                                Error("Placement de pion échoué !");
+                    }
+                }
                 SDL_RenderPresent(renderer);
+                //-----------------------------------------------------------------------------//
+                
             }
         }
 
     }
-    //-------------------------------------------------------
-
-    free(mat_rect_Othello);
-    SDL_RenderClear(renderer);
+    //-----------Desttruction des variables pointeurs-----------//
+    Destroy_texture(image_pion, texture_pion);
     Destroy_texture(image_sides, texture_sides);
     Destroy_texture(image_BG, texture_BG);
+    SDL_RenderClear(renderer);
+    free(mat_rect_Othello);
     Quit_GUI(window, renderer);
 }

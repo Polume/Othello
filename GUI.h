@@ -14,5 +14,8 @@ void Affiche_Othello(SDL_Window * window, SDL_Renderer * renderer,
                      SDL_Surface * image_sides, SDL_Texture * texture_sides, int mode);
 
 points get_coord(points ** mat_rect_Othello);
+int draw_circle(SDL_Window * window, SDL_Renderer * renderer, 
+                SDL_Surface * image_pion, SDL_Texture * texture_poin, 
+                int x, int y, int team, int mode);
 
 #endif
