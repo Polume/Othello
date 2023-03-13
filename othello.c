@@ -3,16 +3,16 @@
 cell **initializeBoard()
 // Fonction qui initialise le plateau de l othello
 {
-    cell **board = calloc(SIZE_MAX, sizeof(cell *));
-    for (int i = 0; i < SIZE_MAX; i++)
+    cell **board = calloc(SIZE_OTHELLO, sizeof(cell *));
+    for (int i = 0; i < SIZE_OTHELLO; i++)
     {
-        board[i] = calloc(SIZE_MAX, sizeof(cell));
+        board[i] = calloc(SIZE_OTHELLO, sizeof(cell));
     }
     char c = 'A';
-    for (int i = 0; i < SIZE_MAX; i++)
+    for (int i = 0; i < SIZE_OTHELLO; i++)
     {
         // attribution à chaque case son id respectif
-        for (int j = 0; j < SIZE_MAX; j++)
+        for (int j = 0; j < SIZE_OTHELLO; j++)
         {
             board[i][j].id_cell[0] = c;
             board[i][j].id_cell[1] = (i + 1) + '0';
@@ -38,10 +38,10 @@ void printBoard(cell **board)
     }
     printf("\n");
 
-    for (int i = 0; i < SIZE_MAX; i++)
+    for (int i = 0; i < SIZE_OTHELLO; i++)
     {
         printf("%d\t", i + 1);
-        for (int j = 0; j < SIZE_MAX; j++)
+        for (int j = 0; j < SIZE_OTHELLO; j++)
         {
             printf("%d ", board[i][j].color);
         }
@@ -52,7 +52,7 @@ void printBoard(cell **board)
 void freeBoard(cell **board)
 // Libere la memoire du tableau
 {
-    for (int i = 0; i < SIZE_MAX; i++)
+    for (int i = 0; i < SIZE_OTHELLO; i++)
     {
         free(board[i]);
     }
@@ -97,7 +97,7 @@ int check_neighbors_lines(cell **board, int i, int j, int color)
     // on verifie d'abord qu'on est pas en dehors du plateau
     if (j != 0)
         left = board[i][j - 1].color != color && board[i][j - 1].color != VERT;
-    if (j != SIZE_MAX - 1)
+    if (j != SIZE_OTHELLO - 1)
         right = board[i][j + 1].color != color && board[i][j + 1].color != VERT;
     return right || left;
 }
@@ -109,7 +109,7 @@ int check_neighbors_rows(cell **board, int i, int j, int color)
     int bottom = 0;
     if (i != 0)
         top = board[i - 1][j].color != color && board[i - 1][j].color != VERT;
-    if (i != SIZE_MAX - 1)
+    if (i != SIZE_OTHELLO - 1)
         bottom = board[i + 1][j].color != color && board[i + 1][j].color != VERT;
     return top || bottom;
 }
@@ -117,7 +117,7 @@ int check_neighbors_rows(cell **board, int i, int j, int color)
 int check_lines(cell **board, int i, int color)
 // Verifie si color se trouve sur la ligne i et renvoie son indice
 {
-    for (int j = 0; j < SIZE_MAX; j++)
+    for (int j = 0; j < SIZE_OTHELLO; j++)
     {
         if (board[i][j].color == color)
         {
@@ -130,7 +130,7 @@ int check_lines(cell **board, int i, int color)
 int check_rows(cell **board, int j, int color)
 // Verifie si color se trouve sur la colonne j et renvoie son indice
 {
-    for (int i = 0; i < SIZE_MAX; i++)
+    for (int i = 0; i < SIZE_OTHELLO; i++)
     {
         if (board[i][j].color == color)
         {
@@ -160,7 +160,7 @@ int check_diag_t_right(cell **board, int i, int j, int color, int *cpy_i, int *c
 {
     *cpy_i = i;
     *cpy_j = j;
-    while (*cpy_i != 0 && *cpy_j < SIZE_MAX)
+    while (*cpy_i != 0 && *cpy_j < SIZE_OTHELLO)
     {
         if (board[*cpy_i][*cpy_j].color == color)
             return 1;
@@ -175,7 +175,7 @@ int check_diag_b_left(cell **board, int i, int j, int color, int *cpy_i, int *cp
 {
     *cpy_i = i;
     *cpy_j = j;
-    while (*cpy_i < SIZE_MAX && *cpy_j != 0)
+    while (*cpy_i < SIZE_OTHELLO && *cpy_j != 0)
     {
         if (board[*cpy_i][*cpy_j].color == color)
             return 1;
@@ -190,7 +190,7 @@ int check_diag_b_right(cell **board, int i, int j, int color, int *cpy_i, int *c
 {
     *cpy_i = i;
     *cpy_j = j;
-    while (*cpy_i < SIZE_MAX && *cpy_j < SIZE_MAX)
+    while (*cpy_i < SIZE_OTHELLO && *cpy_j < SIZE_OTHELLO)
     {
         if (board[*cpy_i][*cpy_j].color == color)
             return 1;
@@ -216,15 +216,15 @@ int check_diag(cell **board, int i, int j, int color)
         top_left = board[i - 1][j - 1].color != color &&
                    board[i - 1][j - 1].color != VERT &&
                    check_diag_t_left(board, i, j, color, &cpy_i, &cpy_j);
-    if (i != 0 && j != SIZE_MAX - 1)
+    if (i != 0 && j != SIZE_OTHELLO - 1)
         top_right = board[i - 1][j + 1].color != color &&
                     board[i - 1][j + 1].color != VERT &&
                     check_diag_t_right(board, i, j, color, &cpy_i, &cpy_j);
-    if (i != SIZE_MAX - 1 && j != 0)
+    if (i != SIZE_OTHELLO - 1 && j != 0)
         bottom_left = board[i + 1][j - 1].color != color &&
                       board[i + 1][j - 1].color != VERT &&
                       check_diag_b_left(board, i, j, color, &cpy_i, &cpy_j);
-    if (i != SIZE_MAX - 1 && j != SIZE_MAX - 1)
+    if (i != SIZE_OTHELLO - 1 && j != SIZE_OTHELLO - 1)
         bottom_right = board[i + 1][j + 1].color != color &&
                        board[i + 1][j + 1].color != VERT &&
                        check_diag_b_right(board, i, j, color, &cpy_i, &cpy_j);
@@ -234,9 +234,9 @@ int check_diag(cell **board, int i, int j, int color)
 void print_valid(cell **board, int color)
 // Affiche toutes les cases valides du plateau
 {
-    for (int i = 0; i < SIZE_MAX; i++)
+    for (int i = 0; i < SIZE_OTHELLO; i++)
     {
-        for (int j = 0; j < SIZE_MAX; j++)
+        for (int j = 0; j < SIZE_OTHELLO; j++)
         {
             if (is_valid(board, i, j, color))
             {
@@ -267,10 +267,10 @@ void fill_lines(cell **board, int i, int j, int color)
     if (line_index >= 0) // on doit d'abord avoir une case valide
     {
         second_color = line_index + 1;
-        while (second_color < SIZE_MAX && board[i][second_color].color != color)
+        while (second_color < SIZE_OTHELLO && board[i][second_color].color != color)
             second_color++; // indice de la deuxieme couleur sur la ligne, pour pouvoir boucler entre les indices
 
-        if (second_color != SIZE_MAX) // cas ou la case valide est entre plusieurs pions de sa couleur
+        if (second_color != SIZE_OTHELLO) // cas ou la case valide est entre plusieurs pions de sa couleur
         {
             while (line_index < second_color)
             {
@@ -305,10 +305,10 @@ void fill_rows(cell **board, int i, int j, int color)
     if (row_index >= 0) // on doit d'abord avoir une case valide
     {
         second_color = row_index + 1;
-        while (second_color < SIZE_MAX && board[second_color][j].color != color)
+        while (second_color < SIZE_OTHELLO && board[second_color][j].color != color)
             second_color++; // indice de la deuxieme couleur sur la colonne, pour pouvoir boucler entre les indices
 
-        if (second_color != SIZE_MAX) // cas ou la case valide est entre plusieurs pions de sa couleur
+        if (second_color != SIZE_OTHELLO) // cas ou la case valide est entre plusieurs pions de sa couleur
         {
             while (row_index < second_color)
             {

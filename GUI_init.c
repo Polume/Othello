@@ -4,7 +4,7 @@
 void init_pakage(void)
 {
     // Initialisation de SDL2
-    if(SDL_Init(SDL_INIT_EVERYTHING))
+    if(SDL_Init(SDL_INIT_VIDEO))
         Error("Initialisation des paramètres de la fenêtre !");
     //Initialisation des types d'images
     if(! IMG_Init(IMG_INIT_PNG|IMG_INIT_JPG))
@@ -31,12 +31,13 @@ void Error(char *chaine)
     exit(EXIT_FAILURE);
 }
 
-int init_BG_image(SDL_Window * window, SDL_Renderer * renderer, SDL_Surface* image_BG, SDL_Texture* texture_BG)
+int init_BG_image(SDL_Window * window, SDL_Renderer * renderer, SDL_Surface* image_BG, SDL_Texture* texture_BG, int mode)
 {
     // Récupération de l'image
-    image_BG = IMG_Load("BG_Othello.jpg");
+    image_BG = IMG_Load("Pictures/BG_Othello.jpg");
     /*      UwU     */
-    // image_BG = IMG_Load("BG_UwU.jpg");
+    if(mode == 1)
+        image_BG = IMG_Load("Pictures/BG_UwU.jpg");
     /*      UwU     */
     if (image_BG == NULL)
         Error("Récupération de l'image échoué !");
@@ -54,8 +55,8 @@ int init_BG_image(SDL_Window * window, SDL_Renderer * renderer, SDL_Surface* ima
 
 int init_sides_Othello(SDL_Window * window, SDL_Renderer * renderer, SDL_Surface* image_sides, SDL_Texture* texture_sides)
 {
-        // Récupération de l'image
-    image_sides = IMG_Load("BG_cotes_Othello.jpg");
+    // Récupération de l'image
+    image_sides = IMG_Load("Pictures/BG_sides_Othello.jpg");
     if (image_sides == NULL)
         Error("Récupération de l'image_sides échoué !");
 
@@ -72,7 +73,7 @@ int init_sides_Othello(SDL_Window * window, SDL_Renderer * renderer, SDL_Surface
     return EXIT_SUCCESS;
 }
 
-int init_Othello(SDL_Window * window, SDL_Renderer * renderer)
+int init_Othello(SDL_Window * window, SDL_Renderer * renderer,  int mode)
 {
     // Définir un rectangle pour l'emplacement et la taille de l'image
     SDL_Rect rect_Othello = { 150, 130, 800, 800 };
@@ -85,9 +86,12 @@ int init_Othello(SDL_Window * window, SDL_Renderer * renderer)
         Error("Dessiner la base de l'Othello échoué !");
     
     /*              UwU             */
-    // SDL_Surface * image_UwU = IMG_Load("UwU.jpg");
-    // SDL_Texture * texture_UwU = SDL_CreateTextureFromSurface(renderer, image_UwU);
-    // SDL_RenderCopy(renderer, texture_UwU, NULL, &rect_Othello);
+    if(mode == 1)
+    {
+        SDL_Surface * image_UwU = IMG_Load("Pictures/UwU.jpg");
+        SDL_Texture * texture_UwU = SDL_CreateTextureFromSurface(renderer, image_UwU);
+        SDL_RenderCopy(renderer, texture_UwU, NULL, &rect_Othello);
+    }
     /*              UwU             */
 
 
@@ -107,16 +111,8 @@ int init_Othello(SDL_Window * window, SDL_Renderer * renderer)
     return EXIT_SUCCESS;
 }
 
-points ** Rect_in_Othello(SDL_Window * window, SDL_Renderer * renderer)
+int Rect_in_Othello(SDL_Window * window, SDL_Renderer * renderer)
 {
-    // Création des rectangles de l'Othello
-    points ** mat_Othello = calloc(8, sizeof(points));
-    for (int i = 0; i < 8; i++)
-    {
-        mat_Othello[i] = calloc(8, sizeof(points));
-    }
-
-    points p_rect; 
     SDL_Rect rect_Othello = { 150, 130, 0, 100 };
     
     // Changement de couleur pour les cases de l'Othello
@@ -132,12 +128,6 @@ points ** Rect_in_Othello(SDL_Window * window, SDL_Renderer * renderer)
                                         .y = rect_Othello.y,
                                         .w = 100,
                                         .h = rect_Othello.h };
-            // On ajoute en mémoire les indices des rectangles
-            p_rect.x1 = rect_Othello.x - rect_Othello.w;
-            p_rect.y1 = rect_Othello.y;
-            p_rect.x2 = rect_Othello.x;
-            p_rect.y2 = rect_Othello.y + rect_Othello.h;
-            mat_Othello[i][j] = p_rect;
             // Dessiner les Rectangles internes de l'Othello
             if(SDL_RenderDrawRect(renderer,&rect_Othello))
                 Error("Dessiner les Rectangles internes de l'Othello échoué !");
@@ -147,6 +137,43 @@ points ** Rect_in_Othello(SDL_Window * window, SDL_Renderer * renderer)
                                     .y = rect_Othello.y + rect_Othello.h, 
                                     .w = rect_Othello.w, 
                                     .h = rect_Othello.h };
+    }
+    return EXIT_SUCCESS;
+}
+
+points ** Cree_mat()
+{
+    // Création des rectangles de l'Othello
+    points ** mat_Othello = calloc(8, sizeof(points));
+    for (int i = 0; i < 8; i++)
+    {
+        mat_Othello[i] = calloc(8, sizeof(points));
+    }
+
+    points p_rect; 
+    int rect_Othello[4] = { 150, 130, 0, 100 };
+
+    for(int i = 0 ; i < 8 ; i++ )
+    {   
+        for(int j = 0 ; j < 8 ; j++)
+        {
+            // On modifie la place du rectangle
+            rect_Othello[0] = rect_Othello[0] + rect_Othello[2];
+            rect_Othello[1] =  rect_Othello[1];
+            rect_Othello[2] =  100;
+            rect_Othello[3] =  rect_Othello[3];
+            // On ajoute en mémoire les indices des rectangles
+            p_rect.x1 = rect_Othello[0];
+            p_rect.y1 = rect_Othello[1];
+            p_rect.x2 = rect_Othello[0] + rect_Othello[2];
+            p_rect.y2 = rect_Othello[1] + rect_Othello[3];
+            mat_Othello[i][j] = p_rect;
+        }
+        
+        rect_Othello[0] =  150 - rect_Othello[2];
+        rect_Othello[1] =  rect_Othello[1] + rect_Othello[3]; 
+        rect_Othello[2] =  rect_Othello[2]; 
+        rect_Othello[3] =  rect_Othello[3];
     }
     return mat_Othello;
 }

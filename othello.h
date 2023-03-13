@@ -9,7 +9,7 @@
 #define BLANC 1
 #define NOIR 2
 
-#define SIZE_MAX 8
+#define SIZE_OTHELLO 8
 
 typedef struct
 {
