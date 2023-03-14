@@ -53,33 +53,34 @@ int init_BG_image(SDL_Window * window, SDL_Renderer * renderer, SDL_Surface* ima
     return EXIT_SUCCESS;
 }
 
-int init_sides_Othello(SDL_Window * window, SDL_Renderer * renderer, SDL_Surface* image_sides, SDL_Texture* texture_sides)
+int init_base_Othello(SDL_Window * window, SDL_Renderer * renderer, SDL_Surface* image_base, SDL_Texture* texture_base)
 {
     // Récupération de l'image
-    image_sides = IMG_Load("Pictures/BG_sides_Othello.jpg");
-    if (image_sides == NULL)
-        Error("Récupération de l'image_sides échoué !");
+    image_base = IMG_Load("Pictures/Base_Othello.png");
+    if (image_base == NULL)
+        Error("Récupération de l'image_base échoué !");
 
     // Créer la texture avec l'image
-    texture_sides = SDL_CreateTextureFromSurface(renderer, image_sides);
-    if (texture_sides == NULL)
-        Error("Chargement de la texture_sides échoué !");
+    texture_base = SDL_CreateTextureFromSurface(renderer, image_base);
+    if (texture_base == NULL)
+        Error("Chargement de la texture_base échoué !");
 
     // Définir un rectangle pour l'emplacement et la taille de l'image
     SDL_Rect rect_sides = { 110, 90, 880, 880 };
     // Dessiner la texture dans le rendue
-    SDL_RenderCopy(renderer, texture_sides, NULL, &rect_sides);
+    SDL_RenderCopy(renderer, texture_base, NULL, &rect_sides);
 
     return EXIT_SUCCESS;
 }
 
-int init_Othello(SDL_Window * window, SDL_Renderer * renderer,  int mode)
+int init_Othello(SDL_Window * window, SDL_Renderer * renderer, SDL_Surface * image_mode, SDL_Texture * texture_mode, int mode)
 {
     // Définir un rectangle pour l'emplacement et la taille de l'image
     SDL_Rect rect_Othello = { 150, 130, 800, 800 };
 
+
     // Changement de couleur pour la base de l'Othello
-    if(SDL_SetRenderDrawColor(renderer, 0, 102, 51, SDL_ALPHA_OPAQUE))
+    if(SDL_SetRenderDrawColor(renderer, 0, 102, 40, SDL_ALPHA_OPAQUE))
         Error("Changement de couleur pour la base de l'Othello échoué !");
     // Dessiner la base de l'Othello
     if(SDL_RenderFillRect(renderer,&rect_Othello))
@@ -88,56 +89,12 @@ int init_Othello(SDL_Window * window, SDL_Renderer * renderer,  int mode)
     /*              UwU             */
     if(mode == 1)
     {
-        SDL_Surface * image_UwU = IMG_Load("Pictures/UwU.jpg");
-        SDL_Texture * texture_UwU = SDL_CreateTextureFromSurface(renderer, image_UwU);
-        SDL_RenderCopy(renderer, texture_UwU, NULL, &rect_Othello);
+        image_mode = IMG_Load("Pictures/UwU.jpg");
+        texture_mode = SDL_CreateTextureFromSurface(renderer, image_mode);
+        SDL_RenderCopy(renderer, texture_mode, NULL, &rect_Othello);
     }
     /*              UwU             */
 
-
-    // Changement de couleur pour le contour de l'Othello
-    if(SDL_SetRenderDrawColor(renderer, 0, 0, 0, SDL_ALPHA_OPAQUE))
-        Error("Changement de couleur pour le contour de l'Othello échoué !");
-    // Rectangles du countour de l'Othello
-    SDL_Rect rect_side1 = { 150, 120, 810, 10 };
-    SDL_Rect rect_side2 = { 950, 130, 10, 810 };
-    SDL_Rect rect_side3 = { 140, 930, 810, 10 };
-    SDL_Rect rect_side4 = { 140, 120, 10, 810 };
-    SDL_Rect const rect_sides [4] = { rect_side1, rect_side2, rect_side3, rect_side4 };
-    // Dessiner le contour de l'Othello
-    if(SDL_RenderFillRects(renderer, rect_sides, 4))
-         Error("Dessiner le contour de l'Othello échoué !");
-
-    return EXIT_SUCCESS;
-}
-
-int Rect_in_Othello(SDL_Window * window, SDL_Renderer * renderer)
-{
-    SDL_Rect rect_Othello = { 150, 130, 0, 100 };
-    
-    // Changement de couleur pour les cases de l'Othello
-    if(SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255))
-        Error("Changement de couleur pour les cases de l'Othello échoué !");
-
-    for(int i = 0 ; i < 8 ; i++ )
-    {   
-        for(int j = 0 ; j < 8 ; j++)
-        {
-            // On modifie la place du rectangle
-            rect_Othello = (SDL_Rect) { .x = rect_Othello.x + rect_Othello.w,
-                                        .y = rect_Othello.y,
-                                        .w = 100,
-                                        .h = rect_Othello.h };
-            // Dessiner les Rectangles internes de l'Othello
-            if(SDL_RenderDrawRect(renderer,&rect_Othello))
-                Error("Dessiner les Rectangles internes de l'Othello échoué !");
-        }
-        
-        rect_Othello = (SDL_Rect) { .x = 150 - rect_Othello.w, 
-                                    .y = rect_Othello.y + rect_Othello.h, 
-                                    .w = rect_Othello.w, 
-                                    .h = rect_Othello.h };
-    }
     return EXIT_SUCCESS;
 }
 
