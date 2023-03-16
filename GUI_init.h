@@ -21,7 +21,6 @@ int init_BG_image       (SDL_Window * window, SDL_Renderer * renderer, SDL_Surfa
 int init_base_Othello   (SDL_Window * window, SDL_Renderer * renderer, SDL_Surface* image_base, SDL_Texture* texture_base);
 int init_Othello        (SDL_Window * window, SDL_Renderer * renderer, SDL_Surface* image_mode, SDL_Texture* texture_mode, int mode);
 
-void Destroy_texture(SDL_Surface* image, SDL_Texture* texture);
 void Quit_GUI(SDL_Window * window, SDL_Renderer * renderer);
 
 void Error(char *chaine);

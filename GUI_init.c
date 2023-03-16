@@ -18,12 +18,6 @@ void Quit_GUI(SDL_Window * window, SDL_Renderer * renderer)
     SDL_Quit();
 }
 
-void Destroy_texture(SDL_Surface* image, SDL_Texture* texture)
-{
-    SDL_DestroyTexture(texture);
-    SDL_FreeSurface(image);
-}
-
 void Error(char *chaine)
 // Renvoie un message d'erreur en fonction de la fonction
 {
