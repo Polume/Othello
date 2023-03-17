@@ -248,7 +248,6 @@ void run()
             printf("%d\n", e.type);
             if ((e.type == SDL_MOUSEBUTTONDOWN) || (e.type == SDL_QUIT))
             {
-                SDL_RenderPresent(renderer);
 
                 printf("%d\n", e.type);
                 switch (e.type)
@@ -269,6 +268,7 @@ void run()
                         Affiche_Othello(window, renderer, image_BG, texture_BG, image_base, texture_base, image_mode, texture_mode, mode);
                         init_pion(window, renderer, image_pion, texture_pion,
                                   matrice_Othello, mat_rect_Othello, mode);
+                        SDL_RenderPresent(renderer);
                     }
                     break;
                 case SDL_QUIT:
