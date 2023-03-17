@@ -7,7 +7,7 @@ all: run
 run: game
 	./game
 
-game: othello.o main.o GUI.o GUI_init.o PVP.o PVC.o
+game: othello.o linked_list.o main.o GUI.o GUI_init.o PVP.o PVC.o
 	$(CC) $(CFLAGS) $^ -o $@ $(IFLAGS)
 
 %.o: %.c
