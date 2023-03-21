@@ -34,6 +34,7 @@ int main(int argc, char *argv[])
     printf("\n");
 
     freeBoard(board);
+    free_linked_list(go_back);
 
     return EXIT_SUCCESS;
 }

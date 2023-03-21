@@ -1,4 +1,5 @@
 #include "linked_list.h"
+#include "gui.h"
 
 cell **newBoard()
 {
@@ -45,7 +46,20 @@ void push(list **head, cell **board)
     (*head) = new_node;
 }
 
+void free_linked_list(list *head)
+// Fonction qui libere la memoire de chaque noeud
+{
+    list *tmp = head;
+    while (tmp)
+    {
+        list *next = tmp->next;
+        free(tmp);
+        tmp = next;
+    }
+}
+
 void display_linked_list(list *ptr)
+// Affiche la liste de la fin vers le debut
 {
     printf("\nListe \n");
     while (ptr != NULL)
@@ -54,3 +68,7 @@ void display_linked_list(list *ptr)
         ptr = ptr->next;
     }
 }
+
+// void CTRL_Z(liste **head){
+
+// }
