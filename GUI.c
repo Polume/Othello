@@ -245,30 +245,35 @@ void run()
 
         while (SDL_PollEvent(&e))
         {
-            printf("%d\n", e.type);
+            // printf("%d\n", e.type);
             if ((e.type == SDL_MOUSEBUTTONDOWN) || (e.type == SDL_QUIT))
             {
-
                 printf("%d\n", e.type);
                 switch (e.type)
                 {
                 case SDL_MOUSEBUTTONDOWN: // Click de souris
-                    if (team == 1)
-                        team = 2;
-                    else
-                        team = 1;
-                    get_coord(mat_rect_Othello, &i, &j);
-                    if ((0 <= i && i <= 7) && (0 <= j && j <= 7))
-                    {
-                        printf("i : %d - j : %d -__- team : %d\n", i, j, team);
-                        matrice_Othello[i][j].color = team;
-                        printBoard(matrice_Othello);
-                        SDL_RenderClear(renderer);
 
-                        Affiche_Othello(window, renderer, image_BG, texture_BG, image_base, texture_base, image_mode, texture_mode, mode);
-                        init_pion(window, renderer, image_pion, texture_pion,
-                                  matrice_Othello, mat_rect_Othello, mode);
-                        SDL_RenderPresent(renderer);
+                    get_coord(mat_rect_Othello, &i, &j);
+                    if (is_valid(matrice_Othello, i, j, team))
+                    {
+
+                        if ((0 <= i && i <= 7) && (0 <= j && j <= 7))
+                        {
+                            printf("i : %d - j : %d -__- team : %d\n", i, j, team);
+                            fill(matrice_Othello, i, j, team);
+
+                            printBoard(matrice_Othello);
+                            SDL_RenderClear(renderer);
+
+                            Affiche_Othello(window, renderer, image_BG, texture_BG, image_base, texture_base, image_mode, texture_mode, mode);
+                            init_pion(window, renderer, image_pion, texture_pion,
+                                      matrice_Othello, mat_rect_Othello, mode);
+                            SDL_RenderPresent(renderer);
+                            if (team == BLANC)
+                                team = NOIR;
+                            else
+                                team = BLANC;
+                        }
                     }
                     break;
                 case SDL_QUIT:
