@@ -95,9 +95,9 @@ int check_neighbors_lines(cell **board, int i, int j, int color)
     int right = 0;
     int left = 0;
     // on verifie d'abord qu'on est pas en dehors du plateau
-    if (j != 0)
+    if (j != 0 && j - 2 != -1 && board[i][j - 2].color != VERT)
         left = board[i][j - 1].color != color && board[i][j - 1].color != VERT;
-    if (j != SIZE_OTHELLO - 1)
+    if (j != SIZE_OTHELLO - 1 && j + 2 != SIZE_OTHELLO && board[i][j + 2].color != VERT)
         right = board[i][j + 1].color != color && board[i][j + 1].color != VERT;
     return right || left;
 }
@@ -107,9 +107,9 @@ int check_neighbors_rows(cell **board, int i, int j, int color)
 {
     int top = 0;
     int bottom = 0;
-    if (i != 0)
+    if (i != 0 && i - 2 != -1 && board[i - 2][j].color != VERT)
         top = board[i - 1][j].color != color && board[i - 1][j].color != VERT;
-    if (i != SIZE_OTHELLO - 1)
+    if (i != SIZE_OTHELLO - 1 && i + 2 != SIZE_OTHELLO && board[i + 2][j].color != VERT)
         bottom = board[i + 1][j].color != color && board[i + 1][j].color != VERT;
     return top || bottom;
 }
@@ -215,19 +215,23 @@ int check_diag(cell **board, int i, int j, int color)
         // Puis on check chaque diagonale une par une
         top_left = board[i - 1][j - 1].color != color &&
                    board[i - 1][j - 1].color != VERT &&
-                   check_diag_t_left(board, i, j, color, &cpy_i, &cpy_j);
+                   check_diag_t_left(board, i, j, color, &cpy_i, &cpy_j) &&
+                   board[i - 2][j - 2].color != VERT;
     if (i != 0 && j != SIZE_OTHELLO - 1)
         top_right = board[i - 1][j + 1].color != color &&
                     board[i - 1][j + 1].color != VERT &&
-                    check_diag_t_right(board, i, j, color, &cpy_i, &cpy_j);
+                    check_diag_t_right(board, i, j, color, &cpy_i, &cpy_j) &&
+                    board[i - 2][j + 2].color != VERT;
     if (i != SIZE_OTHELLO - 1 && j != 0)
         bottom_left = board[i + 1][j - 1].color != color &&
                       board[i + 1][j - 1].color != VERT &&
-                      check_diag_b_left(board, i, j, color, &cpy_i, &cpy_j);
+                      check_diag_b_left(board, i, j, color, &cpy_i, &cpy_j) &&
+                      board[i + 2][j - 2].color != VERT;
     if (i != SIZE_OTHELLO - 1 && j != SIZE_OTHELLO - 1)
         bottom_right = board[i + 1][j + 1].color != color &&
                        board[i + 1][j + 1].color != VERT &&
-                       check_diag_b_right(board, i, j, color, &cpy_i, &cpy_j);
+                       check_diag_b_right(board, i, j, color, &cpy_i, &cpy_j) &&
+                       board[i + 2][j + 2].color != VERT;
     return top_right || top_left || bottom_right || bottom_left;
 }
 
@@ -253,7 +257,9 @@ void fill(cell **board, int i, int j, int color)
     if (is_valid(board, i, j, color))
     {
         fill_lines(board, i, j, color);
+        board[i][j].color = VERT; // On reinitialise la case actuelle a 0 pour les autres fonctions
         fill_rows(board, i, j, color);
+        board[i][j].color = VERT;
         fill_diag(board, i, j, color);
         board[i][j].color = color; // On colorie la case actuelle a la fin
     }
@@ -264,18 +270,19 @@ void fill_lines(cell **board, int i, int j, int color)
 {
     int line_index = check_lines(board, i, color); // indice de la ou se trouve la premiere couleur color sur une ligne i
     int second_color = 0;
-    if (line_index >= 0) // on doit d'abord avoir une case valide
+
+    if (line_index >= 0 && (board[i][j + 1].color != VERT || board[i][j - 1].color != VERT)) // on doit d'abord avoir une case valide
     {
         second_color = line_index + 1;
         while (second_color < SIZE_OTHELLO && board[i][second_color].color != color)
             second_color++; // indice de la deuxieme couleur sur la ligne, pour pouvoir boucler entre les indices
 
-        if (second_color != SIZE_OTHELLO) // cas ou la case valide est entre plusieurs pions de sa couleur
+        if (second_color != SIZE_OTHELLO && second_color != line_index + 1) // cas ou la case valide est entre plusieurs pions de sa couleur
         {
-            while (line_index < second_color)
+            while (second_color < j)
             {
-                board[i][line_index].color = color;
-                line_index++;
+                board[i][second_color].color = color;
+                second_color++;
             }
         }
         else if (j > line_index) // cas ou on doit retourner les pions de gauche à droite
@@ -302,18 +309,19 @@ void fill_rows(cell **board, int i, int j, int color)
 {
     int row_index = check_rows(board, j, color); // indice de la ou se trouve la premiere couleur color sur une colonne j
     int second_color = 0;
-    if (row_index >= 0) // on doit d'abord avoir une case valide
+    if (row_index >= 0 && (board[i + 1][j].color != VERT || board[i - 1][j].color != VERT)) // on doit d'abord avoir une case valide
     {
         second_color = row_index + 1;
         while (second_color < SIZE_OTHELLO && board[second_color][j].color != color)
             second_color++; // indice de la deuxieme couleur sur la colonne, pour pouvoir boucler entre les indices
 
-        if (second_color != SIZE_OTHELLO) // cas ou la case valide est entre plusieurs pions de sa couleur
+        if (second_color != SIZE_OTHELLO && second_color != row_index + 1) // cas ou la case valide est entre plusieurs pions de sa couleur
         {
-            while (row_index < second_color)
+
+            while (second_color < i)
             {
-                board[row_index][j].color = color;
-                row_index++;
+                board[second_color][j].color = color;
+                second_color++;
             }
         }
         else if (i > row_index) // cas ou on doit retourner les pions de haut en bas
@@ -343,8 +351,9 @@ void fill_diag(cell **board, int i, int j, int color)
     // i et j ne doivent pas etre modifies, on cree donc une copie
     if (check_diag_t_left(board, i, j, color, &cpy_i, &cpy_j))
     {
-        while (cpy_i < i && cpy_j < j) // les copies ont desormais l emplacement d une couleur sur leur diagonale respective
+        while (cpy_i < i && cpy_j < j && board[cpy_i][cpy_j].color != VERT) // les copies ont desormais l emplacement d une couleur sur leur diagonale respective
         {
+
             board[cpy_i][cpy_j].color = color;
             cpy_i++; // On part donc de cet emplacement pour revenir a la case aux coordonnees i et j
             cpy_j++; // donc on va a l envers
@@ -354,7 +363,7 @@ void fill_diag(cell **board, int i, int j, int color)
     cpy_j = j;
     if (check_diag_t_right(board, i, j, color, &cpy_i, &cpy_j))
     {
-        while (cpy_i < i && cpy_j > j)
+        while (cpy_i < i && cpy_j > j && board[cpy_i][cpy_j].color != VERT)
         {
             board[cpy_i][cpy_j].color = color;
             cpy_i++;
@@ -365,7 +374,7 @@ void fill_diag(cell **board, int i, int j, int color)
     cpy_j = j;
     if (check_diag_b_left(board, i, j, color, &cpy_i, &cpy_j))
     {
-        while (cpy_i > i && cpy_j < j)
+        while (cpy_i > i && cpy_j < j && board[cpy_i][cpy_j].color != VERT)
         {
             board[cpy_i][cpy_j].color = color;
             cpy_i--;
@@ -376,7 +385,7 @@ void fill_diag(cell **board, int i, int j, int color)
     cpy_j = j;
     if (check_diag_b_right(board, i, j, color, &cpy_i, &cpy_j))
     {
-        while (cpy_i > i && cpy_j > j)
+        while (cpy_i > i && cpy_j > j && board[cpy_i][cpy_j].color != VERT)
         {
             board[cpy_i][cpy_j].color = color;
             cpy_i--;
