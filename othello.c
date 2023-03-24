@@ -216,22 +216,26 @@ int check_diag(cell **board, int i, int j, int color)
         top_left = board[i - 1][j - 1].color != color &&
                    board[i - 1][j - 1].color != VERT &&
                    check_diag_t_left(board, i, j, color, &cpy_i, &cpy_j) &&
-                   board[i - 2][j - 2].color != VERT;
+                   board[i - 2][j - 2].color != VERT &&
+                   i - 2 != 0 && j - 2 != 0;
     if (i != 0 && j != SIZE_OTHELLO - 1)
         top_right = board[i - 1][j + 1].color != color &&
                     board[i - 1][j + 1].color != VERT &&
                     check_diag_t_right(board, i, j, color, &cpy_i, &cpy_j) &&
-                    board[i - 2][j + 2].color != VERT;
+                    board[i - 2][j + 2].color != VERT &&
+                    i - 2 != 0 && j + 2 != SIZE_OTHELLO;
     if (i != SIZE_OTHELLO - 1 && j != 0)
         bottom_left = board[i + 1][j - 1].color != color &&
                       board[i + 1][j - 1].color != VERT &&
                       check_diag_b_left(board, i, j, color, &cpy_i, &cpy_j) &&
-                      board[i + 2][j - 2].color != VERT;
+                      board[i + 2][j - 2].color != VERT &&
+                      i + 2 != SIZE_OTHELLO && j - 2 != 0;
     if (i != SIZE_OTHELLO - 1 && j != SIZE_OTHELLO - 1)
         bottom_right = board[i + 1][j + 1].color != color &&
                        board[i + 1][j + 1].color != VERT &&
                        check_diag_b_right(board, i, j, color, &cpy_i, &cpy_j) &&
-                       board[i + 2][j + 2].color != VERT;
+                       board[i + 2][j + 2].color != VERT &&
+                       i + 2 != SIZE_OTHELLO && j + 2 != SIZE_OTHELLO;
     return top_right || top_left || bottom_right || bottom_left;
 }
 
