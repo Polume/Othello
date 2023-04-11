@@ -168,6 +168,23 @@ void draw_board(SDL_Window *window, SDL_Renderer *renderer,
     }
 }
 
+void ctrl_z(SDL_Event e)
+{
+    SDL_StartTextInput();
+    switch (e.type)
+    {
+    case SDL_TEXTINPUT:
+    {
+        printf("%s,  %s\n", e.text.text, "pressed");
+    }
+    break;
+    case SDL_KEYDOWN:
+        if ((SDL_GetModState() & KMOD_CTRL) && e.key.keysym.sym == SDLK_z)
+            printf("CTRL_Z\n");
+        break;
+    }
+}
+
 void test(SDL_Renderer *renderer)
 {
     SDL_Rect rect_Othello = {0, 0, WIDTH, HEIGHT};
@@ -199,15 +216,15 @@ void run()
     int i, j, cpt_pion = 4, team = 1;
 
     ////////////////////////////////////////////////////////// INITIALISATION DE L'INTERFACE GRAPHIQUE //////////////////////////////////////////////////////////
-    init_pakage();
+    init_package();
     // Création de la fenêtre
     window = SDL_CreateWindow("Othello", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, WIDTH, HEIGHT, SDL_WINDOW_SHOWN);
     if (window == NULL)
-        Error("Création fenête échouée !");
+        Error("Création fenêtre échouée !");
     // Creation du rendue
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
     if (renderer == NULL)
-        Error("Création du rendue échoué !");
+        Error("Création du rendu échoué !");
 
     SDL_DestroyTexture(texture_BG);
     SDL_DestroyTexture(texture_mode);
@@ -281,6 +298,8 @@ void run()
                     continue;
                 }
             }
+            else
+                ctrl_z(e);
         }
     }
 

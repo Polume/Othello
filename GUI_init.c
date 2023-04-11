@@ -1,17 +1,16 @@
 #include "GUI_init.h"
 
-
-void init_pakage(void)
+void init_package(void)
 {
     // Initialisation de SDL2
-    if(SDL_Init(SDL_INIT_VIDEO))
+    if (SDL_Init(SDL_INIT_VIDEO))
         Error("Initialisation des paramètres de la fenêtre !");
-    //Initialisation des types d'images
-    if(! IMG_Init(IMG_INIT_PNG|IMG_INIT_JPG))
+    // Initialisation des types d'images
+    if (!IMG_Init(IMG_INIT_PNG | IMG_INIT_JPG))
         Error("Initialisation des types d'images échoué !");
 }
 
-void Quit_GUI(SDL_Window * window, SDL_Renderer * renderer)
+void Quit_GUI(SDL_Window *window, SDL_Renderer *renderer)
 {
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
@@ -25,12 +24,12 @@ void Error(char *chaine)
     exit(EXIT_FAILURE);
 }
 
-int init_BG_image(SDL_Window * window, SDL_Renderer * renderer, SDL_Surface* image_BG, SDL_Texture* texture_BG, int mode)
+int init_BG_image(SDL_Window *window, SDL_Renderer *renderer, SDL_Surface *image_BG, SDL_Texture *texture_BG, int mode)
 {
     // Récupération de l'image
     image_BG = IMG_Load("Pictures/BG_Othello.jpg");
     /*      UwU     */
-    if(mode == 1)
+    if (mode == 1)
         image_BG = IMG_Load("Pictures/BG_UwU.jpg");
     /*      UwU     */
     if (image_BG == NULL)
@@ -47,7 +46,7 @@ int init_BG_image(SDL_Window * window, SDL_Renderer * renderer, SDL_Surface* ima
     return EXIT_SUCCESS;
 }
 
-int init_base_Othello(SDL_Window * window, SDL_Renderer * renderer, SDL_Surface* image_base, SDL_Texture* texture_base)
+int init_base_Othello(SDL_Window *window, SDL_Renderer *renderer, SDL_Surface *image_base, SDL_Texture *texture_base)
 {
     // Récupération de l'image
     image_base = IMG_Load("Pictures/Base_Othello.png");
@@ -60,28 +59,27 @@ int init_base_Othello(SDL_Window * window, SDL_Renderer * renderer, SDL_Surface*
         Error("Chargement de la texture_base échoué !");
 
     // Définir un rectangle pour l'emplacement et la taille de l'image
-    SDL_Rect rect_sides = { 110, 90, 880, 880 };
+    SDL_Rect rect_sides = {110, 90, 880, 880};
     // Dessiner la texture dans le rendue
     SDL_RenderCopy(renderer, texture_base, NULL, &rect_sides);
 
     return EXIT_SUCCESS;
 }
 
-int init_Othello(SDL_Window * window, SDL_Renderer * renderer, SDL_Surface * image_mode, SDL_Texture * texture_mode, int mode)
+int init_Othello(SDL_Window *window, SDL_Renderer *renderer, SDL_Surface *image_mode, SDL_Texture *texture_mode, int mode)
 {
     // Définir un rectangle pour l'emplacement et la taille de l'image
-    SDL_Rect rect_Othello = { 150, 130, 800, 800 };
-
+    SDL_Rect rect_Othello = {150, 130, 800, 800};
 
     // Changement de couleur pour la base de l'Othello
-    if(SDL_SetRenderDrawColor(renderer, 0, 102, 40, SDL_ALPHA_OPAQUE))
+    if (SDL_SetRenderDrawColor(renderer, 0, 102, 40, SDL_ALPHA_OPAQUE))
         Error("Changement de couleur pour la base de l'Othello échoué !");
     // Dessiner la base de l'Othello
-    if(SDL_RenderFillRect(renderer,&rect_Othello))
+    if (SDL_RenderFillRect(renderer, &rect_Othello))
         Error("Dessiner la base de l'Othello échoué !");
-    
+
     /*              UwU             */
-    if(mode == 1)
+    if (mode == 1)
     {
         image_mode = IMG_Load("Pictures/UwU.jpg");
         texture_mode = SDL_CreateTextureFromSurface(renderer, image_mode);
@@ -92,27 +90,27 @@ int init_Othello(SDL_Window * window, SDL_Renderer * renderer, SDL_Surface * ima
     return EXIT_SUCCESS;
 }
 
-points ** Cree_mat()
+points **Cree_mat()
 {
     // Création des rectangles de l'Othello
-    points ** mat_Othello = calloc(8, sizeof(points));
+    points **mat_Othello = calloc(8, sizeof(points));
     for (int i = 0; i < 8; i++)
     {
         mat_Othello[i] = calloc(8, sizeof(points));
     }
 
-    points p_rect; 
-    int rect_Othello[4] = { 150, 130, 0, 100 };
+    points p_rect;
+    int rect_Othello[4] = {150, 130, 0, 100};
 
-    for(int i = 0 ; i < 8 ; i++ )
-    {   
-        for(int j = 0 ; j < 8 ; j++)
+    for (int i = 0; i < 8; i++)
+    {
+        for (int j = 0; j < 8; j++)
         {
             // On modifie la place du rectangle
             rect_Othello[0] = rect_Othello[0] + rect_Othello[2];
-            rect_Othello[1] =  rect_Othello[1];
-            rect_Othello[2] =  100;
-            rect_Othello[3] =  rect_Othello[3];
+            rect_Othello[1] = rect_Othello[1];
+            rect_Othello[2] = 100;
+            rect_Othello[3] = rect_Othello[3];
             // On ajoute en mémoire les indices des rectangles
             p_rect.x1 = rect_Othello[0];
             p_rect.y1 = rect_Othello[1];
@@ -120,11 +118,11 @@ points ** Cree_mat()
             p_rect.y2 = rect_Othello[1] + rect_Othello[3];
             mat_Othello[i][j] = p_rect;
         }
-        
-        rect_Othello[0] =  150 - rect_Othello[2];
-        rect_Othello[1] =  rect_Othello[1] + rect_Othello[3]; 
-        rect_Othello[2] =  rect_Othello[2]; 
-        rect_Othello[3] =  rect_Othello[3];
+
+        rect_Othello[0] = 150 - rect_Othello[2];
+        rect_Othello[1] = rect_Othello[1] + rect_Othello[3];
+        rect_Othello[2] = rect_Othello[2];
+        rect_Othello[3] = rect_Othello[3];
     }
     return mat_Othello;
 }

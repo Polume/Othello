@@ -68,7 +68,3 @@ void display_linked_list(list *ptr)
         ptr = ptr->next;
     }
 }
-
-// void CTRL_Z(liste **head){
-
-// }
