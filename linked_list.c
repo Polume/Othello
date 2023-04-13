@@ -22,6 +22,12 @@ cell **copyBoard(cell **board, cell **board2)
     return board2;
 }
 
+int check_next(list **head)
+{
+    if ((*head)->next != NULL)
+        return 1;
+    return 0;
+}
 list *newList(cell **board)
 {
     list *new = (list *)malloc(sizeof(list));
@@ -46,6 +52,7 @@ void push(list **head, cell **board)
 }
 
 void go_back(list **head)
+// renvoie 1 si le retour en arriere est effectue 0 sinon
 {
     if ((*head)->next != NULL)
     {

@@ -183,9 +183,33 @@ void ctrl_z(SDL_Event e, list **head, cell **board)
         if ((SDL_GetModState() & KMOD_CTRL) && e.key.keysym.sym == SDLK_z)
         {
             printf("CTRL_Z\n");
-            go_back(head);
-            display_linked_list(*head);
-            copyBoard(board, (*head)->board);
+            if (check_next(head) == 1)
+            {
+                go_back(head);
+                display_linked_list(*head);
+                copyBoard(board, (*head)->board);
+            }
+        }
+        else if ((SDL_GetModState() & KMOD_CTRL) && e.key.keysym.sym == SDLK_s)
+        {
+            printf("CTRL_S\n");
+            FILE *f;
+            f = fopen("save.txt", "w");
+            if (f == NULL)
+            {
+                printf("Ouverture du fichier impossible.\n");
+                exit(1);
+            }
+            // for (int i = 0; i < SIZE_OTHELLO; i++)
+            // {
+            //     for (int j = 0; j < SIZE_OTHELLO; j++)
+            //     {
+            // fprintf(f, "%d", board[i][j].color);
+            fwrite(board, sizeof(cell **), 1, f);
+            fwrite(head, sizeof(list **), 1, f);
+            //     }
+            // }
+            fclose(f);
         }
         break;
     }
