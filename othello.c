@@ -275,7 +275,8 @@ void fill_lines(cell **board, int i, int j, int color)
     int line_index = check_lines(board, i, color); // indice de la ou se trouve la premiere couleur color sur une ligne i
     int second_color = 0;
 
-    if (line_index >= 0 && (board[i][j + 1].color != VERT || board[i][j - 1].color != VERT)) // on doit d'abord avoir une case valide
+    if (line_index >= 0 && (board[i][j + 1].color != VERT || board[i][j - 1].color != VERT) && check_neighbors_lines(board, i, j, color))
+    // on doit d'abord avoir une case valide a tous ces criteres
     {
         second_color = line_index + 1;
         while (second_color < SIZE_OTHELLO && board[i][second_color].color != color)
@@ -313,7 +314,8 @@ void fill_rows(cell **board, int i, int j, int color)
 {
     int row_index = check_rows(board, j, color); // indice de la ou se trouve la premiere couleur color sur une colonne j
     int second_color = 0;
-    if (row_index >= 0 && (board[i + 1][j].color != VERT || board[i - 1][j].color != VERT)) // on doit d'abord avoir une case valide
+    if (row_index >= 0 && (board[i + 1][j].color != VERT || board[i - 1][j].color != VERT) && check_neighbors_rows(board, i, j, color))
+    // on doit d'abord avoir une case valide qui correspond a tous ces criteres
     {
         second_color = row_index + 1;
         while (second_color < SIZE_OTHELLO && board[second_color][j].color != color)

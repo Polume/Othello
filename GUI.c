@@ -1,6 +1,7 @@
 #include "GUI.h"
 #include "GUI_init.h"
 #include "othello.h"
+#include "linked_list.h"
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 
@@ -168,7 +169,7 @@ void draw_board(SDL_Window *window, SDL_Renderer *renderer,
     }
 }
 
-void ctrl_z(SDL_Event e)
+void ctrl_z(SDL_Event e, list **head, cell **board)
 {
     SDL_StartTextInput();
     switch (e.type)
@@ -180,7 +181,12 @@ void ctrl_z(SDL_Event e)
     break;
     case SDL_KEYDOWN:
         if ((SDL_GetModState() & KMOD_CTRL) && e.key.keysym.sym == SDLK_z)
+        {
             printf("CTRL_Z\n");
+            go_back(head);
+            display_linked_list(*head);
+            copyBoard(board, (*head)->board);
+        }
         break;
     }
 }
@@ -212,6 +218,7 @@ void run()
 
     SDL_Event e;
     cell **matrice_Othello;
+
     int mode = 0;
     int i, j, cpt_pion = 4, team = 1;
 
@@ -236,6 +243,7 @@ void run()
 
     points **mat_rect_Othello = Cree_mat();
     matrice_Othello = initializeBoard();
+    list *head = newList(matrice_Othello);
     Affiche_Othello(window, renderer, image_BG, texture_BG, image_base, texture_base, image_mode, texture_mode, mode);
     init_pion(window, renderer, image_pion, texture_pion,
               matrice_Othello, mat_rect_Othello, mode);
@@ -278,6 +286,7 @@ void run()
                         {
                             printf("i : %d - j : %d -__- team : %d\n", i, j, team);
                             fill(matrice_Othello, i, j, team);
+                            push(&head, matrice_Othello);
 
                             printBoard(matrice_Othello);
                             SDL_RenderClear(renderer);
@@ -298,8 +307,19 @@ void run()
                     continue;
                 }
             }
-            else
-                ctrl_z(e);
+            else if (e.type == SDL_TEXTINPUT || e.type == SDL_KEYDOWN)
+            {
+                ctrl_z(e, &head, matrice_Othello);
+                SDL_RenderClear(renderer);
+                Affiche_Othello(window, renderer, image_BG, texture_BG, image_base, texture_base, image_mode, texture_mode, mode);
+                init_pion(window, renderer, image_pion, texture_pion,
+                          matrice_Othello, mat_rect_Othello, mode);
+                SDL_RenderPresent(renderer);
+                // if (team == BLANC)
+                //     team = NOIR;
+                // else
+                //     team = BLANC;
+            }
         }
     }
 
