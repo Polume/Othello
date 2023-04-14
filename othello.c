@@ -286,10 +286,21 @@ void fill_lines(cell **board, int i, int j, int color)
 
         if (second_color != SIZE_OTHELLO && second_color != line_index + 1) // cas ou la case valide est entre plusieurs pions de sa couleur
         {
-            while (second_color < j)
+            if (second_color < i)
             {
-                board[i][second_color].color = color;
-                second_color++;
+                while (second_color < i)
+                {
+                    board[i][second_color].color = color;
+                    second_color++;
+                }
+            }
+            else if (second_color > i)
+            {
+                while (second_color > i)
+                {
+                    board[i][second_color].color = color;
+                    second_color--;
+                }
             }
         }
         else if (j > line_index) // cas ou on doit retourner les pions de gauche à droite
@@ -328,11 +339,21 @@ void fill_rows(cell **board, int i, int j, int color)
 
         if (second_color != SIZE_OTHELLO && second_color != row_index + 1) // cas ou la case valide est entre plusieurs pions de sa couleur
         {
-
-            while (second_color < i)
+            if (second_color < j)
             {
-                board[second_color][j].color = color;
-                second_color++;
+                while (second_color < j)
+                {
+                    board[second_color][j].color = color;
+                    second_color++;
+                }
+            }
+            else if (second_color > j)
+            {
+                while (second_color > j)
+                {
+                    board[second_color][j].color = color;
+                    second_color--;
+                }
             }
         }
         else if (i > row_index) // cas ou on doit retourner les pions de haut en bas
