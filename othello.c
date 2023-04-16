@@ -274,8 +274,10 @@ void fill_lines(cell **board, int i, int j, int color)
 {
     int line_index = check_lines(board, i, color); // indice de la ou se trouve la premiere couleur color sur une ligne i
     int second_color = 0;
-
-    if (line_index >= 0 && (board[i][j + 1].color != VERT || board[i][j - 1].color != VERT) && check_neighbors_lines(board, i, j, color))
+    if (line_index >= 0 &&
+        ((j + 1 < SIZE_OTHELLO && board[i][j + 1].color != VERT) ||
+         (j - 1 >= 0 && board[i][j - 1].color != VERT)) &&
+        check_neighbors_lines(board, i, j, color))
     // on doit d'abord avoir une case valide a tous ces criteres
     {
         second_color = line_index + 1;
@@ -284,10 +286,21 @@ void fill_lines(cell **board, int i, int j, int color)
 
         if (second_color != SIZE_OTHELLO && second_color != line_index + 1) // cas ou la case valide est entre plusieurs pions de sa couleur
         {
-            while (second_color < j)
+            if (second_color < i)
             {
-                board[i][second_color].color = color;
-                second_color++;
+                while (second_color < i)
+                {
+                    board[i][second_color].color = color;
+                    second_color++;
+                }
+            }
+            else if (second_color > i)
+            {
+                while (second_color > i)
+                {
+                    board[i][second_color].color = color;
+                    second_color--;
+                }
             }
         }
         else if (j > line_index) // cas ou on doit retourner les pions de gauche à droite
@@ -314,7 +327,10 @@ void fill_rows(cell **board, int i, int j, int color)
 {
     int row_index = check_rows(board, j, color); // indice de la ou se trouve la premiere couleur color sur une colonne j
     int second_color = 0;
-    if (row_index >= 0 && (board[i + 1][j].color != VERT || board[i - 1][j].color != VERT) && check_neighbors_rows(board, i, j, color))
+    if (row_index >= 0 &&
+        ((i + 1 < SIZE_OTHELLO && board[i + 1][j].color != VERT) ||
+         (i - 1 >= 0 && board[i - 1][j].color != VERT)) &&
+        check_neighbors_rows(board, i, j, color))
     // on doit d'abord avoir une case valide qui correspond a tous ces criteres
     {
         second_color = row_index + 1;
@@ -323,11 +339,21 @@ void fill_rows(cell **board, int i, int j, int color)
 
         if (second_color != SIZE_OTHELLO && second_color != row_index + 1) // cas ou la case valide est entre plusieurs pions de sa couleur
         {
-
-            while (second_color < i)
+            if (second_color < j)
             {
-                board[second_color][j].color = color;
-                second_color++;
+                while (second_color < j)
+                {
+                    board[second_color][j].color = color;
+                    second_color++;
+                }
+            }
+            else if (second_color > j)
+            {
+                while (second_color > j)
+                {
+                    board[second_color][j].color = color;
+                    second_color--;
+                }
             }
         }
         else if (i > row_index) // cas ou on doit retourner les pions de haut en bas
