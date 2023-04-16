@@ -169,7 +169,7 @@ void draw_board(SDL_Window *window, SDL_Renderer *renderer,
     }
 }
 
-void ctrl_z(SDL_Event e, list **head, cell **board)
+void ctrl_z(SDL_Event e, list **head, cell **board, char *nom)
 {
     SDL_StartTextInput();
     switch (e.type)
@@ -192,39 +192,41 @@ void ctrl_z(SDL_Event e, list **head, cell **board)
         }
         else if ((SDL_GetModState() & KMOD_CTRL) && e.key.keysym.sym == SDLK_s)
         {
+            // cas de la sauvegarde du plateau dans un fichier txt
             printf("CTRL_S\n");
             FILE *f;
-            f = fopen("save.txt", "w");
+            f = fopen(nom, "wb");
             if (f == NULL)
             {
                 printf("Ouverture du fichier impossible.(save)\n");
                 exit(1);
             }
-            // for (int i = 0; i < SIZE_OTHELLO; i++)
-            // {
-            //     for (int j = 0; j < SIZE_OTHELLO; j++)
-            //     {
-            // fprintf(f, "%d", board[i][j].color);
-            fwrite(board, sizeof(cell **), 1, f);
-            // fwrite(head, sizeof(list **), 1, f);
-            //     }
-            // }
+            for (int i = 0; i < SIZE_OTHELLO; i++)
+            {
+                fwrite(&board[i], sizeof(cell *), 1, f);
+            }
             fclose(f);
         }
         else if ((SDL_GetModState() & KMOD_CTRL) && e.key.keysym.sym == SDLK_o)
         {
+            // cas de l'ouverture du fichier sauvegarde
             printf("CTRL_O\n");
-            cell **board2;
-            initializeBoard(board2);
             FILE *f;
-            f = fopen("save.txt", "r");
+
+            f = fopen(nom, "rb");
             if (f == NULL)
             {
                 printf("Ouverture du fichier impossible.(open)\n");
                 exit(1);
             }
-            fread(&board2, sizeof(cell **), 1, f);
-            printf("%d ", board2[3][3].color);
+            for (int i = 0; i < SIZE_OTHELLO; i++)
+            {
+                cell *array = calloc(SIZE_OTHELLO, sizeof(cell)); // tableau utilise pour copier les elements
+                fread(array, sizeof(cell *), SIZE_OTHELLO, f);
+                copyArray(array, board[0]);
+                free(array);
+            }
+            *head = newList(board); // On initialise ensuite la liste chainee au nouveau plateau
             fclose(f);
         }
         break;
@@ -353,7 +355,9 @@ void run()
             }
             else if (e.type == SDL_TEXTINPUT || e.type == SDL_KEYDOWN)
             {
-                ctrl_z(e, &head, matrice_Othello);
+                ctrl_z(e, &head, matrice_Othello, "save.txt");
+                display_linked_list(head);
+
                 // SDL_RenderClear(renderer);
                 // Affiche_Othello(window, renderer, image_BG, texture_BG, image_base, texture_base, image_mode, texture_mode, mode);
                 // init_pion(window, renderer, image_pion, texture_pion,

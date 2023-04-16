@@ -15,6 +15,7 @@ typedef struct list
 
 cell **newBoard();
 cell **copyBoard(cell **board, cell **board2);
+cell *copyArray(cell *board, cell *board2);
 list *newList(cell **board);
 
 void push(list **head, cell **board);

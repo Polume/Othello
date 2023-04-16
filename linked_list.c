@@ -10,6 +10,15 @@ cell **newBoard()
     return new_board;
 }
 
+cell *copyArray(cell *board, cell *board2)
+{
+    for (int i = 0; i < SIZE_OTHELLO; i++)
+    {
+        board2[i] = board[i];
+    }
+    return board2;
+}
+
 cell **copyBoard(cell **board, cell **board2)
 {
     for (int i = 0; i < SIZE_OTHELLO; i++)

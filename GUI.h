@@ -32,6 +32,6 @@ void draw_circle(SDL_Window *window, SDL_Renderer *renderer,
                  SDL_Surface *image_pion, SDL_Texture *texture_poin,
                  int x, int y, int team, int mode);
 
-void ctrl_z(SDL_Event e, list **head, cell **board);
+void ctrl_z(SDL_Event e, list **head, cell **board, char *nom);
 
 #endif
