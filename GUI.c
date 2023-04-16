@@ -197,7 +197,7 @@ void ctrl_z(SDL_Event e, list **head, cell **board)
             f = fopen("save.txt", "w");
             if (f == NULL)
             {
-                printf("Ouverture du fichier impossible.\n");
+                printf("Ouverture du fichier impossible.(save)\n");
                 exit(1);
             }
             // for (int i = 0; i < SIZE_OTHELLO; i++)
@@ -206,9 +206,25 @@ void ctrl_z(SDL_Event e, list **head, cell **board)
             //     {
             // fprintf(f, "%d", board[i][j].color);
             fwrite(board, sizeof(cell **), 1, f);
-            fwrite(head, sizeof(list **), 1, f);
+            // fwrite(head, sizeof(list **), 1, f);
             //     }
             // }
+            fclose(f);
+        }
+        else if ((SDL_GetModState() & KMOD_CTRL) && e.key.keysym.sym == SDLK_o)
+        {
+            printf("CTRL_O\n");
+            cell **board2;
+            initializeBoard(board2);
+            FILE *f;
+            f = fopen("save.txt", "r");
+            if (f == NULL)
+            {
+                printf("Ouverture du fichier impossible.(open)\n");
+                exit(1);
+            }
+            fread(&board2, sizeof(cell **), 1, f);
+            printf("%d ", board2[3][3].color);
             fclose(f);
         }
         break;
@@ -244,7 +260,7 @@ void run()
     cell **matrice_Othello;
 
     int mode = 0;
-    int i, j, cpt_pion = 4, team = 1;
+    int i, j, cpt_pion = 4, team = 1, cnt_b = 0, cnt_w = 0;
 
     ////////////////////////////////////////////////////////// INITIALISATION DE L'INTERFACE GRAPHIQUE //////////////////////////////////////////////////////////
     init_package();
@@ -309,8 +325,12 @@ void run()
                         if ((0 <= i && i <= 7) && (0 <= j && j <= 7))
                         {
                             printf("i : %d - j : %d -__- team : %d\n", i, j, team);
+
                             fill(matrice_Othello, i, j, team);
                             push(&head, matrice_Othello);
+
+                            count_score(matrice_Othello, &cnt_w, &cnt_b);
+                            printf("White Team Score : %d\t Black Team Score : %d\n", cnt_w, cnt_b);
 
                             printBoard(matrice_Othello);
                             SDL_RenderClear(renderer);
@@ -334,11 +354,11 @@ void run()
             else if (e.type == SDL_TEXTINPUT || e.type == SDL_KEYDOWN)
             {
                 ctrl_z(e, &head, matrice_Othello);
-                SDL_RenderClear(renderer);
-                Affiche_Othello(window, renderer, image_BG, texture_BG, image_base, texture_base, image_mode, texture_mode, mode);
-                init_pion(window, renderer, image_pion, texture_pion,
-                          matrice_Othello, mat_rect_Othello, mode);
-                SDL_RenderPresent(renderer);
+                // SDL_RenderClear(renderer);
+                // Affiche_Othello(window, renderer, image_BG, texture_BG, image_base, texture_base, image_mode, texture_mode, mode);
+                // init_pion(window, renderer, image_pion, texture_pion,
+                //           matrice_Othello, mat_rect_Othello, mode);
+                // SDL_RenderPresent(renderer);
                 // if (team == BLANC)
                 //     team = NOIR;
                 // else
@@ -391,6 +411,6 @@ void run()
     SDL_RenderClear(renderer);
     Quit_GUI(window, renderer);
 
-    free(matrice_Othello);
+    freeBoard(matrice_Othello);
     free(mat_rect_Othello);
 }

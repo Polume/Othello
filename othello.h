@@ -14,6 +14,7 @@
 typedef struct
 {
     int color;
+    int valide;
     char id_cell[2];
 } cell;
 
@@ -26,6 +27,7 @@ typedef struct liste
 cell **initializeBoard();
 void printBoard(cell **board);
 void freeBoard(cell **board);
+void count_score(cell **board, int *cnt_W, int *cnt_B);
 
 int is_valid(cell **board, int i, int j, int color);
 int check_neighbors_lines(cell **board, int i, int j, int color);
@@ -39,7 +41,7 @@ int check_diag_b_left(cell **board, int i, int j, int color, int *cpy_i, int *cp
 int check_diag_b_right(cell **board, int i, int j, int color, int *cpy_i, int *cpy_j);
 int check_diag(cell **board, int i, int j, int color);
 
-void print_valid(cell **board, int color);
+void show_valid(cell **board, int color);
 
 void fill(cell **board, int i, int j, int color);
 void fill_lines(cell **board, int i, int j, int color);

@@ -59,6 +59,26 @@ void freeBoard(cell **board)
     free(board);
 }
 
+void count_score(cell **board, int *cnt_W, int *cnt_B)
+{
+    *cnt_W = 0;
+    *cnt_B = 0;
+    for (int i = 0; i < SIZE_OTHELLO; i++)
+    {
+        for (int j = 0; j < SIZE_OTHELLO; j++)
+        {
+            if (board[i][j].color == BLANC)
+            {
+                *cnt_W = *cnt_W + 1;
+            }
+            else if (board[i][j].color == NOIR)
+            {
+                *cnt_B = *cnt_B + 1;
+            }
+        }
+    }
+}
+
 int is_valid(cell **board, int i, int j, int color)
 /* Fonction verifiant la validite de la case. Une case valide est de la forme suivante :
    -La case actuelle est verte
@@ -145,7 +165,7 @@ int check_diag_t_left(cell **board, int i, int j, int color, int *cpy_i, int *cp
 {
     *cpy_i = i;
     *cpy_j = j;
-    while (*cpy_i != 0 && *cpy_j != 0)
+    while (*cpy_i != -1 && *cpy_j != -1)
     {
         if (board[*cpy_i][*cpy_j].color == color)
             return 1;
@@ -160,7 +180,7 @@ int check_diag_t_right(cell **board, int i, int j, int color, int *cpy_i, int *c
 {
     *cpy_i = i;
     *cpy_j = j;
-    while (*cpy_i != 0 && *cpy_j < SIZE_OTHELLO)
+    while (*cpy_i != -1 && *cpy_j < SIZE_OTHELLO)
     {
         if (board[*cpy_i][*cpy_j].color == color)
             return 1;
@@ -175,7 +195,7 @@ int check_diag_b_left(cell **board, int i, int j, int color, int *cpy_i, int *cp
 {
     *cpy_i = i;
     *cpy_j = j;
-    while (*cpy_i < SIZE_OTHELLO && *cpy_j != 0)
+    while (*cpy_i < SIZE_OTHELLO && *cpy_j != -1)
     {
         if (board[*cpy_i][*cpy_j].color == color)
             return 1;
@@ -239,7 +259,7 @@ int check_diag(cell **board, int i, int j, int color)
     return top_right || top_left || bottom_right || bottom_left;
 }
 
-void print_valid(cell **board, int color)
+void show_valid(cell **board, int color)
 // Affiche toutes les cases valides du plateau
 {
     for (int i = 0; i < SIZE_OTHELLO; i++)
@@ -248,6 +268,7 @@ void print_valid(cell **board, int color)
         {
             if (is_valid(board, i, j, color))
             {
+                board[i][j].valide = 1;
                 printf("Case %s valide\n", board[i][j].id_cell);
             }
         }
@@ -286,17 +307,18 @@ void fill_lines(cell **board, int i, int j, int color)
 
         if (second_color != SIZE_OTHELLO && second_color != line_index + 1) // cas ou la case valide est entre plusieurs pions de sa couleur
         {
-            if (second_color < i)
+            if (second_color < j)
             {
-                while (second_color < i)
+                while (second_color < j)
                 {
                     board[i][second_color].color = color;
                     second_color++;
                 }
             }
-            else if (second_color > i)
+            else if (second_color > j)
             {
-                while (second_color > i)
+                printf("%d %d %d", second_color, line_index, j);
+                while (second_color > j)
                 {
                     board[i][second_color].color = color;
                     second_color--;
@@ -339,17 +361,17 @@ void fill_rows(cell **board, int i, int j, int color)
 
         if (second_color != SIZE_OTHELLO && second_color != row_index + 1) // cas ou la case valide est entre plusieurs pions de sa couleur
         {
-            if (second_color < j)
+            if (second_color < i)
             {
-                while (second_color < j)
+                while (second_color < i)
                 {
                     board[second_color][j].color = color;
                     second_color++;
                 }
             }
-            else if (second_color > j)
+            else if (second_color > i)
             {
-                while (second_color > j)
+                while (second_color > i)
                 {
                     board[second_color][j].color = color;
                     second_color--;
