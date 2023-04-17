@@ -6,8 +6,8 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 
-#define WIDTH 1100
-#define HEIGHT 1000
+#define WIDTH 1980
+#define HEIGHT 1080
 #define UwU 1
 
 typedef struct

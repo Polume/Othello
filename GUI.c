@@ -169,7 +169,7 @@ void draw_board(SDL_Window *window, SDL_Renderer *renderer,
     }
 }
 
-void ctrl_z(SDL_Event e, list **head, cell **board, char *nom)
+void ctrl(SDL_Event e, list **head, cell **board, char *nom)
 {
     SDL_StartTextInput();
     switch (e.type)
@@ -182,7 +182,7 @@ void ctrl_z(SDL_Event e, list **head, cell **board, char *nom)
     case SDL_KEYDOWN:
         if ((SDL_GetModState() & KMOD_CTRL) && e.key.keysym.sym == SDLK_z)
         {
-            printf("CTRL_Z\n");
+            printf("ctrl\n");
             if (check_next(head) == 1)
             {
                 go_back(head);
@@ -262,12 +262,14 @@ void run()
     cell **matrice_Othello;
 
     int mode = 0;
-    int i, j, cpt_pion = 4, team = 1, cnt_b = 0, cnt_w = 0;
+    int i, j, team = 1, cnt_b = 0, cnt_w = 0;
+    int key_press_alt = SDL_FALSE;
+    int key_press_ctrl = SDL_FALSE;
 
     ////////////////////////////////////////////////////////// INITIALISATION DE L'INTERFACE GRAPHIQUE //////////////////////////////////////////////////////////
     init_package();
     // Création de la fenêtre
-    window = SDL_CreateWindow("Othello", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, WIDTH, HEIGHT, SDL_WINDOW_SHOWN);
+    window = SDL_CreateWindow("Othello", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, WIDTH, HEIGHT, SDL_WINDOW_FULLSCREEN);
     if (window == NULL)
         Error("Création fenêtre échouée !");
     // Creation du rendue
@@ -290,7 +292,6 @@ void run()
     init_pion(window, renderer, image_pion, texture_pion,
               matrice_Othello, mat_rect_Othello, mode);
     SDL_RenderPresent(renderer);
-    // SDL_RenderPresent(renderer);
 
     //////////////////////////////////////////////////////////
     //-------------------------------------------------------
@@ -298,28 +299,13 @@ void run()
     SDL_bool quit = SDL_FALSE;
     while (!quit)
     {
-
-        // SDL_RenderClear(renderer);
-        // SDL_DestroyTexture(texture_BG);
-        // SDL_DestroyTexture(texture_mode);
-        // SDL_DestroyTexture(texture_base);
-        // SDL_FreeSurface(image_BG);
-        // SDL_FreeSurface(image_mode);
-        // SDL_FreeSurface(image_base);
-        // Affiche_Othello(window, renderer, image_BG, texture_BG, image_base, texture_base, image_mode, texture_mode, mode);
-        // init_pion(  window, renderer, image_pion, texture_pion,
-        //             matrice_Othello, mat_rect_Othello, mode);
-
         while (SDL_PollEvent(&e))
         {
-            // printf("%d\n", e.type);
-            if ((e.type == SDL_MOUSEBUTTONDOWN) || (e.type == SDL_QUIT))
-            {
-                printf("%d\n", e.type);
+            if (e.type != 1024) {
+                printf("%d\nalt : %d\nctrl : %d\n", e.type, key_press_alt, key_press_ctrl);
                 switch (e.type)
                 {
                 case SDL_MOUSEBUTTONDOWN: // Click de souris
-
                     get_coord(mat_rect_Othello, &i, &j);
                     if (is_valid(matrice_Othello, i, j, team))
                     {
@@ -339,7 +325,7 @@ void run()
 
                             Affiche_Othello(window, renderer, image_BG, texture_BG, image_base, texture_base, image_mode, texture_mode, mode);
                             init_pion(window, renderer, image_pion, texture_pion,
-                                      matrice_Othello, mat_rect_Othello, mode);
+                                matrice_Othello, mat_rect_Othello, mode);
                             SDL_RenderPresent(renderer);
                             if (team == BLANC)
                                 team = NOIR;
@@ -348,60 +334,60 @@ void run()
                         }
                     }
                     break;
+
+                case SDL_KEYDOWN: // Touche pressée
+                    switch (e.key.keysym.sym)
+                    {
+                    case SDLK_q:
+                        quit = SDL_TRUE;
+                        break;
+                    case SDLK_z:
+                        if (key_press_ctrl == SDL_TRUE) {
+                            printf("ctrl - z \n");
+                            //METTRE LA FONTION DU CTRL Z
+                        }
+                        break;
+                    case SDLK_s:
+                        if (key_press_ctrl == SDL_TRUE) {
+                            printf("ctrl - s \n");
+                            //METTRE LA FONTION DU CTRL s
+                        }
+                        break;
+
+                    case SDLK_LALT: // Touche ALT gauche pressée
+                        key_press_alt = SDL_TRUE;
+                        break;
+                    case SDLK_LCTRL: // Touche CTRL gauche pressée
+                        key_press_ctrl = SDL_TRUE;
+                        break;
+                    }
+                    break;
+
+                case SDL_KEYUP: // Touche relachée
+                    switch (e.key.keysym.sym)
+                    {
+                    case SDLK_LALT: // Touche ALT gauche pressée
+                        key_press_alt = SDL_FALSE;
+                        break;
+                    case SDLK_LCTRL: // Touche CTRL gauche pressée
+                        key_press_ctrl = SDL_FALSE;
+                        break;
+                    }
+                    break;
+
                 case SDL_QUIT:
                     quit = SDL_TRUE;
                     continue;
-                }
-            }
-            else if (e.type == SDL_TEXTINPUT || e.type == SDL_KEYDOWN)
-            {
-                ctrl_z(e, &head, matrice_Othello, "save.txt");
-                display_linked_list(head);
 
-                // SDL_RenderClear(renderer);
-                // Affiche_Othello(window, renderer, image_BG, texture_BG, image_base, texture_base, image_mode, texture_mode, mode);
-                // init_pion(window, renderer, image_pion, texture_pion,
-                //           matrice_Othello, mat_rect_Othello, mode);
-                // SDL_RenderPresent(renderer);
-                // if (team == BLANC)
-                //     team = NOIR;
-                // else
-                //     team = BLANC;
+                }
             }
         }
     }
-
-    //         printf("%d\n", e.type);
-    //         switch (e.type)
-    //         {
-    //             case SDL_MOUSEBUTTONDOWN: // Click de souris
-    //                 if(team == 1)
-    //                     team = 2;
-    //                 else
-    //                     team = 1;
-
-    //                 get_coord( mat_rect_Othello, &i, &j );
-    //                 if((0<=i || i>=7) && (0<=j || j>=7))
-    //                 {
-    //                     printf("i : %d - j : %d -__- team : %d\n", i, j, team);
-    //                     matrice_Othello[i][j].color = team;
-    //                     printBoard(matrice_Othello);
-
-    //                     // clear_renderer(renderer,image_BG,texture_BG,image_base,texture_base,image_mode,texture_mode);
-    //                     Affiche_Othello(window, renderer, image_BG, texture_BG, image_base, texture_base, image_mode, texture_mode, mode);
-    //                     Update_Othello( window              , renderer,
-    //                                     image_pion[cpt_pion], texture_pion[cpt_pion],
-    //                                     matrice_Othello     , mat_rect_Othello,
-    //                                     i, j, mode);
-    //                     cpt_pion++;
-    //                 }
-    //                 continue;
-    //             case SDL_QUIT:
-    //                 quit = SDL_TRUE;
-    //                 continue;
-    //         }
-    //     }
-    // }
+            //if (e.type == SDL_TEXTINPUT || e.type == SDL_KEYDOWN)
+            //{
+            //    ctrl(e, &head, matrice_Othello, "save.txt");
+            //    display_linked_list(head);
+            //}
 
     //-----------Desttruction des variables pointeurs-----------//
     SDL_DestroyTexture(texture_BG);
@@ -418,3 +404,4 @@ void run()
     freeBoard(matrice_Othello);
     free(mat_rect_Othello);
 }
+
