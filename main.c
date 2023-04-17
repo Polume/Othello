@@ -8,17 +8,24 @@ int main(int argc, char *argv[])
 {
     run();
     cell **board = initializeBoard();
-    // board[0][4].color = NOIR;
+    board[3][3].color = BLANC;
+    board[3][4].color = BLANC;
+    board[3][5].color = BLANC;
+    board[2][3].color = BLANC;
+    board[0][5].color = NOIR;
+
+    board[3][7].color = NOIR;
+
     // board[2][3].color = NOIR;
     // board[3][4].color = NOIR;
 
-    // board[1][3].color = BLANC;
-    // board[2][2].color = BLANC;
+    printBoard(board);
+    printf("%d ", is_valid(board, 3, 2, NOIR));
+    fill(board, 3, 2, NOIR);
+
     // board[3][2].color = BLANC;
     // board[3][3].color = BLANC;
-
-    fill(board, 3, 1, NOIR);
-    // printBoard(board);
+    printBoard(board);
     freeBoard(board);
 
     return EXIT_SUCCESS;

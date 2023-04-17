@@ -85,6 +85,7 @@ int is_valid(cell **board, int i, int j, int color)
    -Au moins un de ses voisins directs a une couleur differente de la couleur a appliquer
    -Si on cherche à poser un pion en diagonale, on regarde également les voisins diagonaux de la case actuelle
    -Au moins un pion sur les lignes, colonnes et diagonales est de la même couleur que celle a appliquer
+   et les cases adjacentes a celle-ci ne sont pas vertes
    Renvoie 1 si la case est valide et 0 sinon
 */
 {
@@ -141,7 +142,9 @@ int check_lines(cell **board, int i, int color)
     {
         if (board[i][j].color == color)
         {
-            return j;
+            if ((j + 1 < SIZE_OTHELLO && board[i][j + 1].color != VERT) ||
+                (j - 1 < SIZE_OTHELLO && board[i][j + 1].color != VERT))
+                return j;
         }
     }
     return -1;
@@ -154,7 +157,9 @@ int check_rows(cell **board, int j, int color)
     {
         if (board[i][j].color == color)
         {
-            return i;
+            if ((i + 1 < SIZE_OTHELLO && board[i + 1][j].color != VERT) ||
+                (i - 1 < SIZE_OTHELLO && board[i - 1][j].color != VERT))
+                return i;
         }
     }
     return -1;
@@ -168,7 +173,8 @@ int check_diag_t_left(cell **board, int i, int j, int color, int *cpy_i, int *cp
     while (*cpy_i != -1 && *cpy_j != -1)
     {
         if (board[*cpy_i][*cpy_j].color == color)
-            return 1;
+            if ((*cpy_i + 1 <= SIZE_OTHELLO && *cpy_j + 1 <= SIZE_OTHELLO) || board[*cpy_i + 1][*cpy_j + 1].color != VERT)
+                return 1;
         *cpy_i = *cpy_i - 1; // on garde les valeurs des indices pour la fonction fill_diag
         *cpy_j = *cpy_j - 1;
     }
@@ -182,8 +188,9 @@ int check_diag_t_right(cell **board, int i, int j, int color, int *cpy_i, int *c
     *cpy_j = j;
     while (*cpy_i != -1 && *cpy_j < SIZE_OTHELLO)
     {
-        if (board[*cpy_i][*cpy_j].color == color)
-            return 1;
+        if (board[*cpy_i][*cpy_j].color == color) // ICI
+            if ((*cpy_i + 1 <= SIZE_OTHELLO && *cpy_j - 1 >= 0) || board[*cpy_i + 1][*cpy_j - 1].color != VERT)
+                return 1;
         *cpy_i = *cpy_i - 1;
         *cpy_j = *cpy_j + 1;
     }
@@ -235,27 +242,27 @@ int check_diag(cell **board, int i, int j, int color)
         // Puis on check chaque diagonale une par une
         top_left = board[i - 1][j - 1].color != color &&
                    board[i - 1][j - 1].color != VERT &&
-                   check_diag_t_left(board, i, j, color, &cpy_i, &cpy_j) &&
-                   board[i - 2][j - 2].color != VERT &&
-                   i - 2 != 0 && j - 2 != 0;
+                   check_diag_t_left(board, i, j, color, &cpy_i, &cpy_j);
+    //    board[i - 2][j - 2].color != VERT &&
+    //    i - 2 != 0 && j - 2 != 0;
     if (i != 0 && j != SIZE_OTHELLO - 1)
         top_right = board[i - 1][j + 1].color != color &&
                     board[i - 1][j + 1].color != VERT &&
-                    check_diag_t_right(board, i, j, color, &cpy_i, &cpy_j) &&
-                    board[i - 2][j + 2].color != VERT &&
-                    i - 2 != 0 && j + 2 != SIZE_OTHELLO;
+                    check_diag_t_right(board, i, j, color, &cpy_i, &cpy_j);
+    // board[i - 2][j + 2].color != VERT &&
+    // i - 2 != 0 && j + 2 != SIZE_OTHELLO;
     if (i != SIZE_OTHELLO - 1 && j != 0)
         bottom_left = board[i + 1][j - 1].color != color &&
                       board[i + 1][j - 1].color != VERT &&
-                      check_diag_b_left(board, i, j, color, &cpy_i, &cpy_j) &&
-                      board[i + 2][j - 2].color != VERT &&
-                      i + 2 != SIZE_OTHELLO && j - 2 != 0;
+                      check_diag_b_left(board, i, j, color, &cpy_i, &cpy_j);
+    //   board[i + 2][j - 2].color != VERT &&
+    //   i + 2 != SIZE_OTHELLO && j - 2 != 0;
     if (i != SIZE_OTHELLO - 1 && j != SIZE_OTHELLO - 1)
         bottom_right = board[i + 1][j + 1].color != color &&
                        board[i + 1][j + 1].color != VERT &&
-                       check_diag_b_right(board, i, j, color, &cpy_i, &cpy_j) &&
-                       board[i + 2][j + 2].color != VERT &&
-                       i + 2 != SIZE_OTHELLO && j + 2 != SIZE_OTHELLO;
+                       check_diag_b_right(board, i, j, color, &cpy_i, &cpy_j);
+    //    board[i + 2][j + 2].color != VERT &&
+    //    i + 2 != SIZE_OTHELLO && j + 2 != SIZE_OTHELLO;
     return top_right || top_left || bottom_right || bottom_left;
 }
 
@@ -294,6 +301,8 @@ void fill_lines(cell **board, int i, int j, int color)
 // Fonction de remplissage concernant uniquement les lignes
 {
     int line_index = check_lines(board, i, color); // indice de la ou se trouve la premiere couleur color sur une ligne i
+    int copy_j = j;
+
     int second_color = 0;
     if (line_index >= 0 &&
         ((j + 1 < SIZE_OTHELLO && board[i][j + 1].color != VERT) ||
@@ -301,44 +310,27 @@ void fill_lines(cell **board, int i, int j, int color)
         check_neighbors_lines(board, i, j, color))
     // on doit d'abord avoir une case valide a tous ces criteres
     {
-        second_color = line_index + 1;
+        second_color = j + 1;
         while (second_color < SIZE_OTHELLO && board[i][second_color].color != color)
             second_color++; // indice de la deuxieme couleur sur la ligne, pour pouvoir boucler entre les indices
 
-        if (second_color != SIZE_OTHELLO && second_color != line_index + 1) // cas ou la case valide est entre plusieurs pions de sa couleur
+        if (j > line_index && line_index != second_color) // cas ou on doit retourner les pions de haut en bas
         {
-            if (second_color < j)
+            copy_j--;
+            while (copy_j >= 0 && board[i][copy_j].color != VERT && board[i][copy_j].color != color)
             {
-                while (second_color < j)
-                {
-                    board[i][second_color].color = color;
-                    second_color++;
-                }
+                board[i][copy_j].color = color; // et tant qu on ne retrouve pas la meme couleur, on remplit avec celle-ci
+                copy_j--;
             }
-            else if (second_color > j)
-            {
-                printf("%d %d %d", second_color, line_index, j);
-                while (second_color > j)
-                {
-                    board[i][second_color].color = color;
-                    second_color--;
-                }
-            }
+            copy_j = j;
         }
-        else if (j > line_index) // cas ou on doit retourner les pions de gauche à droite
+        if (j < second_color && line_index != second_color) // cas ou on doit retourner les pions de bas en haut
         {
-            while (line_index < j && board[i][line_index].color != VERT)
+            copy_j++;
+            while (copy_j < SIZE_OTHELLO && board[i][copy_j].color != VERT && board[i][copy_j].color != color)
             {
-                board[i][line_index].color = color; // et tant qu on ne retrouve pas la meme couleur, on remplit avec celle-ci
-                line_index++;
-            }
-        }
-        else if (j < line_index) // cas ou on doit retourner les pions de droite à gauche
-        {
-            while (line_index > j && board[i][line_index].color != VERT)
-            {
-                board[i][line_index].color = color;
-                line_index--;
+                board[i][copy_j].color = color;
+                copy_j++;
             }
         }
     }
@@ -347,6 +339,7 @@ void fill_lines(cell **board, int i, int j, int color)
 void fill_rows(cell **board, int i, int j, int color)
 // Fonction de remplissage concernant uniquement les colonnes
 {
+    int copy_i = i;
     int row_index = check_rows(board, j, color); // indice de la ou se trouve la premiere couleur color sur une colonne j
     int second_color = 0;
     if (row_index >= 0 &&
@@ -355,43 +348,27 @@ void fill_rows(cell **board, int i, int j, int color)
         check_neighbors_rows(board, i, j, color))
     // on doit d'abord avoir une case valide qui correspond a tous ces criteres
     {
-        second_color = row_index + 1;
+        second_color = i + 1;
         while (second_color < SIZE_OTHELLO && board[second_color][j].color != color)
-            second_color++; // indice de la deuxieme couleur sur la colonne, pour pouvoir boucler entre les indices
+            second_color++;
 
-        if (second_color != SIZE_OTHELLO && second_color != row_index + 1) // cas ou la case valide est entre plusieurs pions de sa couleur
+        if (i > row_index) // cas ou on doit retourner les pions de haut en bas
         {
-            if (second_color < i)
+            copy_i--;
+            while (copy_i >= 0 && board[copy_i][j].color != VERT && board[copy_i][j].color != color)
             {
-                while (second_color < i)
-                {
-                    board[second_color][j].color = color;
-                    second_color++;
-                }
+                board[copy_i][j].color = color; // et tant qu on ne retrouve pas la meme couleur, on remplit avec celle-ci
+                copy_i--;
             }
-            else if (second_color > i)
-            {
-                while (second_color > i)
-                {
-                    board[second_color][j].color = color;
-                    second_color--;
-                }
-            }
+            copy_i = i;
         }
-        else if (i > row_index) // cas ou on doit retourner les pions de haut en bas
+        if (i < second_color + 1) // cas ou on doit retourner les pions de bas en haut
         {
-            while (row_index < i && board[row_index][j].color != VERT)
+            copy_i++;
+            while (copy_i < SIZE_OTHELLO && board[copy_i][j].color != VERT && board[copy_i][j].color != color)
             {
-                board[row_index][j].color = color; // et tant qu on ne retrouve pas la meme couleur, on remplit avec celle-ci
-                row_index++;
-            }
-        }
-        else if (i < row_index) // cas ou on doit retourner les pions de bas en haut
-        {
-            while (row_index > i && board[row_index][j].color != VERT)
-            {
-                board[row_index][j].color = color;
-                row_index--;
+                board[copy_i][j].color = color;
+                copy_i++;
             }
         }
     }
