@@ -271,7 +271,22 @@ void show_valid(cell **board, int color)
             if (is_valid(board, i, j, color))
             {
                 board[i][j].valide = 1;
-                printf("Case %s valide\n", board[i][j].id_cell);
+                // printf("Case %s valide\n", board[i][j].id_cell);
+            }
+        }
+    }
+}
+
+void reset_valid(cell **board)
+// Enlève toutes les cases valides du plateau
+{
+    for (int i = 0; i < SIZE_OTHELLO; i++)
+    {
+        for (int j = 0; j < SIZE_OTHELLO; j++)
+        {
+            if (board[i][j].valide == 1)
+            {
+                board[i][j].valide = 0;
             }
         }
     }

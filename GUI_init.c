@@ -59,7 +59,7 @@ int init_base_Othello(SDL_Window *window, SDL_Renderer *renderer, SDL_Surface *i
         Error("Chargement de la texture_base échoué !");
 
     // Définir un rectangle pour l'emplacement et la taille de l'image
-    SDL_Rect rect_sides = {110, 90, 880, 880};
+    SDL_Rect rect_sides = {WIDTH/4, HEIGHT/6, 880, 880};
     // Dessiner la texture dans le rendue
     SDL_RenderCopy(renderer, texture_base, NULL, &rect_sides);
 
@@ -69,7 +69,7 @@ int init_base_Othello(SDL_Window *window, SDL_Renderer *renderer, SDL_Surface *i
 int init_Othello(SDL_Window *window, SDL_Renderer *renderer, SDL_Surface *image_mode, SDL_Texture *texture_mode, int mode)
 {
     // Définir un rectangle pour l'emplacement et la taille de l'image
-    SDL_Rect rect_Othello = {150, 130, 800, 800};
+    SDL_Rect rect_Othello = {WIDTH/4, HEIGHT/6, 880, 880};
 
     // Changement de couleur pour la base de l'Othello
     if (SDL_SetRenderDrawColor(renderer, 0, 102, 40, SDL_ALPHA_OPAQUE))
@@ -100,7 +100,7 @@ points **Cree_mat()
     }
 
     points p_rect;
-    int rect_Othello[4] = {150, 130, 0, 100};
+    int rect_Othello[4] = {WIDTH/4 + 40, HEIGHT/6 + 40, 0, 100};
 
     for (int i = 0; i < 8; i++)
     {
@@ -119,7 +119,7 @@ points **Cree_mat()
             mat_Othello[i][j] = p_rect;
         }
 
-        rect_Othello[0] = 150 - rect_Othello[2];
+        rect_Othello[0] = WIDTH/4 + 40 - rect_Othello[2];
         rect_Othello[1] = rect_Othello[1] + rect_Othello[3];
         rect_Othello[2] = rect_Othello[2];
         rect_Othello[3] = rect_Othello[3];
