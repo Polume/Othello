@@ -172,9 +172,10 @@ int check_diag_t_left(cell **board, int i, int j, int color, int *cpy_i, int *cp
     *cpy_j = j;
     while (*cpy_i != -1 && *cpy_j != -1)
     {
-        if (board[*cpy_i][*cpy_j].color == color)
-            if ((*cpy_i + 1 < SIZE_OTHELLO && *cpy_j + 1 < SIZE_OTHELLO) && board[*cpy_i + 1][*cpy_j + 1].color != VERT)
-                return 1;
+        if ((*cpy_i - 1 != -1 && *cpy_j - 1 != -1) && board[*cpy_i - 1][*cpy_j - 1].color == VERT)
+            return 0;
+        else if ((*cpy_i - 1 != -1 && *cpy_j - 1 != -1) && board[*cpy_i - 1][*cpy_j - 1].color == color)
+            return 1;
         *cpy_i = *cpy_i - 1; // on garde les valeurs des indices pour la fonction fill_diag
         *cpy_j = *cpy_j - 1;
     }
@@ -188,10 +189,10 @@ int check_diag_t_right(cell **board, int i, int j, int color, int *cpy_i, int *c
     *cpy_j = j;
     while (*cpy_i != -1 && *cpy_j < SIZE_OTHELLO)
     {
-        if (board[*cpy_i][*cpy_j].color == color)
-            if ((*cpy_i + 1 < SIZE_OTHELLO && *cpy_j - 1 >= 0) && board[*cpy_i + 1][*cpy_j - 1].color != VERT)
-                return 1;
-
+        if ((*cpy_i - 1 != -1 && *cpy_j + 1 < SIZE_OTHELLO) && board[*cpy_i - 1][*cpy_j + 1].color == VERT)
+            return 0;
+        else if ((*cpy_i - 1 != -1 && *cpy_j + 1 < SIZE_OTHELLO) && board[*cpy_i - 1][*cpy_j + 1].color == color)
+            return 1;
         *cpy_i = *cpy_i - 1;
         *cpy_j = *cpy_j + 1;
     }
@@ -205,9 +206,10 @@ int check_diag_b_left(cell **board, int i, int j, int color, int *cpy_i, int *cp
     *cpy_j = j;
     while (*cpy_i < SIZE_OTHELLO && *cpy_j != -1)
     {
-        if (board[*cpy_i][*cpy_j].color == color)
-            if ((*cpy_i - 1 >= 0 && *cpy_j + 1 < SIZE_OTHELLO) && board[*cpy_i - 1][*cpy_j + 1].color != VERT)
-                return 1;
+        if ((*cpy_i + 1 < SIZE_OTHELLO && *cpy_j - 1 != -1) && board[*cpy_i + 1][*cpy_j - 1].color == VERT)
+            return 0;
+        else if ((*cpy_i + 1 < SIZE_OTHELLO && *cpy_j - 1 != -1) && board[*cpy_i + 1][*cpy_j - 1].color == color)
+            return 1;
         *cpy_i = *cpy_i + 1;
         *cpy_j = *cpy_j - 1;
     }
@@ -221,9 +223,11 @@ int check_diag_b_right(cell **board, int i, int j, int color, int *cpy_i, int *c
     *cpy_j = j;
     while (*cpy_i < SIZE_OTHELLO && *cpy_j < SIZE_OTHELLO)
     {
-        if (board[*cpy_i][*cpy_j].color == color)
-            if ((*cpy_i - 1 >= 0 && *cpy_j - 1 >= 0) && board[*cpy_i - 1][*cpy_j - 1].color != VERT)
-                return 1;
+        printf("%d %d\n", *cpy_i, *cpy_j);
+        if ((*cpy_i + 1 < SIZE_OTHELLO && *cpy_j + 1 < SIZE_OTHELLO) && board[*cpy_i + 1][*cpy_j + 1].color == VERT)
+            return 0;
+        else if ((*cpy_i + 1 < SIZE_OTHELLO && *cpy_j + 1 < SIZE_OTHELLO) && board[*cpy_i + 1][*cpy_j + 1].color == color)
+            return 1;
         *cpy_i = *cpy_i + 1;
         *cpy_j = *cpy_j + 1;
     }

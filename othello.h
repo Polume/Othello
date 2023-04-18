@@ -42,6 +42,7 @@ int check_diag_b_right(cell **board, int i, int j, int color, int *cpy_i, int *c
 int check_diag(cell **board, int i, int j, int color);
 
 void show_valid(cell **board, int color);
+void reset_valid(cell **board);
 
 void fill(cell **board, int i, int j, int color);
 void fill_lines(cell **board, int i, int j, int color);
