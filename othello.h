@@ -18,12 +18,6 @@ typedef struct
     char id_cell[2];
 } cell;
 
-typedef struct liste
-{
-    int num;
-    struct liste *svt;
-} *liste;
-
 cell **initializeBoard();
 void printBoard(cell **board);
 void freeBoard(cell **board);

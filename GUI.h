@@ -17,20 +17,18 @@ void Affiche_Othello(SDL_Window *window, SDL_Renderer *renderer,
 void get_coord(points **mat_rect_Othello, int *i, int *j);
 
 void Dessine_pion(SDL_Window *window, SDL_Renderer *renderer,
-                 SDL_Surface *image_pion, SDL_Texture *texture_poin,
-                 int x, int y, int team, int mode);
+                  SDL_Surface *image_pion, SDL_Texture *texture_poin,
+                  int x, int y, int team, int mode);
 void Place_pion(SDL_Window *window, SDL_Renderer *renderer,
-               SDL_Surface *image_pion, SDL_Texture *texture_pion,
-               cell **matrice_Othello, points **mat_rect_Othello, int mode);
+                SDL_Surface *image_pion, SDL_Texture *texture_pion,
+                cell **matrice_Othello, points **mat_rect_Othello, int mode);
 
-void Dessine_pion_border(   SDL_Window *window, SDL_Renderer *renderer,
-                            SDL_Surface *image_pion, SDL_Texture *texture_pion,
-                            int x, int y, int team, int mode);
-void Place_pion_border( SDL_Window *window, SDL_Renderer *renderer,
-                        SDL_Surface *image_pion, SDL_Texture *texture_pion,
-                        cell **matrice_Othello, points **mat_rect_Othello,
-                        int team, int mode);
-
-void ctrl_z(SDL_Event e, list **head, cell **board, char *nom);
+void Dessine_pion_border(SDL_Window *window, SDL_Renderer *renderer,
+                         SDL_Surface *image_pion, SDL_Texture *texture_pion,
+                         int x, int y, int team, int mode);
+void Place_pion_border(SDL_Window *window, SDL_Renderer *renderer,
+                       SDL_Surface *image_pion, SDL_Texture *texture_pion,
+                       cell **matrice_Othello, points **mat_rect_Othello,
+                       int team, int mode);
 
 #endif

@@ -24,8 +24,8 @@ void Affiche_Othello(SDL_Window *window, SDL_Renderer *renderer,
 }
 
 void Place_pion(SDL_Window *window, SDL_Renderer *renderer,
-               SDL_Surface *image_pion, SDL_Texture *texture_pion,
-               cell **matrice_Othello, points **mat_rect_Othello, int mode)
+                SDL_Surface *image_pion, SDL_Texture *texture_pion,
+                cell **matrice_Othello, points **mat_rect_Othello, int mode)
 {
     for (int y = 0; y < 8; y++)
     {
@@ -43,19 +43,19 @@ void Place_pion(SDL_Window *window, SDL_Renderer *renderer,
     }
 }
 
-void Place_pion_border( SDL_Window *window, SDL_Renderer *renderer,
-                        SDL_Surface *image_pion, SDL_Texture *texture_pion,
-                        cell **matrice_Othello, points **mat_rect_Othello,
-                        int team, int mode)
+void Place_pion_border(SDL_Window *window, SDL_Renderer *renderer,
+                       SDL_Surface *image_pion, SDL_Texture *texture_pion,
+                       cell **matrice_Othello, points **mat_rect_Othello,
+                       int team, int mode)
 {
     for (int y = 0; y < 8; y++)
     {
         for (int x = 0; x < 8; x++)
         {
-            printf("valid ? %d\n",matrice_Othello[x][y].valide);
+            // printf("valid ? %d\n", matrice_Othello[x][y].valide);
             if (matrice_Othello[x][y].valide == 1)
             {
-                printf("%d\t%d\n",mat_rect_Othello[x][y].x1, mat_rect_Othello[x][y].y1);
+                // printf("%d\t%d\n", mat_rect_Othello[x][y].x1, mat_rect_Othello[x][y].y1);
                 Dessine_pion_border(window, renderer, image_pion, texture_pion, mat_rect_Othello[x][y].x1, mat_rect_Othello[x][y].y1, team, mode);
             }
         }
@@ -80,9 +80,9 @@ void get_coord(points **mat_rect_Othello, int *i, int *j)
     }
 }
 
-void Dessine_pion(  SDL_Window *window, SDL_Renderer *renderer,
-                    SDL_Surface *image_pion, SDL_Texture *texture_pion,
-                    int x, int y, int team, int mode)
+void Dessine_pion(SDL_Window *window, SDL_Renderer *renderer,
+                  SDL_Surface *image_pion, SDL_Texture *texture_pion,
+                  int x, int y, int team, int mode)
 {
     if (mode != UwU)
     {
@@ -160,73 +160,9 @@ void Dessine_pion(  SDL_Window *window, SDL_Renderer *renderer,
     }
 }
 
-void ctrl(SDL_Event e, list **head, cell **board, char *nom)
-{
-    SDL_StartTextInput();
-    switch (e.type)
-    {
-    case SDL_TEXTINPUT:
-    {
-        printf("%s,  %s\n", e.text.text, "pressed");
-    }
-    break;
-    case SDL_KEYDOWN:
-        if ((SDL_GetModState() & KMOD_CTRL) && e.key.keysym.sym == SDLK_z)
-        {
-            printf("ctrl\n");
-            if (check_next(head) == 1)
-            {
-                go_back(head);
-                display_linked_list(*head);
-                copyBoard(board, (*head)->board);
-            }
-        }
-        else if ((SDL_GetModState() & KMOD_CTRL) && e.key.keysym.sym == SDLK_s)
-        {
-            // cas de la sauvegarde du plateau dans un fichier txt
-            printf("CTRL_S\n");
-            FILE *f;
-            f = fopen(nom, "wb");
-            if (f == NULL)
-            {
-                printf("Ouverture du fichier impossible.(save)\n");
-                exit(1);
-            }
-            for (int i = 0; i < SIZE_OTHELLO; i++)
-            {
-                fwrite(&board[i], sizeof(cell *), 1, f);
-            }
-            fclose(f);
-        }
-        else if ((SDL_GetModState() & KMOD_CTRL) && e.key.keysym.sym == SDLK_o)
-        {
-            // cas de l'ouverture du fichier sauvegarde
-            printf("CTRL_O\n");
-            FILE *f;
-
-            f = fopen(nom, "rb");
-            if (f == NULL)
-            {
-                printf("Ouverture du fichier impossible.(open)\n");
-                exit(1);
-            }
-            for (int i = 0; i < SIZE_OTHELLO; i++)
-            {
-                cell *array = calloc(SIZE_OTHELLO, sizeof(cell)); // tableau utilise pour copier les elements
-                fread(array, sizeof(cell *), SIZE_OTHELLO, f);
-                copyArray(array, board[0]);
-                free(array);
-            }
-            *head = newList(board); // On initialise ensuite la liste chainee au nouveau plateau
-            fclose(f);
-        }
-        break;
-    }
-}
-
-void Dessine_pion_border(   SDL_Window *window, SDL_Renderer *renderer,
-                            SDL_Surface *image_pion, SDL_Texture *texture_pion,
-                            int x, int y, int team, int mode)
+void Dessine_pion_border(SDL_Window *window, SDL_Renderer *renderer,
+                         SDL_Surface *image_pion, SDL_Texture *texture_pion,
+                         int x, int y, int team, int mode)
 {
     if (mode != UwU)
     {
@@ -351,12 +287,12 @@ void run()
     list *head = newList(matrice_Othello);
     Affiche_Othello(window, renderer, image_BG, texture_BG, image_base, texture_base, image_mode, texture_mode, mode);
     Place_pion(window, renderer, image_pion, texture_pion,
-              matrice_Othello, mat_rect_Othello, mode);
+               matrice_Othello, mat_rect_Othello, mode);
     show_valid(matrice_Othello, team);
-    Place_pion_border(  window, renderer, 
-                        image_pion, texture_pion,
-                        matrice_Othello, mat_rect_Othello, 
-                        team, mode);
+    Place_pion_border(window, renderer,
+                      image_pion, texture_pion,
+                      matrice_Othello, mat_rect_Othello,
+                      team, mode);
     SDL_RenderPresent(renderer);
 
     //////////////////////////////////////////////////////////
@@ -367,8 +303,9 @@ void run()
     {
         while (SDL_PollEvent(&e))
         {
-            if (e.type != 1024) {
-                printf("%d\n", e.type);
+            if (e.type != 1024)
+            {
+                // printf("%d\n", e.type);
                 switch (e.type)
                 {
                 case SDL_MOUSEBUTTONDOWN: // Click de souris
@@ -389,11 +326,11 @@ void run()
                             printBoard(matrice_Othello);
                             SDL_RenderClear(renderer);
 
-                            Affiche_Othello(window, renderer, 
-                                            image_BG, texture_BG, 
-                                            image_base, texture_base, 
+                            Affiche_Othello(window, renderer,
+                                            image_BG, texture_BG,
+                                            image_base, texture_base,
                                             image_mode, texture_mode, mode);
-                            Place_pion(window, renderer, 
+                            Place_pion(window, renderer,
                                        image_pion, texture_pion,
                                        matrice_Othello, mat_rect_Othello, mode);
 
@@ -404,11 +341,11 @@ void run()
 
                             reset_valid(matrice_Othello);
                             show_valid(matrice_Othello, team);
-                            Place_pion_border(  window, renderer, 
-                                                image_pion, texture_pion,
-                                                matrice_Othello, mat_rect_Othello, 
-                                                team, mode);
-                            SDL_RenderPresent(renderer);   
+                            Place_pion_border(window, renderer,
+                                              image_pion, texture_pion,
+                                              matrice_Othello, mat_rect_Othello,
+                                              team, mode);
+                            SDL_RenderPresent(renderer);
                         }
                     }
                     break;
@@ -420,14 +357,61 @@ void run()
                         quit = SDL_TRUE;
                         break;
                     case SDLK_z:
-                        if (key_press_ctrl == SDL_TRUE) {
-                            //METTRE LA FONTION DU CTRL Z
+                        if (key_press_ctrl == SDL_TRUE)
+                        {
+                            printf("CTRL_Z\n");
+                            if (check_next(&head) == 1)
+                            {
+                                go_back(&head);
+                                display_linked_list(head);
+                                copyBoard(matrice_Othello, head->board);
+                            }
                         }
                         break;
                     case SDLK_s:
-                        if (key_press_ctrl == SDL_TRUE) {
-                            //METTRE LA FONTION DU CTRL s
+                        if (key_press_ctrl == SDL_TRUE)
+                        {
+                            // cas de la sauvegarde du plateau dans un fichier txt
+                            printf("CTRL_S\n");
+                            FILE *f;
+                            f = fopen("save.oth", "wb");
+                            if (f == NULL)
+                            {
+                                printf("Ouverture du fichier impossible.(save)\n");
+                                exit(1);
+                            }
+                            for (int i = 0; i < SIZE_OTHELLO; i++)
+                            {
+                                for (int j = 0; j < SIZE_OTHELLO; j++)
+                                {
+                                    fwrite(&matrice_Othello[i][j].valide, sizeof(int), 1, f);
+                                    fwrite(&matrice_Othello[i][j].color, sizeof(int), 1, f);
+                                }
+                            }
+                            fclose(f);
                         }
+                        break;
+                    case SDLK_o:
+                        // cas de l'ouverture du fichier sauvegarde
+                        printf("CTRL_O\n");
+                        FILE *f;
+
+                        f = fopen("save.oth", "rb");
+                        if (f == NULL)
+                        {
+                            printf("Ouverture du fichier impossible.(open)\n");
+                            exit(1);
+                        }
+                        for (int i = 0; i < SIZE_OTHELLO; i++)
+                        {
+                            for (int j = 0; j < SIZE_OTHELLO; j++)
+                            {
+                                fread(&matrice_Othello[i][j].valide, sizeof(int), 1, f);
+                                fread(&matrice_Othello[i][j].color, sizeof(int), 1, f);
+                            }
+                        }
+                        head = newList(matrice_Othello); // On initialise ensuite la liste chainee au nouveau plateau
+                        fclose(f);
                         break;
 
                     case SDLK_LALT: // Touche ALT gauche pressée
@@ -454,16 +438,15 @@ void run()
                 case SDL_QUIT:
                     quit = SDL_TRUE;
                     continue;
-
                 }
             }
         }
     }
-            //if (e.type == SDL_TEXTINPUT || e.type == SDL_KEYDOWN)
-            //{
-            //    ctrl(e, &head, matrice_Othello, "save.txt");
-            //    display_linked_list(head);
-            //}
+    // if (e.type == SDL_TEXTINPUT || e.type == SDL_KEYDOWN)
+    //{
+    //     ctrl(e, &head, matrice_Othello, "save.txt");
+    //     display_linked_list(head);
+    // }
 
     //-----------Desttruction des variables pointeurs-----------//
     SDL_DestroyTexture(texture_BG);
@@ -480,4 +463,3 @@ void run()
     freeBoard(matrice_Othello);
     free(mat_rect_Othello);
 }
-

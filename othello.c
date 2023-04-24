@@ -223,7 +223,6 @@ int check_diag_b_right(cell **board, int i, int j, int color, int *cpy_i, int *c
     *cpy_j = j;
     while (*cpy_i < SIZE_OTHELLO && *cpy_j < SIZE_OTHELLO)
     {
-        printf("%d %d\n", *cpy_i, *cpy_j);
         if ((*cpy_i + 1 < SIZE_OTHELLO && *cpy_j + 1 < SIZE_OTHELLO) && board[*cpy_i + 1][*cpy_j + 1].color == VERT)
             return 0;
         else if ((*cpy_i + 1 < SIZE_OTHELLO && *cpy_j + 1 < SIZE_OTHELLO) && board[*cpy_i + 1][*cpy_j + 1].color == color)
