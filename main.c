@@ -6,8 +6,10 @@
 
 int main(int argc, char *argv[])
 {
+    srand(time(0));
     run();
     // cell **board = initializeBoard();
+    // easy_mode(board, BLANC);
 
     // board[3][4].color = NOIR;
     // board[5][4].color = NOIR;
@@ -15,7 +17,6 @@ int main(int argc, char *argv[])
     // board[3][3].color = BLANC;
     // board[4][3].color = BLANC;
     // fill(board, 3, 2, NOIR);
-    // printBoard(board);
     // freeBoard(board);
 
     return EXIT_SUCCESS;

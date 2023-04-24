@@ -338,7 +338,34 @@ void run()
                                 team = NOIR;
                             else
                                 team = BLANC;
+                            // coucou Alëx
+                            SDL_RenderPresent(renderer);
 
+                            printf("i : %d - j : %d -__- team : %d\n", i, j, team);
+                            reset_valid(matrice_Othello);
+
+                            easy_mode(matrice_Othello, team);
+                            push(&head, matrice_Othello);
+
+                            count_score(matrice_Othello, &cnt_w, &cnt_b);
+                            printf("White Team Score : %d\t Black Team Score : %d\n", cnt_w, cnt_b);
+
+                            printBoard(matrice_Othello);
+                            SDL_RenderClear(renderer);
+
+                            Affiche_Othello(window, renderer,
+                                            image_BG, texture_BG,
+                                            image_base, texture_base,
+                                            image_mode, texture_mode, mode);
+                            Place_pion(window, renderer,
+                                       image_pion, texture_pion,
+                                       matrice_Othello, mat_rect_Othello, mode);
+
+                            if (team == BLANC)
+                                team = NOIR;
+                            else
+                                team = BLANC;
+                            // ca finit la
                             reset_valid(matrice_Othello);
                             show_valid(matrice_Othello, team);
                             Place_pion_border(window, renderer,
@@ -442,11 +469,6 @@ void run()
             }
         }
     }
-    // if (e.type == SDL_TEXTINPUT || e.type == SDL_KEYDOWN)
-    //{
-    //     ctrl(e, &head, matrice_Othello, "save.txt");
-    //     display_linked_list(head);
-    // }
 
     //-----------Desttruction des variables pointeurs-----------//
     SDL_DestroyTexture(texture_BG);
