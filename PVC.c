@@ -34,3 +34,53 @@ int easy_mode(cell **board, int team)
     free(possible);
     return 1;
 }
+
+tree *newNode(int data)
+{
+    tree *temp = (tree *)malloc(sizeof(tree));
+    temp->val = data;
+    temp->left = temp->right = NULL;
+    return temp;
+}
+
+int height(tree *current)
+/* Fonction récursive qui renvoie la hauteur de l'arbre
+   de la feuille la plus lointaine à la racine */
+{
+    if (current == NULL)
+        return 0;
+    else
+    {
+        int lheight = height(current->left);
+        int rheight = height(current->right);
+
+        if (lheight > rheight)
+            return (lheight + 1);
+        else
+            return (rheight + 1);
+    }
+}
+
+void printCurrentLevel(tree *root, int level)
+{
+    if (root == NULL)
+        return;
+    if (level == 1)
+        printf("%d\t", root->val);
+    else if (level > 1)
+    {
+        printCurrentLevel(root->left, level - 1);
+        printCurrentLevel(root->right, level - 1);
+    }
+}
+
+void printTree(tree *root)
+{
+    int h = height(root);
+    int i;
+    for (i = 1; i <= h; i++)
+    {
+        printCurrentLevel(root, i);
+        printf("\n");
+    }
+}

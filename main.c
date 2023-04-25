@@ -7,8 +7,17 @@
 int main(int argc, char *argv[])
 {
     srand(time(0));
-    // run();
-    cell **board = initializeBoard();
+    run();
+    tree *root = newNode(1);
+    root->left = newNode(2);
+    root->right = newNode(3);
+    root->left->left = newNode(4);
+    root->left->right = newNode(5);
+    root->right->left = newNode(6);
+    root->right->right = newNode(7);
+
+    printTree(root);
+    // cell **board = initializeBoard();
 
     // board[1][0].color = NOIR;
     // board[3][0].color = NOIR;
@@ -16,11 +25,11 @@ int main(int argc, char *argv[])
     // board[5][0].color = NOIR;
     // board[5][1].color = NOIR;
 
-    board[3][4].color = BLANC;
-    board[4][3].color = BLANC;
-    easy_mode(board, NOIR);
+    // board[3][4].color = BLANC;
+    // board[4][3].color = BLANC;
+    // easy_mode(board, NOIR);
     // fill(board, 4, 1, BLANC);
-    printBoard(board);
+    // printBoard(board);
     // show_valid(board, BLANC);
     // freeBoard(board);
 
