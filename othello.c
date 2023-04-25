@@ -79,6 +79,17 @@ void count_score(cell **board, int *cnt_W, int *cnt_B)
     }
 }
 
+int max(int a, int b)
+// Retourne le plus grand nombre
+{
+    return a >= b ? a : b;
+}
+
+int min(int a, int b)
+{
+    return a <= b ? a : b;
+}
+
 int is_valid(cell **board, int i, int j, int color)
 /* Fonction verifiant la validite de la case. Une case valide est de la forme suivante :
    -La case actuelle est verte
@@ -89,18 +100,34 @@ int is_valid(cell **board, int i, int j, int color)
    Renvoie 1 si la case est valide et 0 sinon
 */
 {
+    int maxi = 0;
+    int mini = 0;
     if (board[i][j].color == VERT &&
         check_neighbors_lines(board, i, j, color) &&
         check_lines(board, i, color) >= 0)
     {
-        return 1;
+        maxi = max(j, check_lines(board, i, color));
+        mini = min(j, check_lines(board, i, color));
+        mini++; // La case actuelle sera soit de la couleur correspondante soit verte, on avance donc d'un cran
+        while (mini < maxi && board[i][mini].color != VERT)
+            mini++; // on boucle entre les indices j et l'indice de la colonne
+                    // renvoyé par check_lines pour voir s'il n y a pas de cases vertes entre
+        if (mini == maxi)
+            return 1;
     }
     else if (board[i][j].color == VERT &&
              check_neighbors_rows(board, i, j, color) &&
              check_rows(board, j, color) >= 0)
     {
-        return 1;
+        maxi = max(i, check_rows(board, j, color));
+        mini = min(i, check_rows(board, j, color));
+        mini++;
+        while (mini < maxi && board[mini][j].color != VERT)
+            mini++;
+        if (mini == maxi)
+            return 1;
     }
+
     else if (board[i][j].color == VERT && check_diag(board, i, j, color))
     {
         return 1;

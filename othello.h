@@ -23,6 +23,9 @@ void printBoard(cell **board);
 void freeBoard(cell **board);
 void count_score(cell **board, int *cnt_W, int *cnt_B);
 
+int max(int a, int b);
+int min(int a, int b);
+
 int is_valid(cell **board, int i, int j, int color);
 int check_neighbors_lines(cell **board, int i, int j, int color);
 int check_neighbors_rows(cell **board, int i, int j, int color);
