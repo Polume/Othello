@@ -7,6 +7,7 @@
 #include "linked_list.h"
 #include "GUI_init.h"
 #include "othello.h"
+#include "PVC.h"
 
 void run();
 void Affiche_Othello(SDL_Window *window, SDL_Renderer *renderer,
@@ -30,5 +31,11 @@ void Place_pion_border(SDL_Window *window, SDL_Renderer *renderer,
                        SDL_Surface *image_pion, SDL_Texture *texture_pion,
                        cell **matrice_Othello, points **mat_rect_Othello,
                        int team, int mode);
-
+void DisplayAll(SDL_Window *window, SDL_Renderer *renderer,
+                SDL_Surface *image_BG, SDL_Texture *texture_BG,
+                SDL_Surface *image_base, SDL_Texture *texture_base,
+                SDL_Surface *image_mode, SDL_Texture *texture_mode,
+                SDL_Surface *image_pion, SDL_Texture *texture_pion,
+                cell **matrice_Othello, points **mat_rect_Othello,
+                int team, int mode);
 #endif

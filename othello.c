@@ -90,6 +90,11 @@ int min(int a, int b)
     return a <= b ? a : b;
 }
 
+int isEndGame(cell **board)
+{
+    return show_valid(board, BLANC) == 0 && show_valid(board, NOIR) == 0 ? 1 : 0;
+}
+
 int is_valid(cell **board, int i, int j, int color)
 /* Fonction verifiant la validite de la case. Une case valide est de la forme suivante :
    -La case actuelle est verte
@@ -291,9 +296,10 @@ int check_diag(cell **board, int i, int j, int color)
     return top_right || top_left || bottom_right || bottom_left;
 }
 
-void show_valid(cell **board, int color)
+int show_valid(cell **board, int color)
 // Affiche toutes les cases valides du plateau
 {
+    int cpt = 0;
     for (int i = 0; i < SIZE_OTHELLO; i++)
     {
         for (int j = 0; j < SIZE_OTHELLO; j++)
@@ -301,10 +307,12 @@ void show_valid(cell **board, int color)
             if (is_valid(board, i, j, color))
             {
                 board[i][j].valide = 1;
+                cpt++;
                 // printf("Case %s valide\n", board[i][j].id_cell);
             }
         }
     }
+    return cpt;
 }
 
 void reset_valid(cell **board)

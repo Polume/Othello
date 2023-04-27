@@ -25,6 +25,7 @@ void count_score(cell **board, int *cnt_W, int *cnt_B);
 
 int max(int a, int b);
 int min(int a, int b);
+int isEndGame(cell **board);
 
 int is_valid(cell **board, int i, int j, int color);
 int check_neighbors_lines(cell **board, int i, int j, int color);
@@ -38,7 +39,7 @@ int check_diag_b_left(cell **board, int i, int j, int color, int *cpy_i, int *cp
 int check_diag_b_right(cell **board, int i, int j, int color, int *cpy_i, int *cpy_j);
 int check_diag(cell **board, int i, int j, int color);
 
-void show_valid(cell **board, int color);
+int show_valid(cell **board, int color);
 void reset_valid(cell **board);
 
 void fill(cell **board, int i, int j, int color);

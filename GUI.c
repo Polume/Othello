@@ -197,7 +197,7 @@ void Dessine_pion_border(SDL_Window *window, SDL_Renderer *renderer,
 
             // Définir un rectangle pour l'emplacement et la taille de l'image
             SDL_Rect rect_pion = {x + 5, y + 3, 85, 85};
-            // Dessiner la texture dans le rendue
+            // Dessiner la texture dans le rendu
             SDL_RenderCopy(renderer, texture_pion, NULL, &rect_pion);
         }
     }
@@ -238,6 +238,25 @@ void Dessine_pion_border(SDL_Window *window, SDL_Renderer *renderer,
             SDL_RenderCopy(renderer, texture_pion, NULL, &rect_pion);
         }
     }
+}
+
+void DisplayAll(SDL_Window *window, SDL_Renderer *renderer,
+                SDL_Surface *image_BG, SDL_Texture *texture_BG,
+                SDL_Surface *image_base, SDL_Texture *texture_base,
+                SDL_Surface *image_mode, SDL_Texture *texture_mode,
+                SDL_Surface *image_pion, SDL_Texture *texture_pion,
+                cell **matrice_Othello, points **mat_rect_Othello,
+                int team, int mode)
+{
+    Affiche_Othello(window, renderer,
+                    image_BG, texture_BG,
+                    image_base, texture_base,
+                    image_mode, texture_mode, mode);
+    Place_pion(window, renderer,
+               image_pion, texture_pion,
+               matrice_Othello, mat_rect_Othello, mode);
+    reset_valid(matrice_Othello);
+    show_valid(matrice_Othello, team);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////EN COURS
@@ -310,70 +329,57 @@ void run()
                 {
                 case SDL_MOUSEBUTTONDOWN: // Click de souris
                     get_coord(mat_rect_Othello, &i, &j);
-                    if (is_valid(matrice_Othello, i, j, team))
+                    if ((0 <= i && i <= 7) && (0 <= j && j <= 7) && is_valid(matrice_Othello, i, j, team))
                     {
+                        printf("i : %d - j : %d -__- team : %d\n", i, j, team);
 
-                        if ((0 <= i && i <= 7) && (0 <= j && j <= 7))
-                        {
-                            printf("i : %d - j : %d -__- team : %d\n", i, j, team);
+                        fill(matrice_Othello, i, j, team);
+                        push(&head, matrice_Othello);
 
-                            fill(matrice_Othello, i, j, team);
-                            push(&head, matrice_Othello);
+                        count_score(matrice_Othello, &cnt_w, &cnt_b);
+                        printf("White Team Score : %d\t Black Team Score : %d\n", cnt_w, cnt_b);
 
-                            count_score(matrice_Othello, &cnt_w, &cnt_b);
-                            printf("White Team Score : %d\t Black Team Score : %d\n", cnt_w, cnt_b);
+                        printBoard(matrice_Othello);
+                        SDL_RenderClear(renderer);
 
-                            printBoard(matrice_Othello);
-                            SDL_RenderClear(renderer);
+                        if (team == BLANC)
+                            team = NOIR;
+                        else
+                            team = BLANC;
+                        DisplayAll(window, renderer,
+                                   image_BG, texture_BG,
+                                   image_base, texture_base,
+                                   image_mode, texture_mode, image_pion, texture_pion,
+                                   matrice_Othello, mat_rect_Othello, team, mode);
+                        // coucou Alëx
+                        SDL_RenderPresent(renderer);
 
-                            Affiche_Othello(window, renderer,
-                                            image_BG, texture_BG,
-                                            image_base, texture_base,
-                                            image_mode, texture_mode, mode);
-                            Place_pion(window, renderer,
-                                       image_pion, texture_pion,
-                                       matrice_Othello, mat_rect_Othello, mode);
+                        printf("i : %d - j : %d -__- team : %d\n", i, j, team);
 
-                            if (team == BLANC)
-                                team = NOIR;
-                            else
-                                team = BLANC;
-                            // coucou Alëx
-                            SDL_RenderPresent(renderer);
+                        easy_mode(matrice_Othello, team);
+                        push(&head, matrice_Othello);
 
-                            printf("i : %d - j : %d -__- team : %d\n", i, j, team);
-                            reset_valid(matrice_Othello);
+                        count_score(matrice_Othello, &cnt_w, &cnt_b);
+                        printf("White Team Score : %d\t Black Team Score : %d\n", cnt_w, cnt_b);
 
-                            easy_mode(matrice_Othello, team);
-                            push(&head, matrice_Othello);
+                        printBoard(matrice_Othello);
+                        SDL_RenderClear(renderer);
 
-                            count_score(matrice_Othello, &cnt_w, &cnt_b);
-                            printf("White Team Score : %d\t Black Team Score : %d\n", cnt_w, cnt_b);
-
-                            printBoard(matrice_Othello);
-                            SDL_RenderClear(renderer);
-
-                            Affiche_Othello(window, renderer,
-                                            image_BG, texture_BG,
-                                            image_base, texture_base,
-                                            image_mode, texture_mode, mode);
-                            Place_pion(window, renderer,
-                                       image_pion, texture_pion,
-                                       matrice_Othello, mat_rect_Othello, mode);
-
-                            if (team == BLANC)
-                                team = NOIR;
-                            else
-                                team = BLANC;
-                            // ca finit la
-                            reset_valid(matrice_Othello);
-                            show_valid(matrice_Othello, team);
-                            Place_pion_border(window, renderer,
-                                              image_pion, texture_pion,
-                                              matrice_Othello, mat_rect_Othello,
-                                              team, mode);
-                            SDL_RenderPresent(renderer);
-                        }
+                        if (team == BLANC)
+                            team = NOIR;
+                        else
+                            team = BLANC;
+                        // ca finit la
+                        DisplayAll(window, renderer,
+                                   image_BG, texture_BG,
+                                   image_base, texture_base,
+                                   image_mode, texture_mode, image_pion, texture_pion,
+                                   matrice_Othello, mat_rect_Othello, team, mode);
+                        Place_pion_border(window, renderer,
+                                          image_pion, texture_pion,
+                                          matrice_Othello, mat_rect_Othello,
+                                          team, mode);
+                        SDL_RenderPresent(renderer);
                     }
                     break;
 
@@ -382,6 +388,27 @@ void run()
                     {
                     case SDLK_q:
                         quit = SDL_TRUE;
+                        break;
+                    case SDLK_n:
+                        if (key_press_ctrl == SDL_TRUE)
+                        {
+                            SDL_RenderClear(renderer);
+                            freeBoard(matrice_Othello);
+                            free_linked_list(head);
+                            matrice_Othello = initializeBoard();
+                            head = newList(matrice_Othello);
+                            team = BLANC;
+                            DisplayAll(window, renderer,
+                                       image_BG, texture_BG,
+                                       image_base, texture_base,
+                                       image_mode, texture_mode, image_pion, texture_pion,
+                                       matrice_Othello, mat_rect_Othello, team, mode);
+                            Place_pion_border(window, renderer,
+                                              image_pion, texture_pion,
+                                              matrice_Othello, mat_rect_Othello,
+                                              team, mode);
+                            SDL_RenderPresent(renderer);
+                        }
                         break;
                     case SDLK_z:
                         if (key_press_ctrl == SDL_TRUE)
@@ -484,4 +511,5 @@ void run()
 
     freeBoard(matrice_Othello);
     free(mat_rect_Othello);
+    free_linked_list(head);
 }
