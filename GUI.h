@@ -6,6 +6,7 @@
 #include <SDL2/SDL.h>
 #include "linked_list.h"
 #include "GUI_init.h"
+#include "PVC.h"
 #include "othello.h"
 
 void run();

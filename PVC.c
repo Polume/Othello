@@ -38,17 +38,51 @@ int easy_mode(cell **board, int color)
                                                        // - 1 sinon on est en dehors du tableau
     // On récupère un indice du tableau des cases valides au hasard et on remplit le tableau
     fill(board, possible[num][0], possible[num][1], color);
-    free(possible);
+    free_matrix_int(possible, 2);
     return 1;
 }
 
-tree *newNode(int data)
+void free_matrix_int(int **tab, int size)
+// Fonction qui libere la memoire d une matrice d'int
+{
+
+    for (int i = 0; i < size; i++)
+    {
+        free(tab[i]);
+    }
+    free(tab);
+}
+
+void free_matrix_float(float **tab, int size)
+// Fonction qui libere la memoire d une matrice de float
+{
+    for (int i = 0; i < size; i++)
+    {
+        free(tab[i]);
+    }
+    free(tab);
+}
+
+tree *newNode(float data)
 // Crée un nouveau noeud pour un arbre
 {
     tree *temp = (tree *)malloc(sizeof(tree));
     temp->val = data;
     temp->left = temp->right = NULL;
     return temp;
+}
+
+tree *insertInTree(float *tab, int i, int n)
+// Cree un arbre binaire en fonction du tableau tab
+{
+    tree *root = NULL;
+    if (i < n) // Creation de l'arbre en recursion
+    {
+        root = newNode(tab[i]);
+        root->left = insertInTree(tab, 2 * i + 1, n);
+        root->right = insertInTree(tab, 2 * i + 2, n);
+    }
+    return root;
 }
 
 void freeTree(tree *current)
@@ -86,7 +120,7 @@ void printCurrentLevel(tree *root, int level)
     if (root == NULL)
         return;
     if (level == 1)
-        printf("%d\t", root->val);
+        printf("%f\t", root->val);
     else if (level > 1)
     {
         printCurrentLevel(root->left, level - 1);
@@ -104,17 +138,6 @@ void printTree(tree *root)
         printCurrentLevel(root, i);
         printf("\n");
     }
-}
-
-void free_matrix(float **tab)
-// Fonction qui libere la memoire d une matrice
-{
-
-    for (int i = 0; i < SIZE_OTHELLO; i++)
-    {
-        free(tab[i]);
-    }
-    free(tab);
 }
 
 float **gameState(int state)
@@ -177,44 +200,123 @@ float **gameState(int state)
     }
 }
 
-int minimax(cell **board, float *test, int depth, int color, int index)
+float *tree_values(cell **board, int numMoves)
+// Renvoie le tableau des valeurs contenues dans gameState en fonction des indices des cases valides
+{
+    int **possible = possibilities(board, numMoves); // tableau des indices des cases valides
+    float **state = gameState(BEGIN);                // Importance des cases
+    float *tree_values = calloc(numMoves, sizeof(float));
+    for (int i = 0; i < numMoves; i++)
+    {
+        float value = state[possible[i][0]][possible[i][1]];
+        tree_values[i] = value;
+    }
+    // free_matrix_float(state, SIZE_OTHELLO);
+    // free_matrix_int(possible, numMoves);
+    return tree_values;
+}
+
+int minimax(tree *root, int depth, int color)
 // Blanc - MAXIMIZE
 // Noir - MINIMIZE
 {
-    // int numMoves = show_valid(board, color);
-    // if (numMoves == 0) // pas de cases valides
-    // {
-    //     return 0;
-    // }
-
-    // int **possible = possibilities(board, numMoves);
     int eval = 0;
-
-    if (depth == 0)
+    if (depth == 1)
     {
-        return test[index];
+        return root->val;
     }
     if (color == BLANC)
-    { // On cherche la valeur max
-        int maxEval = -10000;
-        eval = minimax(board, test, depth - 1, NOIR, index * 2);
-        maxEval = max(maxEval, eval);
-        eval = minimax(board, test, depth - 1, NOIR, index * 2 + 1);
-        maxEval = max(maxEval, eval);
-
-        printf("Max %d\n", maxEval);
-
+    // On cherche ici la valeur max, pour chaque fils du noeud courant
+    {
+        int maxEval = MAX_EVAL;
+        if (root->left != NULL)
+        {
+            eval = minimax(root->left, depth - 1, NOIR);
+            maxEval = max(maxEval, eval);
+        }
+        if (root->right != NULL)
+        {
+            eval = minimax(root->right, depth - 1, NOIR);
+            maxEval = max(maxEval, eval);
+        }
+        root->val = maxEval; // On attribue la valeur maximale au noeud pour l'affichage
         return maxEval;
     }
     else
-    { // On cherche la valeur min
-        int minEval = 10000;
-        eval = minimax(board, test, depth - 1, BLANC, index * 2);
-        minEval = min(minEval, eval);
-        eval = minimax(board, test, depth - 1, BLANC, index * 2 + 1);
-        minEval = min(minEval, eval);
-
-        printf("Min %d\n", minEval);
+    { // On cherche ici la valeur min
+        int minEval = MIN_EVAL;
+        if (root->left != NULL)
+        {
+            eval = minimax(root->left, depth - 1, BLANC);
+            minEval = min(minEval, eval);
+        }
+        if (root->right != NULL)
+        {
+            eval = minimax(root->right, depth - 1, BLANC);
+            minEval = min(minEval, eval);
+        }
+        root->val = minEval; // On attribue la valeur minimale au noeud pour l'affichage
         return minEval;
     }
+}
+
+int hard_mode(cell **board, int color)
+/*  Fonction qui permet de créer une IA qui utilise l algorithme minimax
+    On doit faire en sorte d'adapter la taille de notre tableau pour remplir correctement notre arbre binaire
+    par rapport à la puissance de 2 du nombre de coups possibles
+    ex : numMoves = 8 alors l'arbre sera de profondeur 4 et on a les valeurs -1, 3, 5, 1, -6, -4, 0, 9
+    notre arbre sera donc de la forme suivante après la fonction minimax
+                                                                 3.000000
+                              3.000000                                                           -4.000000
+                3.000000                         5.000000                      -4.000000                         9.000000
+        -1.000000       3.000000        5.000000        1.000000        -6.000000       -4.000000       0.000000        9.000000
+    On a donc besoin de créer 7 noeuds auparavant pour qu'ils puissent contenir les différentes valeurs min et max
+    ce qui correspond à numMoves - 1 */
+{
+    int numMoves = show_valid(board, color);
+    int finalSize = 0;
+    if (numMoves == 0) // pas de cases valides
+    {
+        return 0;
+    }
+
+    float log = log2(numMoves);
+    int is_power_of_2 = (ceilf(log) == log); // Renvoie 1 si f est entier sinon 0
+    int log_int = (int)log;
+
+    // Si notre nombre de cases valides n'est pas une puissance de 2, log2 sera un float
+    // on convertira alors le log2 en entier et on ajoute 1 pour ajuster l'arbre
+    if (is_power_of_2)
+        finalSize = numMoves - 1 + numMoves;
+    else
+    {
+        finalSize = powf(2.0, log_int + 1) - 1 + numMoves;
+    }
+    printf("SSSSSS %d\n", finalSize);
+
+    float *tree_val = tree_values(board, numMoves);
+    float *final_array = calloc(finalSize, sizeof(float));
+    // tableau qui contiendra les valeurs de l'arbre et les noeuds supplémentaires
+
+    int tree_index = 0;
+    if (is_power_of_2)
+    {
+        for (int i = numMoves - 1; i < finalSize; i++)
+        {
+            final_array[i] = tree_val[tree_index];
+            tree_index++;
+        }
+    }
+    else
+    {
+        for (int i = powf(2.0, log_int + 1) - 1; i < finalSize; i++)
+        {
+            final_array[i] = tree_val[tree_index];
+            tree_index++;
+        }
+    }
+    tree *root = insertInTree(final_array, 0, finalSize);
+    minimax(root, height(root), color);
+    printTree(root);
+    return 0;
 }
