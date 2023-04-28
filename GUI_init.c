@@ -27,10 +27,15 @@ void Error(char *chaine)
 int init_BG_image(SDL_Window *window, SDL_Renderer *renderer, SDL_Surface *image_BG, SDL_Texture *texture_BG, int mode)
 {
     // Récupération de l'image
-    image_BG = IMG_Load("Pictures/BG_Othello.jpg");
+    image_BG = IMG_Load("Pictures/BG_Othello.png");
+    
+    if (mode == 0)
+        image_BG = IMG_Load("Pictures/Oth.png"); 
+    else if (mode == 2)
+        image_BG = IMG_Load("Pictures/BG_Othello.png");
     /*      UwU     */
-    if (mode == 1)
-        image_BG = IMG_Load("Pictures/BG_UwU.jpg");
+    else if (mode == 2)
+        image_BG = IMG_Load("Pictures/BG_UwU.png");
     /*      UwU     */
     if (image_BG == NULL)
         Error("Récupération de l'image échoué !");
@@ -79,9 +84,9 @@ int init_Othello(SDL_Window *window, SDL_Renderer *renderer, SDL_Surface *image_
         Error("Dessiner la base de l'Othello échoué !");
 
     /*              UwU             */
-    if (mode == 1)
+    if (mode == 2)
     {
-        image_mode = IMG_Load("Pictures/UwU.jpg");
+        image_mode = IMG_Load("Pictures/UwU.png");
         texture_mode = SDL_CreateTextureFromSurface(renderer, image_mode);
         SDL_RenderCopy(renderer, texture_mode, NULL, &rect_Othello);
     }
@@ -125,4 +130,69 @@ points **Cree_mat()
         rect_Othello[3] = rect_Othello[3];
     }
     return mat_Othello;
+}
+
+partie get_screen_size()
+{
+    SDL_DisplayMode current;
+    partie ecran;
+    SDL_GetCurrentDisplayMode(0, &current);
+    ecran.w = current.w;
+    ecran.h = current.h;
+    return ecran;
+}
+partie slice_screen_10(int w, int h)
+{
+    partie ecran10;
+    ecran10.w = w / 10;
+    ecran10.h = h / 10;
+    return ecran10;
+}
+partie slice_screen_100(int w, int h)
+{
+    partie ecran100;
+    ecran100.w = w / 100;
+    ecran100.h = h / 100;
+    return ecran100;
+}
+
+points * init_bouttons(SDL_Window* window, SDL_Renderer* renderer, SDL_Surface* image_bouttons, SDL_Texture* texture_bouttons)
+{
+    points * pts_bouttons = malloc(2*sizeof(points));
+    partie ecran10 = slice_screen_10(get_screen_size().w, get_screen_size().h);
+    // Premier Boutton 
+    image_bouttons = IMG_Load("Pictures/Contre_Joueur.png");
+    if (image_bouttons == NULL)
+        Error("Récupération de Contre_Joueur.png échoué !");
+    // Créer la texture avec l'image
+    texture_bouttons = SDL_CreateTextureFromSurface(renderer, image_bouttons);
+    if (texture_bouttons == NULL)
+        Error("Chargement de la texture de Contre_Joueur.png échoué !");
+    // Définir un rectangle pour l'emplacement et la taille de l'image
+    pts_bouttons[0].x1 = ecran10.w *2;
+    pts_bouttons[0].y1 = ecran10.h *5;
+    pts_bouttons[0].x2 = (ecran10.w *2) + (ecran10.w *2);
+    pts_bouttons[0].y2 = (ecran10.h *5) + (ecran10.h *2);
+    SDL_Rect rect_boutton_Joueurs = { pts_bouttons[0].x1, pts_bouttons[0].y1, ecran10.w *2, ecran10.h *2 };
+    // Dessiner la texture dans le rendue
+    SDL_RenderCopy(renderer, texture_bouttons, NULL, &rect_boutton_Joueurs);
+
+    // Second Boutton
+    image_bouttons = IMG_Load("Pictures/Contre_IA.png");
+    if (image_bouttons == NULL)
+        Error("Récupération de Contre_IA.png échoué !");
+    // Créer la texture avec l'image
+    texture_bouttons = SDL_CreateTextureFromSurface(renderer, image_bouttons);
+    if (texture_bouttons == NULL)
+        Error("Chargement de la texture de Contre_IA.png échoué !");
+    // Définir un rectangle pour l'emplacement et la taille de l'image
+    pts_bouttons[1].x1 = (ecran10.w *6);
+    pts_bouttons[1].y1 = (ecran10.h *5);
+    pts_bouttons[1].x2 = (ecran10.w *6) + (ecran10.w *2);
+    pts_bouttons[1].y2 = (ecran10.h *5) + (ecran10.h *2);
+    SDL_Rect rect_boutton_IA = { pts_bouttons[1].x1, pts_bouttons[1].y1,  ecran10.w *2, ecran10.h *2 };
+    // Dessiner la texture dans le rendue
+    SDL_RenderCopy(renderer, texture_bouttons, NULL, &rect_boutton_IA);
+    
+    return pts_bouttons;
 }
