@@ -148,75 +148,107 @@ float **gameState(int state)
 {
     if (state == BEGIN)
     {
-        float **BeginPositionScore = calloc(SIZE_OTHELLO, sizeof(int *));
+        // On ne peut pas renvoyer de matrice de taille connue, on copie donc dans une matrice temporaire
+        float **BeginPositionScore = calloc(SIZE_OTHELLO, sizeof(float *));
         for (int i = 0; i < SIZE_OTHELLO; i++)
         {
-            BeginPositionScore[i] = calloc(SIZE_OTHELLO, sizeof(int));
+            BeginPositionScore[i] = calloc(SIZE_OTHELLO, sizeof(float));
         }
-        BeginPositionScore[0] = (float[]){100, -50, 20, 5, 5, 20, -50, 100};
-        BeginPositionScore[1] = (float[]){-50, -70, -5, -5, -5, -5, -70, -50};
-        BeginPositionScore[2] = (float[]){20, -5, 15, 3, 3, 15, -5, 20};
-        BeginPositionScore[3] = (float[]){5, -5, 3, 3, 3, 3, -5, 5};
-        BeginPositionScore[4] = (float[]){5, -5, 3, 3, 3, 3, -5, 5};
-        BeginPositionScore[5] = (float[]){20, -5, 15, 3, 3, 15, -5, 20};
-        BeginPositionScore[6] = (float[]){-50, -70, -5, -5, -5, -5, -70, -50};
-        BeginPositionScore[7] = (float[]){100, -50, 20, 5, 5, 20, -50, 100};
+        float BeginPositionScoreTemp[8][8] = {{100, -50, 20, 5, 5, 20, -50, 100},
+                                              {-50, -70, -5, -5, -5, -5, -70, -50},
+                                              {20, -5, 15, 3, 3, 15, -5, 20},
+                                              {5, -5, 3, 3, 3, 3, -5, 5},
+                                              {5, -5, 3, 3, 3, 3, -5, 5},
+                                              {20, -5, 15, 3, 3, 15, -5, 20},
+                                              {-50, -70, -5, -5, -5, -5, -70, -50},
+                                              {100, -50, 20, 5, 5, 20, -50, 100}};
+        for (int i = 0; i < SIZE_OTHELLO; i++)
+            for (int j = 0; j < SIZE_OTHELLO; j++)
+                BeginPositionScore[i][j] = BeginPositionScoreTemp[i][j];
+
         return BeginPositionScore;
     }
 
     else if (state == MIDDLE)
     {
-        float **MiddlePositionScore = calloc(SIZE_OTHELLO, sizeof(int *));
+        float **MiddlePositionScore = calloc(SIZE_OTHELLO, sizeof(float *));
         for (int i = 0; i < SIZE_OTHELLO; i++)
         {
-            MiddlePositionScore[i] = calloc(SIZE_OTHELLO, sizeof(int));
+            MiddlePositionScore[i] = calloc(SIZE_OTHELLO, sizeof(float));
         }
-        MiddlePositionScore[0] = (float[]){140, -20, 20, 5, 5, 20, -20, 140},
-        MiddlePositionScore[1] = (float[]){-20, -40, -5, -5, -5, -5, -40, -20},
-        MiddlePositionScore[2] = (float[]){20, -5, 15, 3, 3, 15, -5, 20},
-        MiddlePositionScore[3] = (float[]){5, -5, 3, 3, 3, 3, -5, 5},
-        MiddlePositionScore[4] = (float[]){5, -5, 3, 3, 3, 3, -5, 5},
-        MiddlePositionScore[5] = (float[]){20, -5, 15, 3, 3, 15, -5, 20},
-        MiddlePositionScore[6] = (float[]){-20, -40, -5, -5, -5, -5, -40, -20},
-        MiddlePositionScore[7] = (float[]){140, -20, 20, 5, 5, 20, -20, 140};
+        float MiddlePositionScoreTemp[8][8] = {{140, -20, 20, 5, 5, 20, -20, 140},
+                                               {-20, -40, -5, -5, -5, -5, -40, -20},
+                                               {20, -5, 15, 3, 3, 15, -5, 20},
+                                               {5, -5, 3, 3, 3, 3, -5, 5},
+                                               {5, -5, 3, 3, 3, 3, -5, 5},
+                                               {20, -5, 15, 3, 3, 15, -5, 20},
+                                               {-20, -40, -5, -5, -5, -5, -40, -20},
+                                               {140, -20, 20, 5, 5, 20, -20, 140}};
+        for (int i = 0; i < SIZE_OTHELLO; i++)
+            for (int j = 0; j < SIZE_OTHELLO; j++)
+                MiddlePositionScore[i][j] = MiddlePositionScoreTemp[i][j];
+
         return MiddlePositionScore;
     }
     else
     {
-        float **EndPositionScore = calloc(SIZE_OTHELLO, sizeof(int *));
+        float **EndPositionScore = calloc(SIZE_OTHELLO, sizeof(float *));
         for (int i = 0; i < SIZE_OTHELLO; i++)
         {
-            EndPositionScore[i] = calloc(SIZE_OTHELLO, sizeof(int));
+            EndPositionScore[i] = calloc(SIZE_OTHELLO, sizeof(float));
         }
-        EndPositionScore[0] = (float[]){20, -5, 10, 5, 5, 10, -5, 20},
-        EndPositionScore[1] = (float[]){-5, -10, 5, 5, 5, 5, -10, -5},
-        EndPositionScore[2] = (float[]){20, 5, 5, 5, 5, 5, 5, 10},
-        EndPositionScore[3] = (float[]){5, 5, 3, 5, 5, 5, 5, 5},
-        EndPositionScore[4] = (float[]){5, 5, 3, 5, 5, 5, 5, 5},
-        EndPositionScore[5] = (float[]){10, 5, 5, 5, 5, 5, 5, 10},
-        EndPositionScore[6] = (float[]){-5, -10, 5, 5, 5, 5, -10, -5},
-        EndPositionScore[7] = (float[]){20, -5, 10, 5, 5, 10, -5, 20};
+        float EndPositionScoreTemp[8][8] = {{20, -5, 10, 5, 5, 10, -5, 20},
+                                            {-5, -10, 5, 5, 5, 5, -10, -5},
+                                            {20, 5, 5, 5, 5, 5, 5, 10},
+                                            {5, 5, 3, 5, 5, 5, 5, 5},
+                                            {5, 5, 3, 5, 5, 5, 5, 5},
+                                            {10, 5, 5, 5, 5, 5, 5, 10},
+                                            {-5, -10, 5, 5, 5, 5, -10, -5},
+                                            {20, -5, 10, 5, 5, 10, -5, 20}};
+        for (int i = 0; i < SIZE_OTHELLO; i++)
+            for (int j = 0; j < SIZE_OTHELLO; j++)
+                EndPositionScore[i][j] = EndPositionScoreTemp[i][j];
+
         return EndPositionScore;
     }
 }
 
-float *tree_values(cell **board, int numMoves)
+float *tree_values(cell **board, int **possible, int move, int color)
 // Renvoie le tableau des valeurs contenues dans gameState en fonction des indices des cases valides
 {
-    int **possible = possibilities(board, numMoves); // tableau des indices des cases valides
-    float **state = gameState(BEGIN);                // Importance des cases
-    float *tree_values = calloc(numMoves, sizeof(float));
-    for (int i = 0; i < numMoves; i++)
+    // Creation d un nouveau plateau où on posera une des cases possibles
+    cell **tmp_board = initializeBoard();
+    copyBoard(board, tmp_board);
+    fill(tmp_board, possible[move][0], possible[move][1], color);
+
+    reset_valid(tmp_board);
+    if (color == BLANC)
+        color = NOIR;
+    else
+        color = BLANC; // changement de team
+
+    int tmp_numMoves = show_valid(tmp_board, color);
+    int **tmp_possible = possibilities(tmp_board, tmp_numMoves);
+    // On regarde ensuite les differentes possibilites du coup adverse
+    // printBoard(tmp_board);
+    float **state = gameState(BEGIN); // Importance des cases
+    float *tree_values = calloc(tmp_numMoves, sizeof(float));
+
+    for (int i = 0; i < tmp_numMoves; i++)
     {
-        float value = state[possible[i][0]][possible[i][1]];
+        float value = state[tmp_possible[i][0]][tmp_possible[i][1]];
         tree_values[i] = value;
+        // printf("%f %d %d ", value, tmp_possible[i][0], tmp_possible[i][1]);
     }
-    // free_matrix_float(state, SIZE_OTHELLO);
-    // free_matrix_int(possible, numMoves);
-    return tree_values;
+    // printf("\n");
+    free_matrix_float(state, SIZE_OTHELLO);
+    free_matrix_int(tmp_possible, tmp_numMoves);
+    freeBoard(tmp_board);
+
+    return tree_values; // puis on renvoie l'arbre des differentes valeurs obtenues
 }
 
-int minimax(tree *root, int depth, int color)
+float minimax(tree *root, int depth, int color)
 // Blanc - MAXIMIZE
 // Noir - MINIMIZE
 {
@@ -271,10 +303,12 @@ int hard_mode(cell **board, int color)
                 3.000000                         5.000000                      -4.000000                         9.000000
         -1.000000       3.000000        5.000000        1.000000        -6.000000       -4.000000       0.000000        9.000000
     On a donc besoin de créer 7 noeuds auparavant pour qu'ils puissent contenir les différentes valeurs min et max
-    ce qui correspond à numMoves - 1 */
+    ce qui correspond à numMoves - 1
+    Pour chaque arbre, on utilisera minimax et nous prendrons la solution la plus adéquate */
 {
     int numMoves = show_valid(board, color);
     int finalSize = 0;
+    int original_color = color;
     if (numMoves == 0) // pas de cases valides
     {
         return 0;
@@ -292,31 +326,64 @@ int hard_mode(cell **board, int color)
     {
         finalSize = powf(2.0, log_int + 1) - 1 + numMoves;
     }
-    printf("SSSSSS %d\n", finalSize);
 
-    float *tree_val = tree_values(board, numMoves);
     float *final_array = calloc(finalSize, sizeof(float));
-    // tableau qui contiendra les valeurs de l'arbre et les noeuds supplémentaires
+    float bestMoveWhite = MAX_EVAL;
+    float bestMoveBlack = MIN_EVAL;
+    float bestMove;
+    int best_index;
 
-    int tree_index = 0;
-    if (is_power_of_2)
+    // color == BLANC ? bestValue = MIN_EVAL : bestValue = MAX_EVAL;
+
+    int **possible = possibilities(board, numMoves); // tableau des indices des cases valides
+
+    // Pour tout les moves possibles, on va observer les possibles
+    // coups adverses pour voir quelle est la meilleure case à utiliser
+    for (int move = 0; move < numMoves; move++)
     {
-        for (int i = numMoves - 1; i < finalSize; i++)
+        int tree_index = 0;
+        float *tree_val = tree_values(board, possible, move, color);
+
+        // tableau qui contiendra les valeurs de l'arbre binaire
+        if (is_power_of_2)
         {
-            final_array[i] = tree_val[tree_index];
-            tree_index++;
+            for (int i = numMoves - 1; i < finalSize; i++)
+            {
+                final_array[i] = tree_val[tree_index];
+                tree_index++;
+            }
         }
-    }
-    else
-    {
-        for (int i = powf(2.0, log_int + 1) - 1; i < finalSize; i++)
+        else
         {
-            final_array[i] = tree_val[tree_index];
-            tree_index++;
+            for (int i = powf(2.0, log_int + 1) - 1; i < finalSize; i++)
+            {
+                final_array[i] = tree_val[tree_index];
+                tree_index++;
+            }
         }
+        tree *root = insertInTree(final_array, 0, finalSize);
+        if (color == BLANC)
+            color = NOIR;
+        else
+            color = BLANC; // changement de team comme dans tree_values pour garder la bonne couleur
+
+        float minmax = minimax(root, height(root), color);
+
+        if (color == BLANC) // choix de la meilleure valeur et du meilleur indice
+        {
+            bestMove = max(bestMoveWhite, minmax);
+            if (bestMove == minmax)
+                best_index = move;
+        }
+        else
+        {
+            bestMove = min(bestMoveBlack, minmax);
+            if (bestMove == minmax)
+                best_index = move;
+        }
+        printf("Au secours %f \n", minmax);
+        color = original_color; // On reviens à la couleur de base pour reboucler
     }
-    tree *root = insertInTree(final_array, 0, finalSize);
-    minimax(root, height(root), color);
-    printTree(root);
-    return 0;
+    fill(board, possible[best_index][0], possible[best_index][1], color);
+    return 1;
 }

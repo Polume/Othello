@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <SDL2/SDL.h>
 #include <math.h>
+#include "linked_list.h"
 #include "othello.h"
 
 #define BEGIN 0
@@ -35,9 +36,9 @@ void printCurrentLevel(tree *root, int level);
 void printTree(tree *root);
 
 float **gameState(int state);
-float *tree_values(cell **board, int numMoves);
+float *tree_values(cell **board, int **possible, int move, int color);
 
-int minimax(tree *root, int depth, int color);
+float minimax(tree *root, int depth, int color);
 int hard_mode(cell **board, int color);
 
 #endif
