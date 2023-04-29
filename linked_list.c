@@ -31,6 +31,17 @@ cell **copyBoard(cell **board, cell **board2)
     return board2;
 }
 
+void backBoard(cell** actual_board, cell** last_board)
+{
+    for (int i = 0; i < SIZE_OTHELLO; i++)
+    {
+        for (int j = 0; j < SIZE_OTHELLO; j++)
+        {
+            actual_board[i][j] = last_board[i][j];
+        }
+    }
+}
+
 int check_next(list **head)
 {
     if ((*head)->next != NULL)

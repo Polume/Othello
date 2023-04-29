@@ -1,6 +1,6 @@
 CC = gcc
 CFLAGS = -Wall -std=c99
-IFLAGS = -lSDL2 -lSDL2_image -lm
+IFLAGS = -lSDL2 -lSDL2_image -lSDL2_ttf -lSDL2_mixer -lm
 
 all: run
 
