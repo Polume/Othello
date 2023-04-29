@@ -10,13 +10,6 @@ void init_package(void)
         Error("Initialisation des types d'images échoué !");
 }
 
-void Quit_GUI(SDL_Window *window, SDL_Renderer *renderer)
-{
-    SDL_DestroyRenderer(renderer);
-    SDL_DestroyWindow(window);
-    SDL_Quit();
-}
-
 void Error(char *chaine)
 // Renvoie un message d'erreur en fonction de la fonction
 {
@@ -24,7 +17,7 @@ void Error(char *chaine)
     exit(EXIT_FAILURE);
 }
 
-int init_BG_image(SDL_Window *window, SDL_Renderer *renderer, SDL_Surface *image_BG, SDL_Texture *texture_BG, int mode)
+void init_BG_image(SDL_Renderer *renderer, SDL_Surface *image_BG, SDL_Texture *texture_BG, int mode)
 {
     // Récupération de l'image
     image_BG = IMG_Load("Pictures/BG_Othello.png");
@@ -43,12 +36,13 @@ int init_BG_image(SDL_Window *window, SDL_Renderer *renderer, SDL_Surface *image
     // Créer la texture avec l'image
     texture_BG = SDL_CreateTextureFromSurface(renderer, image_BG);
     if (texture_BG == NULL)
-        Error("Chargement de la texture échoué !");
+        Error("Chargement de la texture échouée !");
 
     // Dessiner la texture dans le rendue
     SDL_RenderCopy(renderer, texture_BG, NULL, NULL);
 
-    return EXIT_SUCCESS;
+    SDL_DestroyTexture(texture_BG);
+    SDL_FreeSurface(image_BG);
 }
 
 int init_base_Othello(SDL_Window *window, SDL_Renderer *renderer, SDL_Surface *image_base, SDL_Texture *texture_base, int mode)
@@ -81,6 +75,8 @@ int init_base_Othello(SDL_Window *window, SDL_Renderer *renderer, SDL_Surface *i
     // Dessiner la texture dans le rendue
     SDL_RenderCopy(renderer, texture_base, NULL, &rect_sides);
 
+    SDL_DestroyTexture(texture_base);
+    SDL_FreeSurface(image_base);
     return EXIT_SUCCESS;
 }
 
@@ -122,6 +118,16 @@ points **Cree_mat(SDL_Window* window)
         rect_Othello[3] = rect_Othello[3];
     }
     return mat_Othello;
+}
+
+void freeMat(points** board)
+// Libere la memoire du tableau
+{
+    for (int i = 0; i < SIZE_OTHELLO; i++)
+    {
+        free(board[i]);
+    }
+    free(board);
 }
 
 partie get_screen_size(SDL_Window *window)

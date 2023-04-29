@@ -107,7 +107,6 @@ int is_valid(cell **board, int i, int j, int color)
 {
     int maxi = 0;
     int mini = 0;
-    int not_color = 0;
     if (board[i][j].color == VERT &&
         check_neighbors_lines(board, i, j, color) &&
         check_lines(board, i, color) >= 0)
@@ -116,31 +115,21 @@ int is_valid(cell **board, int i, int j, int color)
         mini = min(j, check_lines(board, i, color));
         mini++; // La case actuelle sera soit de la couleur correspondante soit verte, on avance donc d'un cran
         while (mini < maxi && board[i][mini].color != VERT)
-        {
-            if (board[i][mini].color != color)
-                not_color = 1;
             mini++; // on boucle entre les indices j et l'indice de la colonne
                     // renvoyé par check_lines pour voir s'il n y a pas de cases vertes entre
-        }
-        if (mini == maxi && not_color)
+        if (mini == maxi)
             return 1;
     }
     else if (board[i][j].color == VERT &&
              check_neighbors_rows(board, i, j, color) &&
              check_rows(board, j, color) >= 0)
     {
-        not_color = 0;
         maxi = max(i, check_rows(board, j, color));
         mini = min(i, check_rows(board, j, color));
         mini++;
         while (mini < maxi && board[mini][j].color != VERT)
-        {
-            if (board[mini][j].color != color)
-                not_color = 1;
-            mini++; // on boucle entre les indices j et l'indice de la colonne
-                    // renvoyé par check_lines pour voir s'il n y a pas de cases vertes entre
-        }
-        if (mini == maxi && not_color)
+            mini++;
+        if (mini == maxi)
             return 1;
     }
 

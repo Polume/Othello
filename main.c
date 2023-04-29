@@ -39,7 +39,7 @@ int main(int argc, char *argv[])
     points* pts_bouttons;
 
     int mode = 0;
-    int i, j, mouse_x, mouse_y, team = BLANC, cnt_b = 0, cnt_w = 0, win = 0;
+    int i, j, IA_p=0, mouse_x, mouse_y, team = BLANC, cnt_b = 0, cnt_w = 0, win = 0;
     int intro = SDL_TRUE, choix = 0;
     int key_press_ctrl = SDL_FALSE;
 
@@ -54,7 +54,7 @@ int main(int argc, char *argv[])
     // Création de la fenêtre
     SDL_DisplayMode current;
     SDL_GetCurrentDisplayMode(0, &current);
-    window = SDL_CreateWindow("Othello", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, current.w, current.h, SDL_WINDOW_FULLSCREEN/*SDL_WINDOW_SHOWN*/);
+    window = SDL_CreateWindow("Othello", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, current.w, current.h, SDL_WINDOW_FULLSCREEN /*SDL_WINDOW_SHOWN*/);
     if (window == NULL)
         Error("Création fenêtre échouée !");
     // Creation du rendue
@@ -68,7 +68,7 @@ int main(int argc, char *argv[])
     matrice_Othello = initializeBoard();
     list* head = newList(matrice_Othello);
 
-    init_BG_image(window, renderer, image_intro, texture_intro, mode);
+    init_BG_image(renderer, image_intro, texture_intro, mode);
     pts_bouttons = init_bouttons(window, renderer, image_bouttons, texture_bouttons);
 
     //EN COUR
@@ -78,7 +78,7 @@ int main(int argc, char *argv[])
     //Jouer la musique d'ambiance
     Mix_PlayChannel(0, ambiance_sound, -1);
     Mix_Volume(0, MIX_MAX_VOLUME * 0.1 );
-
+    Mix_Volume(1, MIX_MAX_VOLUME * 0.1);
     //////////////////////////////////////////////////////////
     //-------------------------------------------------------
     /* || Code after init : Event Code  || */
@@ -89,7 +89,7 @@ int main(int argc, char *argv[])
         {
             Mix_PlayChannel(0, ambiance_sound_UwU, -1);
         }
-        if (isEndGame(matrice_Othello))
+        if (isEndGame(matrice_Othello) && win != 0)
         {// FIN de partie
             count_score(matrice_Othello, &cnt_w, &cnt_b);
             if (cnt_w > cnt_b)
@@ -109,7 +109,7 @@ int main(int argc, char *argv[])
                 image_mode, texture_mode, image_pion, texture_pion,
                 texture_txt, font, matrice_Othello, mat_rect_Othello,
                 cnt_w, cnt_b, win, team, mode);
-            Mix_PlayChannel(-1, fin_sound, 0);
+            Mix_PlayChannel(1, fin_sound, 0);
         }
         while (SDL_PollEvent(&e))
         {
@@ -179,16 +179,20 @@ int main(int argc, char *argv[])
                                 if (choix == 2)
                                 {
                                     reset_valid(matrice_Othello);
-                                    easy_mode(matrice_Othello, team);
+                                    IA_p = easy_mode(matrice_Othello, team);
                                     push(&head, matrice_Othello);
                                     printBoard(matrice_Othello);
 
-                                    if (team == BLANC)
-                                        team = NOIR;
-                                    else
-                                        team = BLANC;
+                                    
+                                    if (IA_p !=0)
+                                    {
+                                        if (team == BLANC)
+                                            team = NOIR;
+                                        else
+                                            team = BLANC;
+                                        Mix_PlayChannel(-1, click_sound, 0);
+                                    }
 
-                                    Mix_PlayChannel(-1, click_sound, 0);
                                     DisplayAll(window, renderer,
                                         image_BG, texture_BG, image_base, texture_base,
                                         image_mode, texture_mode, image_pion, texture_pion,
@@ -239,7 +243,7 @@ int main(int argc, char *argv[])
                         intro = SDL_TRUE;
                         mode = 0;
                         DisplayAll_clear(window, renderer, image_BG, texture_BG, image_base, texture_base, image_mode, texture_mode, image_pion, texture_pion, texture_txt);
-                        init_BG_image(window, renderer, image_intro, texture_intro, mode);
+                        init_BG_image(renderer, image_intro, texture_intro, mode);
                         pts_bouttons = init_bouttons(window, renderer, image_bouttons, texture_bouttons);
                         SDL_RenderPresent(renderer);
                     }
@@ -378,11 +382,13 @@ int main(int argc, char *argv[])
 
     /* denit renderer */
     SDL_RenderClear(renderer);
-    Quit_GUI(window, renderer);
+    SDL_DestroyRenderer(renderer);
+    SDL_DestroyWindow(window);
+    SDL_Quit();
 
     /* denit pointeurs */
     freeBoard(matrice_Othello);
-    free(mat_rect_Othello);
+    freeMat(mat_rect_Othello);
     free_linked_list(head);
 
     return EXIT_SUCCESS;
