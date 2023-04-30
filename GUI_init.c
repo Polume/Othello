@@ -21,10 +21,9 @@ void init_BG_image(SDL_Renderer *renderer, SDL_Surface *image_BG, SDL_Texture *t
 {
     // Récupération de l'image
     image_BG = IMG_Load("Pictures/BG_Othello.png");
-    
     if (mode == 0)
         image_BG = IMG_Load("Pictures/Oth.png"); 
-    else if (mode == 2)
+    else if (mode == 1)
         image_BG = IMG_Load("Pictures/BG_Othello.png");
     /*      UwU     */
     else if (mode == 2)

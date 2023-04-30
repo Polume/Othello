@@ -38,7 +38,7 @@ int main(int argc, char *argv[])
     cell** matrice_Othello;
     points* pts_bouttons;
 
-    int mode = 0;
+    int mode = 0, change_amb = 1;
     int i, j, IA_p=0, mouse_x, mouse_y, team = BLANC, cnt_b = 0, cnt_w = 0, win = 0;
     int intro = SDL_TRUE, choix = 0;
     int key_press_ctrl = SDL_FALSE;
@@ -46,11 +46,12 @@ int main(int argc, char *argv[])
     ////////////////////////////////////////////////////////// INITIALISATION DE L'INTERFACE GRAPHIQUE //////////////////////////////////////////////////////////
     TTF_Init();
     init_package();
-    Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048);
+    Mix_OpenAudio(MIX_DEFAULT_FREQUENCY, MIX_DEFAULT_FORMAT, 2, 2048);
     Mix_Chunk* click_sound = Mix_LoadWAV("Sound/placer_pion.wav");
     Mix_Chunk* fin_sound = Mix_LoadWAV("Sound/bravo.wav");
     Mix_Chunk* ambiance_sound = Mix_LoadWAV("Sound/ambiance1.wav");
     Mix_Chunk* ambiance_sound_UwU = Mix_LoadWAV("Sound/ambiance2.wav");
+    Mix_Chunk* sus_sound = Mix_LoadWAV("Sound/sus.wav");
     // Création de la fenêtre
     SDL_DisplayMode current;
     SDL_GetCurrentDisplayMode(0, &current);
@@ -77,7 +78,7 @@ int main(int argc, char *argv[])
     SDL_RenderPresent(renderer);
     //Jouer la musique d'ambiance
     Mix_PlayChannel(0, ambiance_sound, -1);
-    Mix_Volume(0, MIX_MAX_VOLUME * 0.1 );
+    Mix_Volume(0, MIX_MAX_VOLUME * 0.1);
     Mix_Volume(1, MIX_MAX_VOLUME * 0.1);
     //////////////////////////////////////////////////////////
     //-------------------------------------------------------
@@ -85,9 +86,12 @@ int main(int argc, char *argv[])
     SDL_bool quit = SDL_FALSE;
     while (!quit)
     {
-        if (mode == 2)
+        if (mode == 2 && change_amb == 1)
         {
-            Mix_PlayChannel(0, ambiance_sound_UwU, -1);
+            change_amb = 0;
+            Mix_HaltChannel(0);
+            Mix_PlayChannel(1, ambiance_sound_UwU, -1);
+            Mix_PlayChannel(-1, sus_sound, 0);
         }
         if (isEndGame(matrice_Othello) && win != 0)
         {// FIN de partie
@@ -109,7 +113,7 @@ int main(int argc, char *argv[])
                 image_mode, texture_mode, image_pion, texture_pion,
                 texture_txt, font, matrice_Othello, mat_rect_Othello,
                 cnt_w, cnt_b, win, team, mode);
-            Mix_PlayChannel(1, fin_sound, 0);
+            Mix_PlayChannel(0, fin_sound, 0);
         }
         while (SDL_PollEvent(&e))
         {
@@ -222,14 +226,14 @@ int main(int argc, char *argv[])
 
             case SDL_QUIT:
                 quit = SDL_TRUE;
-                break;
+                continue;
 
             case SDL_KEYDOWN: 
                 switch (e.key.keysym.sym)
                 {
                 case SDLK_q:
                     quit = SDL_TRUE;
-                    break;
+                    continue;
                 case SDLK_n:
                     // Retourne a la séléction du mode de jeu
                     if (key_press_ctrl == SDL_TRUE)
@@ -357,18 +361,23 @@ int main(int argc, char *argv[])
             DisplayAll_clear(window, renderer, image_BG, texture_BG, image_base, texture_base, image_mode, texture_mode, image_pion, texture_pion, texture_txt);
         }
     }
-
+    printf("sortie\n");
     //-----------Desttruction des variables pointeurs-----------//
+    SDL_RenderClear(renderer);
     /* Deinit TTF */
     SDL_DestroyTexture(texture_txt);
-    TTF_Quit();
+    
 
     /* Deinit Audio */
+    Mix_HaltChannel(0);
+    Mix_HaltChannel(1);
+    Mix_HaltChannel(2);
     Mix_FreeChunk(ambiance_sound_UwU);
     Mix_FreeChunk(ambiance_sound);
     Mix_FreeChunk(click_sound);
     Mix_FreeChunk(fin_sound);
     Mix_CloseAudio();
+    Mix_Quit();
 
     /* denit textures d'images */
     SDL_DestroyTexture(texture_BG);
@@ -380,16 +389,17 @@ int main(int argc, char *argv[])
     SDL_FreeSurface(image_mode);
     SDL_FreeSurface(image_base);
 
-    /* denit renderer */
-    SDL_RenderClear(renderer);
-    SDL_DestroyRenderer(renderer);
-    SDL_DestroyWindow(window);
-    SDL_Quit();
-
     /* denit pointeurs */
     freeBoard(matrice_Othello);
     freeMat(mat_rect_Othello);
     free_linked_list(head);
+
+    /* denit renderer */
+    
+    TTF_Quit();
+    SDL_DestroyWindow(window);
+    SDL_DestroyRenderer(renderer);
+    SDL_Quit();
 
     return EXIT_SUCCESS;
 }
