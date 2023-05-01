@@ -89,11 +89,11 @@ int main(int argc, char *argv[])
         if (mode == 2 && change_amb == 1)
         {
             change_amb = 0;
-            Mix_HaltChannel(0);
-            Mix_PlayChannel(1, ambiance_sound_UwU, -1);
+            //Mix_HaltChannel(0);
+            Mix_PlayChannel(0, ambiance_sound_UwU, -1);
             Mix_PlayChannel(-1, sus_sound, 0);
         }
-        if (isEndGame(matrice_Othello) && win != 0)
+        if (isEndGame(matrice_Othello) && win == 0)
         {// FIN de partie
             count_score(matrice_Othello, &cnt_w, &cnt_b);
             if (cnt_w > cnt_b)
@@ -113,7 +113,7 @@ int main(int argc, char *argv[])
                 image_mode, texture_mode, image_pion, texture_pion,
                 texture_txt, font, matrice_Othello, mat_rect_Othello,
                 cnt_w, cnt_b, win, team, mode);
-            Mix_PlayChannel(0, fin_sound, 0);
+            Mix_PlayChannel(1, fin_sound, 0);
         }
         while (SDL_PollEvent(&e))
         {
@@ -144,7 +144,7 @@ int main(int argc, char *argv[])
 
                 if (intro == SDL_FALSE)
                 {
-                    mode = 1;
+                    mode = 2;
                     DisplayAll(window, renderer,
                         image_BG, texture_BG, image_base, texture_base,
                         image_mode, texture_mode, image_pion, texture_pion,
@@ -179,6 +179,8 @@ int main(int argc, char *argv[])
                                     image_mode, texture_mode, image_pion, texture_pion,
                                     texture_txt, font, matrice_Othello, mat_rect_Othello,
                                     cnt_w, cnt_b, win, team, mode);
+
+                                printf("\njoueur1 : %d\n\n", team);
                                 ////////////////////////////////////// VS IA //////////////////////////////////////
                                 if (choix == 2)
                                 {
@@ -187,31 +189,36 @@ int main(int argc, char *argv[])
                                     push(&head, matrice_Othello);
                                     printBoard(matrice_Othello);
 
-                                    
-                                    if (IA_p !=0)
+                                    if (IA_p != 0)
                                     {
                                         if (team == BLANC)
                                             team = NOIR;
                                         else
                                             team = BLANC;
-                                        Mix_PlayChannel(-1, click_sound, 0);
-                                    }
 
-                                    DisplayAll(window, renderer,
-                                        image_BG, texture_BG, image_base, texture_base,
-                                        image_mode, texture_mode, image_pion, texture_pion,
-                                        texture_txt, font, matrice_Othello, mat_rect_Othello,
-                                        cnt_w, cnt_b, win, team, mode);
+                                        printf("\njoueur2 : %d\n\n", team);
+                                        DisplayAll(window, renderer,
+                                            image_BG, texture_BG, image_base, texture_base,
+                                            image_mode, texture_mode, image_pion, texture_pion,
+                                            texture_txt, font, matrice_Othello, mat_rect_Othello,
+                                            cnt_w, cnt_b, win, team, mode);
+                                    }
                                 }
                                 ////////////////////////////////////// VS IA //////////////////////////////////////
-                            }
+                            }                           
                         }
-                        else
+                        if (show_valid(matrice_Othello, team) == 0)
                         {
                             if (team == BLANC)
                                 team = NOIR;
                             else
                                 team = BLANC;
+                            DisplayAll(window, renderer,
+                                image_BG, texture_BG, image_base, texture_base,
+                                image_mode, texture_mode, image_pion, texture_pion,
+                                texture_txt, font, matrice_Othello, mat_rect_Othello,
+                                cnt_w, cnt_b, win, team, mode);
+
                         }
                         break;
 

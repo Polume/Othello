@@ -334,6 +334,7 @@ void DisplayAll(SDL_Window* window, SDL_Renderer* renderer,
     cell** matrice_Othello, points** mat_rect_Othello,
     int cnt_w, int cnt_b, int win, int team, int mode)
 {
+    SDL_RenderClear(renderer);
     Affiche_Othello(window, renderer,
         image_BG, texture_BG,
         image_base, texture_base,
