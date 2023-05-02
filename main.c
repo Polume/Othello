@@ -17,22 +17,6 @@ int main(int argc, char *argv[])
     SDL_Window* window = NULL;
     SDL_Renderer* renderer = NULL;
 
-    SDL_Surface* image_intro = NULL;
-    SDL_Texture* texture_intro = NULL;
-    SDL_Surface* image_bouttons = NULL;
-    SDL_Texture* texture_bouttons = NULL;
-    SDL_Surface* image_BG = NULL;
-    SDL_Texture* texture_BG = NULL;
-    SDL_Surface* image_base = NULL;
-    SDL_Texture* texture_base = NULL;
-    SDL_Surface* image_pion = NULL;
-    SDL_Texture* texture_pion = NULL;
-    SDL_Surface* image_mode = NULL;
-    SDL_Texture* texture_mode = NULL;
-    SDL_Texture* texture_txt = NULL;
-
-    SDL_Surface* surface_barre_txt = NULL;
-    
     SDL_Event e;
 
     cell** matrice_Othello;
@@ -52,25 +36,24 @@ int main(int argc, char *argv[])
     Mix_Chunk* ambiance_sound = Mix_LoadWAV("Sound/ambiance1.wav");
     Mix_Chunk* ambiance_sound_UwU = Mix_LoadWAV("Sound/ambiance2.wav");
     Mix_Chunk* sus_sound = Mix_LoadWAV("Sound/sus.wav");
-    // Création de la fenêtre
+    // Creation de la fenetre
     SDL_DisplayMode current;
     SDL_GetCurrentDisplayMode(0, &current);
     window = SDL_CreateWindow("Othello", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, current.w, current.h, SDL_WINDOW_FULLSCREEN /*SDL_WINDOW_SHOWN*/);
     if (window == NULL)
-        Error("Création fenêtre échouée !");
+        Error("Creation fenetre echouee !");
     // Creation du rendue
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
     if (renderer == NULL)
-        Error("Création du rendu échoué !");
+        Error("Creation du rendu echoue !");
     partie ecran100 = slice_screen_100(get_screen_size(window).w, get_screen_size(window).h);
-    TTF_Font* font = TTF_OpenFont("arial.ttf", (int)(ecran100.h * 4.7));
 
     points** mat_rect_Othello = Cree_mat(window);
     matrice_Othello = initializeBoard();
     list* head = newList(matrice_Othello);
 
-    init_BG_image(renderer, image_intro, texture_intro, mode);
-    pts_bouttons = init_bouttons(window, renderer, image_bouttons, texture_bouttons);
+    init_BG_image(renderer, mode);
+    pts_bouttons = init_bouttons(window, renderer);
 
     //EN COUR
     //barre_txt(window, renderer, surface_barre_txt, texture_txt, font);
@@ -108,11 +91,9 @@ int main(int argc, char *argv[])
             {
                 win = 3;
             }
-            DisplayAll(window, renderer,
-                image_BG, texture_BG, image_base, texture_base,
-                image_mode, texture_mode, image_pion, texture_pion,
-                texture_txt, font, matrice_Othello, mat_rect_Othello,
-                cnt_w, cnt_b, win, team, mode);
+            DisplayAll(window, renderer,  
+                        matrice_Othello, mat_rect_Othello,
+                        cnt_w, cnt_b, win, team, mode);
             Mix_PlayChannel(1, fin_sound, 0);
         }
         while (SDL_PollEvent(&e))
@@ -144,11 +125,9 @@ int main(int argc, char *argv[])
 
                 if (intro == SDL_FALSE)
                 {
-                    mode = 2;
-                    DisplayAll(window, renderer,
-                        image_BG, texture_BG, image_base, texture_base,
-                        image_mode, texture_mode, image_pion, texture_pion,
-                        texture_txt, font, matrice_Othello, mat_rect_Othello,
+                    mode = 1;
+                    DisplayAll(window, renderer,  
+                        matrice_Othello, mat_rect_Othello,
                         cnt_w, cnt_b, win, team, mode);
                 }
             }
@@ -174,11 +153,9 @@ int main(int argc, char *argv[])
                                     team = BLANC;
 
                                 Mix_PlayChannel(-1, click_sound, 0);
-                                DisplayAll(window, renderer,
-                                    image_BG, texture_BG, image_base, texture_base,
-                                    image_mode, texture_mode, image_pion, texture_pion,
-                                    texture_txt, font, matrice_Othello, mat_rect_Othello,
-                                    cnt_w, cnt_b, win, team, mode);
+                                DisplayAll(window, renderer,  
+                        matrice_Othello, mat_rect_Othello,
+                        cnt_w, cnt_b, win, team, mode);
 
                                 printf("\njoueur1 : %d\n\n", team);
                                 ////////////////////////////////////// VS IA //////////////////////////////////////
@@ -197,11 +174,9 @@ int main(int argc, char *argv[])
                                             team = BLANC;
 
                                         printf("\njoueur2 : %d\n\n", team);
-                                        DisplayAll(window, renderer,
-                                            image_BG, texture_BG, image_base, texture_base,
-                                            image_mode, texture_mode, image_pion, texture_pion,
-                                            texture_txt, font, matrice_Othello, mat_rect_Othello,
-                                            cnt_w, cnt_b, win, team, mode);
+                                        DisplayAll(window, renderer,  
+                        matrice_Othello, mat_rect_Othello,
+                        cnt_w, cnt_b, win, team, mode);
                                     }
                                 }
                                 ////////////////////////////////////// VS IA //////////////////////////////////////
@@ -213,11 +188,9 @@ int main(int argc, char *argv[])
                                 team = NOIR;
                             else
                                 team = BLANC;
-                            DisplayAll(window, renderer,
-                                image_BG, texture_BG, image_base, texture_base,
-                                image_mode, texture_mode, image_pion, texture_pion,
-                                texture_txt, font, matrice_Othello, mat_rect_Othello,
-                                cnt_w, cnt_b, win, team, mode);
+                            DisplayAll(window, renderer,  
+                        matrice_Othello, mat_rect_Othello,
+                        cnt_w, cnt_b, win, team, mode);
 
                         }
                         break;
@@ -229,7 +202,7 @@ int main(int argc, char *argv[])
             }
 
             switch (e.type)
-            {// Touche pressée
+            {// Touche pressee
 
             case SDL_QUIT:
                 quit = SDL_TRUE;
@@ -242,8 +215,8 @@ int main(int argc, char *argv[])
                     quit = SDL_TRUE;
                     continue;
                 case SDLK_n:
-                    // Retourne a la séléction du mode de jeu
-                    if (key_press_ctrl == SDL_TRUE)
+                    // Retourne a la selection du mode de jeu
+                    if (key_press_ctrl == SDL_TRUE && intro == SDL_FALSE)
                     {
                         freeBoard(matrice_Othello);
                         free_linked_list(head);
@@ -253,20 +226,19 @@ int main(int argc, char *argv[])
 
                         intro = SDL_TRUE;
                         mode = 0;
-                        DisplayAll_clear(window, renderer, image_BG, texture_BG, image_base, texture_base, image_mode, texture_mode, image_pion, texture_pion, texture_txt);
-                        init_BG_image(renderer, image_intro, texture_intro, mode);
-                        pts_bouttons = init_bouttons(window, renderer, image_bouttons, texture_bouttons);
+                        SDL_RenderClear(renderer);
+                        init_BG_image(renderer, mode);
+                        pts_bouttons = init_bouttons(window, renderer);
                         SDL_RenderPresent(renderer);
                     }
                     break;
                 case SDLK_z:
-                    if (key_press_ctrl == SDL_TRUE)
-                    {// Effectue un retour en arrière
+                    if (key_press_ctrl == SDL_TRUE && intro == SDL_FALSE)
+                    {// Effectue un retour en arriere
                         //printf("CTRL_Z\n");
                         if (check_next(&head) == 1)
                         {
-                            DisplayAll_clear(window, renderer, image_BG, texture_BG, image_base, texture_base, image_mode, texture_mode, image_pion, texture_pion, texture_txt);
-                            if (choix == 1)
+                            SDL_RenderClear(renderer);                            if (choix == 1)
                             {// Version joueur vs joueur
                                 go_back(&head);
                                 display_linked_list(head);
@@ -286,16 +258,14 @@ int main(int argc, char *argv[])
                                     backBoard(matrice_Othello, head->board);
                                 }
                             }
-                            DisplayAll(window, renderer,
-                                image_BG, texture_BG, image_base, texture_base,
-                                image_mode, texture_mode, image_pion, texture_pion,
-                                texture_txt, font, matrice_Othello, mat_rect_Othello,
-                                cnt_w, cnt_b, win, team, mode);
+                            DisplayAll(window, renderer,  
+                        matrice_Othello, mat_rect_Othello,
+                        cnt_w, cnt_b, win, team, mode);
                         }
                     }
                     break;
                 case SDLK_s:
-                    if (key_press_ctrl == SDL_TRUE)
+                    if (key_press_ctrl == SDL_TRUE && intro == SDL_FALSE)
                     {
                         // cas de la sauvegarde du plateau dans un fichier txt
                         printf("CTRL_S\n");
@@ -318,6 +288,8 @@ int main(int argc, char *argv[])
                     }
                     break;
                 case SDLK_o:
+                    if (key_press_ctrl == SDL_TRUE && intro == SDL_FALSE)
+                    {
                     // cas de l'ouverture du fichier sauvegarde
                     printf("CTRL_O\n");
                     FILE* f;
@@ -325,37 +297,36 @@ int main(int argc, char *argv[])
                     f = fopen("save.oth", "rb");
                     if (f == NULL)
                     {
-                        printf("Ouverture du fichier impossible.(open)\n");
-                        exit(1);
-                    }
-                    for (int i = 0; i < SIZE_OTHELLO; i++)
-                    {
-                        for (int j = 0; j < SIZE_OTHELLO; j++)
-                        {
-                            fread(&matrice_Othello[i][j].valide, sizeof(int), 1, f);
-                            fread(&matrice_Othello[i][j].color, sizeof(int), 1, f);
+                            printf("Ouverture du fichier impossible.(open)\n");
+                            exit(1);
                         }
-                    }
-                    head = newList(matrice_Othello); // On initialise ensuite la liste chainee au nouveau plateau
-                    fclose(f);
-                    DisplayAll_clear(window, renderer, image_BG, texture_BG, image_base, texture_base, image_mode, texture_mode, image_pion, texture_pion, texture_txt);
-                    DisplayAll(window, renderer,
-                        image_BG, texture_BG, image_base, texture_base,
-                        image_mode, texture_mode, image_pion, texture_pion,
-                        texture_txt, font, matrice_Othello, mat_rect_Othello,
+                        for (int i = 0; i < SIZE_OTHELLO; i++)
+                        {
+                            for (int j = 0; j < SIZE_OTHELLO; j++)
+                            {
+                                fread(&matrice_Othello[i][j].valide, sizeof(int), 1, f);
+                                fread(&matrice_Othello[i][j].color, sizeof(int), 1, f);
+                            }
+                        }
+                        head = newList(matrice_Othello); // On initialise ensuite la liste chainee au nouveau plateau
+                        fclose(f);
+                        SDL_RenderClear(renderer);
+                        DisplayAll(window, renderer,  
+                        matrice_Othello, mat_rect_Othello,
                         cnt_w, cnt_b, win, team, mode);
+                    }
                     break;
 
-                case SDLK_LCTRL: // Touche CTRL gauche pressée
+                case SDLK_LCTRL: // Touche CTRL gauche pressee
                     key_press_ctrl = SDL_TRUE;
                     break;
                 }
                 break;
 
-            case SDL_KEYUP: // Touche relachée
+            case SDL_KEYUP: // Touche relachee
                 switch (e.key.keysym.sym)
                 {
-                case SDLK_LCTRL: // Touche CTRL gauche pressée
+                case SDLK_LCTRL: // Touche CTRL gauche pressee
                     key_press_ctrl = SDL_FALSE;
                     break;
                 default:
@@ -365,15 +336,14 @@ int main(int argc, char *argv[])
             default:
                 break;
             }
-            DisplayAll_clear(window, renderer, image_BG, texture_BG, image_base, texture_base, image_mode, texture_mode, image_pion, texture_pion, texture_txt);
+            SDL_RenderClear(renderer);
         }
     }
     printf("sortie\n");
     //-----------Desttruction des variables pointeurs-----------//
     SDL_RenderClear(renderer);
     /* Deinit TTF */
-    SDL_DestroyTexture(texture_txt);
-    
+    TTF_CloseFont(font);
 
     /* Deinit Audio */
     Mix_HaltChannel(0);
@@ -384,17 +354,7 @@ int main(int argc, char *argv[])
     Mix_FreeChunk(click_sound);
     Mix_FreeChunk(fin_sound);
     Mix_CloseAudio();
-    Mix_Quit();
-
-    /* denit textures d'images */
-    SDL_DestroyTexture(texture_BG);
-    SDL_DestroyTexture(texture_mode);
-    SDL_DestroyTexture(texture_base);
-
-    /* denit surfaces d'images */
-    SDL_FreeSurface(image_BG);
-    SDL_FreeSurface(image_mode);
-    SDL_FreeSurface(image_base);
+    
 
     /* denit pointeurs */
     freeBoard(matrice_Othello);
@@ -402,10 +362,12 @@ int main(int argc, char *argv[])
     free_linked_list(head);
 
     /* denit renderer */
-    
-    TTF_Quit();
     SDL_DestroyWindow(window);
     SDL_DestroyRenderer(renderer);
+
+    /* denit fenetres */
+    Mix_Quit();
+    TTF_Quit();
     SDL_Quit();
 
     return EXIT_SUCCESS;
