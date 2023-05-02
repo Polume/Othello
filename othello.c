@@ -350,36 +350,25 @@ void fill_lines(cell **board, int i, int j, int color)
 {
     int line_index = check_lines(board, i, color); // indice de la ou se trouve la premiere couleur color sur une ligne i
     int copy_j = j;
-    int second_color = 0;
     if (line_index >= 0 &&
         ((j + 1 < SIZE_OTHELLO && board[i][j + 1].color != VERT) ||
          (j - 1 >= 0 && board[i][j - 1].color != VERT)) &&
         check_neighbors_lines(board, i, j, color))
     // on doit d'abord avoir une case valide a tous ces criteres
     {
-        second_color = j + 1;
-        while (second_color < SIZE_OTHELLO && board[i][second_color].color != color)
-            second_color++; // indice de la deuxieme couleur sur la ligne, pour pouvoir boucler entre les indices
-
-        if (j > line_index && line_index <= second_color) // cas ou on doit retourner les pions de haut en bas
+        // Puis on retourne les cases de la droite vers la gauche puis de la gauche vers la droite
+        copy_j--;
+        while (copy_j >= 0 && board[i][copy_j].color != VERT && board[i][copy_j].color != color)
         {
-
+            board[i][copy_j].color = color; // et tant qu on ne retrouve pas la meme couleur, on remplit avec celle-ci
             copy_j--;
-            while (copy_j >= 0 && board[i][copy_j].color != VERT && board[i][copy_j].color != color)
-            {
-                board[i][copy_j].color = color; // et tant qu on ne retrouve pas la meme couleur, on remplit avec celle-ci
-                copy_j--;
-            }
-            copy_j = j;
         }
-        if (j < line_index && line_index >= second_color) // cas ou on doit retourner les pions de bas en haut
+        copy_j = j;
+        copy_j++;
+        while (copy_j < SIZE_OTHELLO && board[i][copy_j].color != VERT && board[i][copy_j].color != color)
         {
+            board[i][copy_j].color = color;
             copy_j++;
-            while (copy_j < SIZE_OTHELLO && board[i][copy_j].color != VERT && board[i][copy_j].color != color)
-            {
-                board[i][copy_j].color = color;
-                copy_j++;
-            }
         }
     }
 }
@@ -389,35 +378,24 @@ void fill_rows(cell **board, int i, int j, int color)
 {
     int copy_i = i;
     int row_index = check_rows(board, j, color); // indice de la ou se trouve la premiere couleur color sur une colonne j
-    int second_color = 0;
     if (row_index >= 0 &&
         ((i + 1 < SIZE_OTHELLO && board[i + 1][j].color != VERT) ||
          (i - 1 >= 0 && board[i - 1][j].color != VERT)) &&
         check_neighbors_rows(board, i, j, color))
     // on doit d'abord avoir une case valide qui correspond a tous ces criteres
     {
-        second_color = i + 1;
-        while (second_color < SIZE_OTHELLO && board[second_color][j].color != color)
-            second_color++;
-
-        if (i > row_index && row_index <= second_color) // cas ou on doit retourner les pions de haut en bas
+        copy_i--;
+        while (copy_i >= 0 && board[copy_i][j].color != VERT && board[copy_i][j].color != color)
         {
+            board[copy_i][j].color = color; // et tant qu on ne retrouve pas la meme couleur, on remplit avec celle-ci
             copy_i--;
-            while (copy_i >= 0 && board[copy_i][j].color != VERT && board[copy_i][j].color != color)
-            {
-                board[copy_i][j].color = color; // et tant qu on ne retrouve pas la meme couleur, on remplit avec celle-ci
-                copy_i--;
-            }
-            copy_i = i;
         }
-        if (i < row_index && row_index <= second_color) // cas ou on doit retourner les pions de bas en haut
+        copy_i = i;
+        copy_i++;
+        while (copy_i < SIZE_OTHELLO && board[copy_i][j].color != VERT && board[copy_i][j].color != color)
         {
+            board[copy_i][j].color = color;
             copy_i++;
-            while (copy_i < SIZE_OTHELLO && board[copy_i][j].color != VERT && board[copy_i][j].color != color)
-            {
-                board[copy_i][j].color = color;
-                copy_i++;
-            }
         }
     }
 }
