@@ -10,7 +10,9 @@
 #define SIZE_OTHELLO 8
 #define WHITE_COLOR (SDL_Color){255, 255, 255, 255}
 #define BLACK_COLOR (SDL_Color){0, 0, 0, 255}
-#define BLUE_COLOR (SDL_Color){0, 0, 255, 255} // Utile pour les test (car le fond est blanc/noir)
+#define DARK_GRAY_COLOR (SDL_Color){60,60,60,255}
+#define LIGHT_BLACK_COLOR (SDL_Color){33,37,43,255}
+#define BLUE_COLOR (SDL_Color){0, 100, 170, 255} // Utile pour les test (car le fond est blanc/noir)
 
 typedef struct
 {
@@ -40,7 +42,7 @@ partie slice_screen_100(float w, float h);
 // CHARGEMENT SDL
 void Dessine_coter_rect(SDL_Renderer *renderer, SDL_Rect rect, SDL_Color couleur);
 void Place_image(SDL_Renderer* renderer, void * rect_place, char* fichier);
-void Ecrit_txt(SDL_Renderer* renderer, int x, int y, char* text, TTF_Font* font, SDL_Color textColor);
+int Ecrit_txt(SDL_Renderer* renderer, int x, int y, char* text, TTF_Font* font, SDL_Color textColor);
 
 
 

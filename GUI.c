@@ -1,6 +1,7 @@
 #include "GUI.h"
 #include "GUI_init.h"
 #include "othello.h"
+#include "mouse_ctrl.h"
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
 /* - - - - - - - - - - - - - Fonctions de dessins - - - - - - - - - - - - -*/
@@ -196,26 +197,26 @@ points* Intro_bouttons(SDL_Window* window, SDL_Renderer* renderer)
     char * fichier = NULL;
 
     //////////////// Premier Boutton ////////////////
-    /**/fichier = "Pictures/Contre_Joueur.png";
-    /**/// Definit Les limites d'emplacement du boutton
-    /**/pts_bouttons[0].x1 = (int)(ecran10.w * 2);
-    /**/pts_bouttons[0].y1 = (int)(ecran10.h * 5);
-    /**/pts_bouttons[0].x2 = (int)((ecran10.w * 2) + (ecran10.w * 2));
-    /**/pts_bouttons[0].y2 = (int)((ecran10.h * 5) + (ecran10.h * 2));
-    /**/// Definit un rectangle pour l'emplacement et la taille de l'image
-    /**/SDL_Rect rect_boutton_Joueurs = { pts_bouttons[0].x1, pts_bouttons[0].y1, (int)(ecran10.w * 2), (int)(ecran10.h * 2) };
-    /**/Place_image(renderer, &rect_boutton_Joueurs, fichier);
+    fichier = "Pictures/Contre_Joueur.png";
+    // Definit Les limites d'emplacement du boutton
+    pts_bouttons[0].x1 = (int)(ecran10.w * 2);
+    pts_bouttons[0].y1 = (int)(ecran10.h * 5);
+    pts_bouttons[0].x2 = (int)((ecran10.w * 2) + (ecran10.w * 2));
+    pts_bouttons[0].y2 = (int)((ecran10.h * 5) + (ecran10.h * 2));
+    // Definit un rectangle pour l'emplacement et la taille de l'image
+    SDL_Rect rect_boutton_Joueurs = { pts_bouttons[0].x1, pts_bouttons[0].y1, (int)(ecran10.w * 2), (int)(ecran10.h * 2) };
+    Place_image(renderer, &rect_boutton_Joueurs, fichier);
 
     //////////////// Second Boutton ////////////////
-    /**/fichier = "Pictures/Contre_IA.png";
-    /**/// Definit Les limites d'emplacement du boutton
-    /**/pts_bouttons[1].x1 = (int)(ecran10.w *6);
-    /**/pts_bouttons[1].y1 = (int)(ecran10.h *5);
-    /**/pts_bouttons[1].x2 = (int)((ecran10.w * 6) + (ecran10.w * 2));
-    /**/pts_bouttons[1].y2 = (int)((ecran10.h * 5) + (ecran10.h * 2));
-    /**/// Definir un rectangle pour l'emplacement et la taille de l'image
-    /**/SDL_Rect rect_boutton_IA = { pts_bouttons[1].x1, pts_bouttons[1].y1, (int)(ecran10.w * 2), (int)(ecran10.h * 2) };
-    /**/Place_image(renderer, &rect_boutton_IA, fichier);
+    fichier = "Pictures/Contre_IA.png";
+    // Definit Les limites d'emplacement du boutton
+    pts_bouttons[1].x1 = (int)(ecran10.w *6);
+    pts_bouttons[1].y1 = (int)(ecran10.h *5);
+    pts_bouttons[1].x2 = (int)((ecran10.w * 6) + (ecran10.w * 2));
+    pts_bouttons[1].y2 = (int)((ecran10.h * 5) + (ecran10.h * 2));
+    // Definir un rectangle pour l'emplacement et la taille de l'image
+    SDL_Rect rect_boutton_IA = { pts_bouttons[1].x1, pts_bouttons[1].y1, (int)(ecran10.w * 2), (int)(ecran10.h * 2) };
+    Place_image(renderer, &rect_boutton_IA, fichier);
 
     return pts_bouttons;
 }
@@ -225,46 +226,74 @@ points* Barre_txt(SDL_Window* window, SDL_Renderer* renderer)
     partie ecran100 = slice_screen_100(get_screen_size(window).w, get_screen_size(window).h);
     points* pts_barre = malloc(3*sizeof(points));
     char * fichier = "Pictures/logo.png";
+    int text_weight = 0;
     TTF_Font* font = TTF_OpenFont("arial.ttf", (int)(ecran100.h * 2));
 
+    SDL_SetRenderDrawColor(renderer, DARK_GRAY_COLOR.r, DARK_GRAY_COLOR.g, DARK_GRAY_COLOR.b, DARK_GRAY_COLOR.a); // On change la couleur de dessin en gris
+    SDL_Rect rect_fill_barre  = { 0,0,get_screen_size(window).w,(ecran100.h * 4) }; // Pour le fond de la barre
+    SDL_RenderFillRect(renderer, &rect_fill_barre); // On charge le bandeau de la barre
+    SDL_SetRenderDrawColor(renderer, BLACK_COLOR.r, BLACK_COLOR.g, BLACK_COLOR.b, BLACK_COLOR.a); // On réinitialise la couleur de dessin en noir
+
     //////////////// Logo //////////////// 
-    /**/SDL_Rect rect_fill_barre_L  = { 0,0,(ecran100.w * 3),(ecran100.h * 4) }; // Pour le fond du logo
-    /**/SDL_Rect rect_image_barre_L = { (ecran100.w * 0.5),(ecran100.h * 0.25),(ecran100.w * 2),(ecran100.h * 3.55) }; // Pour placer le logo
-    /**/SDL_RenderFillRect(renderer, &rect_fill_barre_L);
-    /**/Place_image(renderer, &rect_image_barre_L, fichier);
+    SDL_Rect rect_image_barre_L = { (ecran100.w * 0.5),(ecran100.h * 0.25),(ecran100.w * 2),(ecran100.h * 3.55) }; // Pour placer le logo
+    Place_image(renderer, &rect_image_barre_L, fichier);
 
     int decalage_x = (int)(ecran100.w * 0.75);
     int decalage_y = (int)(ecran100.h * 0.75);
     //////////////// Fichier //////////////// 
-    /* nouveau (CTRL - N) + ouvrir (CTRL - O) + enregistrer (CTRL - S) + enregistrer_sous (CTRL - GMAJ - S) + quitter (q) */
-    /**/// Definit Les limites d'emplacement du boutton
-    /**/pts_barre[0].y1 = (int)(0);
-    /**/pts_barre[0].y2 = (int)(ecran100.h * 4);
-    /**/
-    /**/pts_barre[0].x1 = (int)(ecran100.w * 3);
-    /**/pts_barre[0].x2 = (int)(pts_barre[0].x1 + (ecran100.w * 5));
-    /**/// Definit un rectangle pour l'emplacement et la taille de l'image
-    /**/SDL_Rect rect_boutton_barre_F = { pts_barre[0].x1, 
-    /**/                                  pts_barre[0].y1,
-    /**/                                 (pts_barre[0].x2 - pts_barre[0].x1),
-    /**/                                  pts_barre[0].y2 };
-    /**/SDL_RenderFillRect(renderer, &rect_boutton_barre_F); // colore le fond du rectangle
-    /**/Dessine_coter_rect(renderer, rect_boutton_barre_F, BLUE_COLOR); // colore les bords du rectangle
-    /**/Ecrit_txt(renderer, 
-    /**/         (pts_barre[0].x1 + decalage_x), 
-    /**/         (pts_barre[0].y1 + decalage_y), 
-    /**/         "Fichier", font, BLUE_COLOR);
-
+    // Definit Les limites d'emplacement du boutton
+    pts_barre[0].y1 = (int)(0);
+    pts_barre[0].y2 = (int)(ecran100.h * 4);
+    pts_barre[0].x1 = (int)(ecran100.w * 3);
+    text_weight = Ecrit_txt(renderer, 
+             (pts_barre[0].x1 + decalage_x), 
+             (pts_barre[0].y1 + decalage_y), 
+             "Fichier", font, BLUE_COLOR);
+    pts_barre[0].x2 = pts_barre[0].x1 + (text_weight + (2*decalage_x)); // definit la longueur clicable
+    // Definit un rectangle pour l'emplacement et la taille de l'image
+    SDL_Rect rect_boutton_barre_F = { pts_barre[0].x1, 
+                                      pts_barre[0].y1,
+                                      pts_barre[0].x2 - pts_barre[0].x1,
+                                      pts_barre[0].y2 };
+    Dessine_coter_rect(renderer, rect_boutton_barre_F, BLUE_COLOR); // colore les bords du rectangle
 
     //////////////// Options //////////////// 
-    /* retour_au_coup_precedent (CTRL - Z) + musique (ON/OFF) + recommencer_une_partie */
-
+    pts_barre[1].y1 = (int)(0);
+    pts_barre[1].y2 = pts_barre[0].y2;
+    pts_barre[1].x1 = pts_barre[0].x2;
+    /// On charge le texte et sa place
+    text_weight = Ecrit_txt(renderer, 
+                           (pts_barre[1].x1 + decalage_x), 
+                           (pts_barre[1].y1 + decalage_y), 
+                           "Option", font, BLUE_COLOR);
+    pts_barre[1].x2 = pts_barre[1].x1 + (text_weight + (2*decalage_x)); // definit la longueur clicable
+    // Definit un rectangle pour l'emplacement et la taille de l'image
+    SDL_Rect rect_boutton_barre_O = { pts_barre[1].x1, 
+                                      pts_barre[1].y1,
+                                      pts_barre[1].x2 - pts_barre[1].x1,
+                                      pts_barre[1].y2 };
+    Dessine_coter_rect(renderer, rect_boutton_barre_O, BLUE_COLOR); // colore les bords du rectangle
 
     //////////////// Affichage //////////////// 
-    /* dimentions + fenetrer/plein_ecran + mode */
+    pts_barre[2].y1 = (int)(0);
+    pts_barre[2].y2 = pts_barre[0].y2;
+    pts_barre[2].x1 = pts_barre[1].x2;
+    /// On charge le texte et sa place
+    text_weight = Ecrit_txt(renderer, 
+                           (pts_barre[2].x1 + decalage_x), 
+                           (pts_barre[2].y1 + decalage_y), 
+                           "Affichage", font, BLUE_COLOR);
+    pts_barre[2].x2 = pts_barre[2].x1 + (text_weight + (2*decalage_x)); // definit la longueur clicable
+    // Definit un rectangle pour l'emplacement et la taille de l'image
+    SDL_Rect rect_boutton_barre_A = { pts_barre[2].x1, 
+                                      pts_barre[2].y1,
+                                      pts_barre[2].x2 - pts_barre[2].x1,
+                                      pts_barre[2].y2 };
+    Dessine_coter_rect(renderer, rect_boutton_barre_A, BLUE_COLOR); // colore les bords du rectangle
 
     TTF_CloseFont(font);
-
+    // points* oui = Exten_Option(window, renderer, pts_barre[1]);
+    // free(oui);
     return pts_barre;
 }
 

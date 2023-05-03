@@ -147,14 +147,14 @@ void Dessine_coter_rect(SDL_Renderer *renderer, SDL_Rect rect, SDL_Color couleur
 {
     SDL_SetRenderDrawColor(renderer, couleur.r, couleur.g, couleur.b, couleur.a);
     SDL_RenderDrawRect(renderer, &rect);
+    // On réinitialise la couleur de dessin de base (noir)
+    SDL_SetRenderDrawColor(renderer, BLACK_COLOR.r, BLACK_COLOR.g, BLACK_COLOR.b, BLACK_COLOR.a);
 }
 void Place_image(SDL_Renderer* renderer, void * rect_place, char* fichier)
 {// Place l'image de fichier au coordonée x-y
     SDL_Surface* image = NULL;
     SDL_Texture* texture = NULL;
-    // On réinitialise la couleur de dessin de base (noir)
-    SDL_SetRenderDrawColor(renderer, BLACK_COLOR.r, BLACK_COLOR.g, BLACK_COLOR.b, BLACK_COLOR.a);
-    
+
     // Recuperation de l'image
     image = IMG_Load(fichier);
     if (image == NULL)
@@ -171,7 +171,7 @@ void Place_image(SDL_Renderer* renderer, void * rect_place, char* fichier)
     SDL_DestroyTexture(texture);
     SDL_FreeSurface(image);
 }
-void Ecrit_txt(SDL_Renderer* renderer, int x, int y, char* text, TTF_Font* font, SDL_Color textColor)
+int Ecrit_txt(SDL_Renderer* renderer, int x, int y, char* text, TTF_Font* font, SDL_Color textColor)
 {// ecrit du texte a un emplacement saisie
     SDL_Texture* texture = NULL;
     SDL_Surface* surface = NULL;
@@ -194,4 +194,5 @@ void Ecrit_txt(SDL_Renderer* renderer, int x, int y, char* text, TTF_Font* font,
 
     SDL_DestroyTexture(texture);
     SDL_FreeSurface(surface);
+    return text_width;
 }

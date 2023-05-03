@@ -235,6 +235,21 @@ int main(int argc, char *argv[])
                         SDL_RenderPresent(renderer);
                     }
                     break;
+                case SDLK_r:
+                    // Retourne a la selection du mode de jeu
+                    if (key_press_ctrl == SDL_TRUE && intro == SDL_FALSE)
+                    {//L'utilisateur fait un CTRL - R
+                        freeBoard(matrice_Othello);
+                        free_linked_list(head);
+                        matrice_Othello = initializeBoard();
+                        head = newList(matrice_Othello);
+                        team = BLANC;
+
+                        DisplayAll(window, renderer,
+                        matrice_Othello, mat_rect_Othello, pts_barre,
+                        cnt_w, cnt_b, win, team, mode);
+                    }
+                    break;
                 case SDLK_z:
                     if (key_press_ctrl == SDL_TRUE && intro == SDL_FALSE)
                     {//L'utilisateur fait un CTRL - Z
