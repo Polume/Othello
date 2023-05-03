@@ -146,71 +146,26 @@ float **gameState(int state)
    Les coins du plateau sont les cases les plus fortes et les bordures
    sont en général considérées comme des bonnes cases */
 {
-    if (state == BEGIN)
+
+    // On ne peut pas renvoyer de matrice de taille connue, on copie donc dans une matrice temporaire
+    float **BeginPositionScore = calloc(SIZE_OTHELLO, sizeof(float *));
+    for (int i = 0; i < SIZE_OTHELLO; i++)
     {
-        // On ne peut pas renvoyer de matrice de taille connue, on copie donc dans une matrice temporaire
-        float **BeginPositionScore = calloc(SIZE_OTHELLO, sizeof(float *));
-        for (int i = 0; i < SIZE_OTHELLO; i++)
-        {
-            BeginPositionScore[i] = calloc(SIZE_OTHELLO, sizeof(float));
-        }
-        float BeginPositionScoreTemp[8][8] = {{100, -50, 20, 5, 5, 20, -50, 100},
-                                              {-50, -70, -5, -5, -5, -5, -70, -50},
-                                              {20, -5, 15, 3, 3, 15, -5, 20},
-                                              {5, -5, 3, 3, 3, 3, -5, 5},
-                                              {5, -5, 3, 3, 3, 3, -5, 5},
-                                              {20, -5, 15, 3, 3, 15, -5, 20},
-                                              {-50, -70, -5, -5, -5, -5, -70, -50},
-                                              {100, -50, 20, 5, 5, 20, -50, 100}};
-        for (int i = 0; i < SIZE_OTHELLO; i++)
-            for (int j = 0; j < SIZE_OTHELLO; j++)
-                BeginPositionScore[i][j] = BeginPositionScoreTemp[i][j];
-
-        return BeginPositionScore;
+        BeginPositionScore[i] = calloc(SIZE_OTHELLO, sizeof(float));
     }
+    float BeginPositionScoreTemp[8][8] = {{100, -50, 20, 5, 5, 20, -50, 100},
+                                          {-50, -70, -5, -5, -5, -5, -70, -50},
+                                          {20, -5, 15, 3, 3, 15, -5, 20},
+                                          {5, -5, 3, 3, 3, 3, -5, 5},
+                                          {5, -5, 3, 3, 3, 3, -5, 5},
+                                          {20, -5, 15, 3, 3, 15, -5, 20},
+                                          {-50, -70, -5, -5, -5, -5, -70, -50},
+                                          {100, -50, 20, 5, 5, 20, -50, 100}};
+    for (int i = 0; i < SIZE_OTHELLO; i++)
+        for (int j = 0; j < SIZE_OTHELLO; j++)
+            BeginPositionScore[i][j] = BeginPositionScoreTemp[i][j];
 
-    else if (state == MIDDLE)
-    {
-        float **MiddlePositionScore = calloc(SIZE_OTHELLO, sizeof(float *));
-        for (int i = 0; i < SIZE_OTHELLO; i++)
-        {
-            MiddlePositionScore[i] = calloc(SIZE_OTHELLO, sizeof(float));
-        }
-        float MiddlePositionScoreTemp[8][8] = {{140, -20, 20, 5, 5, 20, -20, 140},
-                                               {-20, -40, -5, -5, -5, -5, -40, -20},
-                                               {20, -5, 15, 3, 3, 15, -5, 20},
-                                               {5, -5, 3, 3, 3, 3, -5, 5},
-                                               {5, -5, 3, 3, 3, 3, -5, 5},
-                                               {20, -5, 15, 3, 3, 15, -5, 20},
-                                               {-20, -40, -5, -5, -5, -5, -40, -20},
-                                               {140, -20, 20, 5, 5, 20, -20, 140}};
-        for (int i = 0; i < SIZE_OTHELLO; i++)
-            for (int j = 0; j < SIZE_OTHELLO; j++)
-                MiddlePositionScore[i][j] = MiddlePositionScoreTemp[i][j];
-
-        return MiddlePositionScore;
-    }
-    else
-    {
-        float **EndPositionScore = calloc(SIZE_OTHELLO, sizeof(float *));
-        for (int i = 0; i < SIZE_OTHELLO; i++)
-        {
-            EndPositionScore[i] = calloc(SIZE_OTHELLO, sizeof(float));
-        }
-        float EndPositionScoreTemp[8][8] = {{20, -5, 10, 5, 5, 10, -5, 20},
-                                            {-5, -10, 5, 5, 5, 5, -10, -5},
-                                            {20, 5, 5, 5, 5, 5, 5, 10},
-                                            {5, 5, 3, 5, 5, 5, 5, 5},
-                                            {5, 5, 3, 5, 5, 5, 5, 5},
-                                            {10, 5, 5, 5, 5, 5, 5, 10},
-                                            {-5, -10, 5, 5, 5, 5, -10, -5},
-                                            {20, -5, 10, 5, 5, 10, -5, 20}};
-        for (int i = 0; i < SIZE_OTHELLO; i++)
-            for (int j = 0; j < SIZE_OTHELLO; j++)
-                EndPositionScore[i][j] = EndPositionScoreTemp[i][j];
-
-        return EndPositionScore;
-    }
+    return BeginPositionScore;
 }
 
 float *tree_values(cell **board, int **possible, int move, int color)
@@ -333,8 +288,6 @@ int hard_mode(cell **board, int color)
     float bestMove;
     int best_index;
 
-    // color == BLANC ? bestValue = MIN_EVAL : bestValue = MAX_EVAL;
-
     int **possible = possibilities(board, numMoves); // tableau des indices des cases valides
 
     // Pour tout les moves possibles, on va observer les possibles
@@ -381,7 +334,6 @@ int hard_mode(cell **board, int color)
             if (bestMove == minmax)
                 best_index = move;
         }
-        printf("Au secours %f \n", minmax);
         color = original_color; // On reviens à la couleur de base pour reboucler
     }
     fill(board, possible[best_index][0], possible[best_index][1], color);

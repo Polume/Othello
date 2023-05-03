@@ -197,6 +197,35 @@ int check_rows(cell **board, int j, int color)
     return -1;
 }
 
+int get_last_color_lines(cell **board, int i, int color)
+// Verifie si color se trouve sur la ligne i et renvoie son indice
+{
+    for (int j = SIZE_OTHELLO - 1; j >= 0; j--)
+    {
+        if (board[i][j].color == color)
+        {
+            if ((j + 1 < SIZE_OTHELLO && board[i][j + 1].color != VERT) ||
+                (j - 1 >= 0 && board[i][j - 1].color != VERT))
+                return j;
+        }
+    }
+    return -1;
+}
+
+int get_last_color_rows(cell **board, int j, int color)
+{
+    for (int i = SIZE_OTHELLO - 1; i >= 0; i--)
+    {
+        if (board[i][j].color == color)
+        {
+            if ((i + 1 < SIZE_OTHELLO && board[i + 1][j].color != VERT) ||
+                (i - 1 >= 0 && board[i - 1][j].color != VERT))
+                return i;
+        }
+    }
+    return -1;
+}
+
 int check_diag_t_left(cell **board, int i, int j, int color, int *cpy_i, int *cpy_j)
 // Verifie si color se trouve sur la diagonale superieure gauche
 {
@@ -356,16 +385,17 @@ void fill_lines(cell **board, int i, int j, int color)
         check_neighbors_lines(board, i, j, color))
     // on doit d'abord avoir une case valide a tous ces criteres
     {
+        int second_color = get_last_color_lines(board, i, color);
         // Puis on retourne les cases de la droite vers la gauche puis de la gauche vers la droite
         copy_j--;
-        while (copy_j >= 0 && board[i][copy_j].color != VERT && board[i][copy_j].color != color)
+        while (copy_j >= 0 && board[i][copy_j].color != VERT && board[i][copy_j].color != color && copy_j > second_color)
         {
             board[i][copy_j].color = color; // et tant qu on ne retrouve pas la meme couleur, on remplit avec celle-ci
             copy_j--;
         }
         copy_j = j;
         copy_j++;
-        while (copy_j < SIZE_OTHELLO && board[i][copy_j].color != VERT && board[i][copy_j].color != color)
+        while (copy_j < SIZE_OTHELLO && board[i][copy_j].color != VERT && board[i][copy_j].color != color && copy_j < second_color)
         {
             board[i][copy_j].color = color;
             copy_j++;
@@ -384,15 +414,16 @@ void fill_rows(cell **board, int i, int j, int color)
         check_neighbors_rows(board, i, j, color))
     // on doit d'abord avoir une case valide qui correspond a tous ces criteres
     {
+        int second_color = get_last_color_rows(board, j, color);
         copy_i--;
-        while (copy_i >= 0 && board[copy_i][j].color != VERT && board[copy_i][j].color != color)
+        while (copy_i >= 0 && board[copy_i][j].color != VERT && board[copy_i][j].color != color && copy_i > second_color)
         {
             board[copy_i][j].color = color; // et tant qu on ne retrouve pas la meme couleur, on remplit avec celle-ci
             copy_i--;
         }
         copy_i = i;
         copy_i++;
-        while (copy_i < SIZE_OTHELLO && board[copy_i][j].color != VERT && board[copy_i][j].color != color)
+        while (copy_i < SIZE_OTHELLO && board[copy_i][j].color != VERT && board[copy_i][j].color != color && copy_i < second_color)
         {
             board[copy_i][j].color = color;
             copy_i++;

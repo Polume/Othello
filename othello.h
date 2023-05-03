@@ -32,6 +32,8 @@ int check_neighbors_lines(cell **board, int i, int j, int color);
 int check_neighbors_rows(cell **board, int i, int j, int color);
 int check_lines(cell **board, int i, int color);
 int check_rows(cell **board, int j, int color);
+int get_last_color_lines(cell **board, int i, int color);
+int get_last_color_rows(cell **board, int i, int color);
 
 int check_diag_t_left(cell **board, int i, int j, int color, int *cpy_i, int *cpy_j);
 int check_diag_t_right(cell **board, int i, int j, int color, int *cpy_i, int *cpy_j);

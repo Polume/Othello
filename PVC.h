@@ -8,10 +8,6 @@
 #include "linked_list.h"
 #include "othello.h"
 
-#define BEGIN 0
-#define MIDDLE 25
-#define END 50
-
 #define MAX_EVAL -10000
 #define MIN_EVAL 10000
 
