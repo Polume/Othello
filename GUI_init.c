@@ -1,6 +1,9 @@
 #include "GUI_init.h"
 
-void init_package(void)
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+/* - - - - - - - - - - - - - INIT - - - - - - - - - - - - -*/
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+void Init_package(void)
 {
     // Initialisation de SDL2
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO))
@@ -17,73 +20,10 @@ void Error(char *chaine)
     exit(EXIT_FAILURE);
 }
 
-void init_BG_image(SDL_Renderer *renderer, int mode)
-{
-    SDL_Surface *image_BG = NULL;
-    SDL_Texture *texture_BG = NULL;
-    // Recuperation de l'image
-    image_BG = IMG_Load("Pictures/BG_Othello.png");
-    if (mode == 0)
-        image_BG = IMG_Load("Pictures/Oth.png"); 
-    else if (mode == 1)
-        image_BG = IMG_Load("Pictures/BG_Othello.png");
-    /*      UwU     */
-    else if (mode == 2)
-        image_BG = IMG_Load("Pictures/BG_UwU.png");
-    /*      UwU     */
-    if (image_BG == NULL)
-        Error("Recuperation de l'image echoue !");
 
-    // Creer la texture avec l'image
-    texture_BG = SDL_CreateTextureFromSurface(renderer, image_BG);
-    if (texture_BG == NULL)
-        Error("Chargement de la texture echouee !");
-
-    // Dessiner la texture dans le rendue
-    SDL_RenderCopy(renderer, texture_BG, NULL, NULL);
-
-    SDL_DestroyTexture(texture_BG);
-    SDL_FreeSurface(image_BG);
-}
-
-int init_base_Othello(SDL_Window *window, SDL_Renderer *renderer, int mode)
-{
-    SDL_Surface *image_base = NULL;
-    SDL_Texture *texture_base = NULL;
-
-    if (mode == 1)
-    {
-        // Recuperation de l'image
-        image_base = IMG_Load("Pictures/Base_Othello.png");
-        if (image_base == NULL)
-            Error("Recuperation de l'image_base echoue !");
-    }
-    /* UwU */
-    else if (mode == 2)
-    {
-        // Recuperation de l'image
-        image_base = IMG_Load("Pictures/Base_Othello_UwU.png");
-        if (image_base == NULL)
-            Error("Recuperation de l'image_base echoue !");
-    }
-    /* UwU */
-
-    // Creer la texture avec l'image
-    texture_base = SDL_CreateTextureFromSurface(renderer, image_base);
-    if (texture_base == NULL)
-        Error("Chargement de la texture_base echoue !");
-
-    // Definir un rectangle pour l'emplacement et la taille de l'image
-    partie ecran10 = slice_screen_10(get_screen_size(window).w, get_screen_size(window).h);
-    SDL_Rect rect_sides = { (int)(3 * ecran10.w), (int)(1.5 * ecran10.h), (int)(8 * ecran10.h), (int)(8 * ecran10.h) };
-    // Dessiner la texture dans le rendue
-    SDL_RenderCopy(renderer, texture_base, NULL, &rect_sides);
-
-    SDL_DestroyTexture(texture_base);
-    SDL_FreeSurface(image_base);
-    return EXIT_SUCCESS;
-}
-
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+/* - - - - - - - - - - - - - MATRICE - - - - - - - - - - - - -*/
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
 points **Cree_mat(SDL_Window* window)
 {
     // Creation des rectangles de l'Othello
@@ -124,7 +64,7 @@ points **Cree_mat(SDL_Window* window)
 }
 
 void freeMat(points** board)
-// Libere la memoire du tableau
+// Libere la memoire d'une matrice
 {
     for (int i = 0; i < SIZE_OTHELLO; i++)
     {
@@ -133,6 +73,51 @@ void freeMat(points** board)
     free(board);
 }
 
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+/* - - - - - - - - - - - - - UTILITAIRE - - - - - - - - - - - - -*/
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
+char* int_to_char(int num)
+{ // permet de passer un entier en chaine de caractère
+    int i = 0;
+    char* str = NULL;
+    // compte le nombre de digit
+    int temp = num;
+    while (temp != 0) {
+        i++;
+        temp /= 10;
+    }
+    // Allocate memoire pour la chaine
+    str = (char*)malloc(sizeof(char) * (i + 1));
+    // convertir en chaine
+    str[i] = '\0';
+    while (i > 0) {
+        str[i - 1] = (num % 10) + '0';
+        num /= 10;
+        i--;
+    }
+    return str;
+}
+
+void get_coord(points** mat_rect_Othello, int* i, int* j)
+{ // Fonction permettant d'avoir les coordonees du carre a l'intereur duquel le joueur a cliquer.
+    int mouse_x, mouse_y;
+    SDL_GetMouseState(&mouse_x, &mouse_y);
+    for (int y = 0; y < 8; y++)
+    {
+        for (int x = 0; x < 8; x++)
+        {
+            if ((mat_rect_Othello[x][y].x1 < mouse_x && mat_rect_Othello[x][y].y1 < mouse_y) &&
+                (mat_rect_Othello[x][y].x2 > mouse_x && mat_rect_Othello[x][y].y2 > mouse_y))
+            {
+                *i = x;
+                *j = y;
+            }
+        }
+    }
+}
+
+// ECRAN - TAILLE
 partie get_screen_size(SDL_Window *window)
 {
     partie ecran;
@@ -157,48 +142,56 @@ partie slice_screen_100(float w, float h)
     return ecran100;
 }
 
-points * init_bouttons(SDL_Window* window, SDL_Renderer* renderer)
+// CHARGEMENT SDL
+void Dessine_coter_rect(SDL_Renderer *renderer, SDL_Rect rect, SDL_Color couleur)
 {
-    SDL_Surface* image_bouttons = NULL;
-    SDL_Texture* texture_bouttons = NULL;
-    points * pts_bouttons = malloc(2*sizeof(points));
-    partie ecran10 = slice_screen_10(get_screen_size(window).w, get_screen_size(window).h);
-    // Premier Boutton 
-    image_bouttons = IMG_Load("Pictures/Contre_Joueur.png");
-    if (image_bouttons == NULL)
-        Error("Recuperation de Contre_Joueur.png echoue !");
-    // Creer la texture avec l'image
-    texture_bouttons = SDL_CreateTextureFromSurface(renderer, image_bouttons);
-    if (texture_bouttons == NULL)
-        Error("Chargement de la texture de Contre_Joueur.png echoue !");
-    // Definir un rectangle pour l'emplacement et la taille de l'image
-    pts_bouttons[0].x1 = (int)(ecran10.w * 2);
-    pts_bouttons[0].y1 = (int)(ecran10.h * 5);
-    pts_bouttons[0].x2 = (int)((ecran10.w * 2) + (ecran10.w * 2));
-    pts_bouttons[0].y2 = (int)((ecran10.h * 5) + (ecran10.h * 2));
-    SDL_Rect rect_boutton_Joueurs = { pts_bouttons[0].x1, pts_bouttons[0].y1, (int)(ecran10.w * 2), (int)(ecran10.h * 2) };
-    // Dessiner la texture dans le rendue
-    SDL_RenderCopy(renderer, texture_bouttons, NULL, &rect_boutton_Joueurs);
-
-    // Second Boutton
-    image_bouttons = IMG_Load("Pictures/Contre_IA.png");
-    if (image_bouttons == NULL)
-        Error("Recuperation de Contre_IA.png echoue !");
-    // Creer la texture avec l'image
-    texture_bouttons = SDL_CreateTextureFromSurface(renderer, image_bouttons);
-    if (texture_bouttons == NULL)
-        Error("Chargement de la texture de Contre_IA.png echoue !");
-    // Definir un rectangle pour l'emplacement et la taille de l'image
-    pts_bouttons[1].x1 = (int)(ecran10.w *6);
-    pts_bouttons[1].y1 = (int)(ecran10.h *5);
-    pts_bouttons[1].x2 = (int)((ecran10.w * 6) + (ecran10.w * 2));
-    pts_bouttons[1].y2 = (int)((ecran10.h * 5) + (ecran10.h * 2));
-    SDL_Rect rect_boutton_IA = { pts_bouttons[1].x1, pts_bouttons[1].y1, (int)(ecran10.w * 2), (int)(ecran10.h * 2) };
-    // Dessiner la texture dans le rendue
-    SDL_RenderCopy(renderer, texture_bouttons, NULL, &rect_boutton_IA);
-
-    SDL_DestroyTexture(texture_bouttons);
-    SDL_FreeSurface(image_bouttons);
+    SDL_SetRenderDrawColor(renderer, couleur.r, couleur.g, couleur.b, couleur.a);
+    SDL_RenderDrawRect(renderer, &rect);
+}
+void Place_image(SDL_Renderer* renderer, void * rect_place, char* fichier)
+{// Place l'image de fichier au coordonée x-y
+    SDL_Surface* image = NULL;
+    SDL_Texture* texture = NULL;
+    // On réinitialise la couleur de dessin de base (noir)
+    SDL_SetRenderDrawColor(renderer, BLACK_COLOR.r, BLACK_COLOR.g, BLACK_COLOR.b, BLACK_COLOR.a);
     
-    return pts_bouttons;
+    // Recuperation de l'image
+    image = IMG_Load(fichier);
+    if (image == NULL)
+        Error("Recuperation de l'image echoue !");
+
+    // Creer la texture avec l'image
+    texture = SDL_CreateTextureFromSurface(renderer, image);
+    if (texture == NULL)
+        Error("Chargement de la texture echoue !");
+
+    // Dessiner la texture dans le rendue
+    SDL_RenderCopy(renderer, texture, NULL, rect_place);
+
+    SDL_DestroyTexture(texture);
+    SDL_FreeSurface(image);
+}
+void Ecrit_txt(SDL_Renderer* renderer, int x, int y, char* text, TTF_Font* font, SDL_Color textColor)
+{// ecrit du texte a un emplacement saisie
+    SDL_Texture* texture = NULL;
+    SDL_Surface* surface = NULL;
+    SDL_Rect rect;
+
+    int text_width;
+    int text_height;
+    
+    surface = TTF_RenderText_Solid(font, text, textColor);
+    texture = SDL_CreateTextureFromSurface(renderer, surface);
+    text_width = surface->w;
+    text_height = surface->h;
+    
+    rect.x = x;
+    rect.y = y;
+    rect.w = text_width;
+    rect.h = text_height;
+
+    SDL_RenderCopy(renderer, texture, NULL, &rect);    
+
+    SDL_DestroyTexture(texture);
+    SDL_FreeSurface(surface);
 }

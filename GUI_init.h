@@ -4,9 +4,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_ttf.h>
 #include <SDL2/SDL_image.h>
 
 #define SIZE_OTHELLO 8
+#define WHITE_COLOR (SDL_Color){255, 255, 255, 255}
+#define BLACK_COLOR (SDL_Color){0, 0, 0, 255}
+#define BLUE_COLOR (SDL_Color){0, 0, 255, 255} // Utile pour les test (car le fond est blanc/noir)
 
 typedef struct
 {
@@ -18,18 +22,35 @@ typedef struct
     float w, h;
 } partie;
 
-void init_package(void);
+// INIT
+void Init_package(void);
+void Error(char *chaine);
 
+// MATRICE
+points **Cree_mat(SDL_Window* window);
+void freeMat(points** board);
+
+// UTILITAIRE
+char* int_to_char(int num);
+void get_coord(points** mat_rect_Othello, int* i, int* j);
+// ECRAN - TAILLE
 partie get_screen_size(SDL_Window* window);
 partie slice_screen_10(float w, float h);
 partie slice_screen_100(float w, float h);
+// CHARGEMENT SDL
+void Dessine_coter_rect(SDL_Renderer *renderer, SDL_Rect rect, SDL_Color couleur);
+void Place_image(SDL_Renderer* renderer, void * rect_place, char* fichier);
+void Ecrit_txt(SDL_Renderer* renderer, int x, int y, char* text, TTF_Font* font, SDL_Color textColor);
 
-void init_BG_image(SDL_Renderer *renderer, int mode);
-int init_base_Othello(SDL_Window *window, SDL_Renderer *renderer, int mode);
-points * init_bouttons(SDL_Window* window, SDL_Renderer* renderer);
 
-void Error(char *chaine);
-points **Cree_mat(SDL_Window* window);
-void freeMat(points** board);
+
+
+
+
+
+
+
+
+
 
 #endif
