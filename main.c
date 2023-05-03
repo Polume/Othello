@@ -165,7 +165,7 @@ int main(int argc, char *argv[])
                                 if (choix == 2)
                                 {
                                     reset_valid(matrice_Othello);
-                                    IA_p = hard_mode(matrice_Othello, team);
+                                    IA_p = easy_mode(matrice_Othello, team);
                                     push(&head, matrice_Othello);
                                     // printBoard(matrice_Othello); affiche sur le terminal l'othello
 
@@ -381,14 +381,10 @@ int main(int argc, char *argv[])
     TTF_Quit();
     SDL_Quit();
 
-    cell **board = initializeBoard();
-    board[1][5].color = BLANC;
-    board[2][4].color = BLANC;
-    board[2][5].color = NOIR;
-
-    board[2][7].color = NOIR;
-    fill(board, 2, 6, BLANC);
-    printBoard(board);
+    // float final_array[15] = {1999, 1999, 1999, 1999, 1999, 1999, 1999, -1, 3, 5, 1, -6, -4, 0, 9};
+    // tree *root = insertInTree(final_array, 0, 15);
+    // minimax(root, 3, BLANC);
+    // printTree(root);
 
     return EXIT_SUCCESS;
 }

@@ -31,7 +31,7 @@ int height(tree *current);
 void printCurrentLevel(tree *root, int level);
 void printTree(tree *root);
 
-float **gameState(int state);
+float **gameState();
 float *tree_values(cell **board, int **possible, int move, int color);
 
 float minimax(tree *root, int depth, int color);

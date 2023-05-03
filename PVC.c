@@ -140,7 +140,7 @@ void printTree(tree *root)
     }
 }
 
-float **gameState(int state)
+float **gameState()
 /* Renvoie un tableau de valeurs en fonction de l'état de la partie en cours
    Utilisé pour l'algorithme minimax
    Les coins du plateau sont les cases les plus fortes et les bordures
@@ -186,7 +186,7 @@ float *tree_values(cell **board, int **possible, int move, int color)
     int **tmp_possible = possibilities(tmp_board, tmp_numMoves);
     // On regarde ensuite les differentes possibilites du coup adverse
     // printBoard(tmp_board);
-    float **state = gameState(BEGIN); // Importance des cases
+    float **state = gameState(); // Importance des cases
     float *tree_values = calloc(tmp_numMoves, sizeof(float));
 
     for (int i = 0; i < tmp_numMoves; i++)
