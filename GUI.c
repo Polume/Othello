@@ -1,7 +1,7 @@
 #include "GUI.h"
 #include "GUI_init.h"
 #include "othello.h"
-#include "mouse_ctrl.h"
+#include "control.h"
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
 /* - - - - - - - - - - - - - Fonctions de dessins - - - - - - - - - - - - -*/
@@ -292,20 +292,27 @@ points* Barre_txt(SDL_Window* window, SDL_Renderer* renderer)
     Dessine_coter_rect(renderer, rect_boutton_barre_A, BLUE_COLOR); // colore les bords du rectangle
 
     TTF_CloseFont(font);
-    // points* oui = Exten_Option(window, renderer, pts_barre[1]);
-    // free(oui);
+
+    // points* oui1 = Exten_Fichier(window, renderer, pts_barre[0]);
+    // points* oui2 = Exten_Option(window, renderer, pts_barre[1]);
+    // points* oui3 = Exten_Affichage(window, renderer, pts_barre[2]);
+    // points* oui4 = Exten_Option_Mode(window, renderer, oui2[2]);
+    // free(oui1);
+    // free(oui2);
+    // free(oui3);
+    // free(oui4);
     return pts_barre;
 }
 
 void DisplayAll(SDL_Window* window, SDL_Renderer* renderer,
     cell** matrice_Othello, points** mat_rect_Othello, points* pts_barre,
-    int cnt_w, int cnt_b, int win, int team, int mode)
+    int cnt_w, int cnt_b, int win, int team, int mode, int menu_barre)
 {
     SDL_RenderClear(renderer);// Efface le renderer actuel
 
     /* Charge de l'image de fond */
     BG_image(renderer, mode);  
-    /* Charge de la barre d'options */
+    /* Charge de la menu barre */
     pts_barre = Barre_txt(window, renderer);     
     /* Charge de l'image de l'Othello */        
     Base_Othello(window, renderer, mode);      
@@ -321,6 +328,8 @@ void DisplayAll(SDL_Window* window, SDL_Renderer* renderer,
     count_score(matrice_Othello, &cnt_w, &cnt_b);   
     /* Charge les textes de l'interface */
     Interface_txt(window, renderer, cnt_w, cnt_b, team, mode, win);     
+    /* Charge les extentions de la menu barre */
+    Aff_interaction_barre(window, renderer, pts_barre, menu_barre);
 
     SDL_RenderPresent(renderer);// Affiche tous les elements charges
 }

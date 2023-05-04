@@ -3,7 +3,9 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
 #include <SDL2/SDL_mixer.h>
+#include "GUI.h"
 #include "GUI_init.h"
+#include "control.h"
 #include "othello.h"
 #include "linked_list.h"
 #include "GUI.h"
@@ -25,8 +27,9 @@ int main(int argc, char *argv[])
     points *pts_barre;
     points *pts_bouttons;
 
-    int mode = 0, change_amb = 1;
-    int i, j, IA_p = 0, mouse_x, mouse_y, team = BLANC, cnt_b = 0, cnt_w = 0, win = 0;
+    int mode = 0, change_amb = 1, menu_barre = 0, tag_val;
+    int i, j, IA_p = 0, mouse_x, mouse_y;
+    int team = BLANC, cnt_b = 0, cnt_w = 0, win = 0;
     int intro = SDL_TRUE, choix = 0;
     int key_press_ctrl = SDL_FALSE;
 
@@ -54,13 +57,15 @@ int main(int argc, char *argv[])
     matrice_Othello = initializeBoard();
     head = newList(matrice_Othello);
 
+    // Init du graphique de presentation
     BG_image(renderer, mode);
-    pts_bouttons = Intro_bouttons(window, renderer);
-
-    // EN COUR
-    pts_barre = Barre_txt(window, renderer);
-
+    SDL_RenderClear(renderer);
+    BG_image(renderer, mode);// Ccharge l'image de fond
+    pts_bouttons = Intro_bouttons(window, renderer);// charge les bouttons
+    pts_barre = Barre_txt(window, renderer);// charge la menu barre
+    Aff_interaction_barre(window, renderer, pts_barre, menu_barre);// Charge les extentions de la menu barre
     SDL_RenderPresent(renderer);
+
     // Jouer la musique d'ambiance
     Mix_PlayChannel(0, ambiance_sound, -1);
     Mix_Volume(0, MIX_MAX_VOLUME * 0.1);
@@ -95,7 +100,7 @@ int main(int argc, char *argv[])
             }
             DisplayAll(window, renderer,
                        matrice_Othello, mat_rect_Othello, pts_barre,
-                       cnt_w, cnt_b, win, team, mode);
+                       cnt_w, cnt_b, win, team, mode, menu_barre);
             Mix_PlayChannel(1, fin_sound, 0);
         }
         while (SDL_PollEvent(&e))
@@ -106,6 +111,22 @@ int main(int argc, char *argv[])
                 {
                 case SDL_MOUSEBUTTONDOWN: // Click de souris
                     SDL_GetMouseState(&mouse_x, &mouse_y);
+                    tag_val = menu_barre;
+                    //printf("x : %d\ty : %d\n", mouse_x, mouse_y);
+
+                    /////////////////// L'utilisateur interagie avec la menu barre /////////////////// 
+                    e = interaction_barre(window, renderer, pts_barre, &menu_barre);
+                    if(menu_barre != tag_val)
+                    {
+                        printf("barre : %d\n", menu_barre);
+                        SDL_RenderClear(renderer);
+                        BG_image(renderer, mode);// Ccharge l'image de fond
+                        pts_bouttons = Intro_bouttons(window, renderer);// charge les bouttons
+                        pts_barre = Barre_txt(window, renderer);// charge la menu barre
+                        Aff_interaction_barre(window, renderer, pts_barre, menu_barre);// Charge les extentions de la menu barre
+                        SDL_RenderPresent(renderer);
+                    }
+
                     // Clic dans le premier boutton : VS joueurs
                     if ((pts_bouttons[0].x1 < mouse_x && mouse_x < pts_bouttons[0].x2) &&
                         (pts_bouttons[0].y1 < mouse_y && mouse_y < pts_bouttons[0].y2))
@@ -129,8 +150,8 @@ int main(int argc, char *argv[])
                 {
                     mode = 1;
                     DisplayAll(window, renderer,
-                               matrice_Othello, mat_rect_Othello, pts_barre,
-                               cnt_w, cnt_b, win, team, mode);
+                                matrice_Othello, mat_rect_Othello, pts_barre,
+                                cnt_w, cnt_b, win, team, mode, menu_barre);
                 }
             }
             else if (intro == SDL_FALSE)
@@ -140,12 +161,26 @@ int main(int argc, char *argv[])
                     switch (e.type)
                     {
                     case SDL_MOUSEBUTTONDOWN:
+                        // SDL_GetMouseState(&mouse_x, &mouse_y);
+                        //printf("x : %d\ty : %d\n", mouse_x, mouse_y);
+                        tag_val = menu_barre;
+
+                        /////////////////// L'utilisateur interagie avec la menu barre ///////////////////                        
+                        e = interaction_barre(window, renderer, pts_barre, &menu_barre);
+                        if(menu_barre != tag_val)
+                        {
+                            printf("barre : %d\n", menu_barre);
+                            DisplayAll(window, renderer,
+                                       matrice_Othello, mat_rect_Othello, pts_barre,
+                                       cnt_w, cnt_b, win, team, mode, menu_barre);
+                        }
+                        
                         /////////////////// L'utilisateur selectionne une case ///////////////////
                         // Click de souris placement des pions sur les cases disponibles
                         get_coord(mat_rect_Othello, &i, &j);
                         if (show_valid(matrice_Othello, team) > 0)
                         {
-                            if ((0 <= i && i <= 7) && (0 <= j && j <= 7) && (is_valid(matrice_Othello, i, j, team)))
+                            if ((is_valid(matrice_Othello, i, j, team)))
                             {
                                 fill(matrice_Othello, i, j, team);
                                 push(&head, matrice_Othello);
@@ -159,7 +194,7 @@ int main(int argc, char *argv[])
                                 Mix_PlayChannel(-1, click_sound, 0);
                                 DisplayAll(window, renderer,
                                            matrice_Othello, mat_rect_Othello, pts_barre,
-                                           cnt_w, cnt_b, win, team, mode);
+                                           cnt_w, cnt_b, win, team, mode, menu_barre);
 
                                 ////////////////////////////////////// VS IA //////////////////////////////////////
                                 if (choix == 2)
@@ -179,7 +214,7 @@ int main(int argc, char *argv[])
                                         Mix_PlayChannel(-1, click_sound, 0);
                                         DisplayAll(window, renderer,
                                                    matrice_Othello, mat_rect_Othello, pts_barre,
-                                                   cnt_w, cnt_b, win, team, mode);
+                                                   cnt_w, cnt_b, win, team, mode, menu_barre);
                                     }
                                 }
                                 ////////////////////////////////////// VS IA //////////////////////////////////////
@@ -193,7 +228,7 @@ int main(int argc, char *argv[])
                                 team = BLANC;
                             DisplayAll(window, renderer,
                                        matrice_Othello, mat_rect_Othello, pts_barre,
-                                       cnt_w, cnt_b, win, team, mode);
+                                       cnt_w, cnt_b, win, team, mode, menu_barre);
                         }
                         break;
 
@@ -218,7 +253,7 @@ int main(int argc, char *argv[])
                     continue;
                 case SDLK_n:
                     // Retourne a la selection du mode de jeu
-                    if (key_press_ctrl == SDL_TRUE && intro == SDL_FALSE)
+                    if (key_press_ctrl == SDL_TRUE && menu_barre== -1 && intro == SDL_FALSE)
                     { // L'utilisateur fait un CTRL - N
                         freeBoard(matrice_Othello);
                         free_linked_list(head);
@@ -236,7 +271,7 @@ int main(int argc, char *argv[])
                     break;
                 case SDLK_r:
                     // Retourne a la selection du mode de jeu
-                    if (key_press_ctrl == SDL_TRUE && intro == SDL_FALSE)
+                    if (key_press_ctrl == SDL_TRUE && menu_barre== -1 && intro == SDL_FALSE)
                     { // L'utilisateur fait un CTRL - R
                         freeBoard(matrice_Othello);
                         free_linked_list(head);
@@ -246,11 +281,11 @@ int main(int argc, char *argv[])
 
                         DisplayAll(window, renderer,
                                    matrice_Othello, mat_rect_Othello, pts_barre,
-                                   cnt_w, cnt_b, win, team, mode);
+                                   cnt_w, cnt_b, win, team, mode, menu_barre);
                     }
                     break;
                 case SDLK_z:
-                    if (key_press_ctrl == SDL_TRUE && intro == SDL_FALSE)
+                    if (key_press_ctrl == SDL_TRUE && menu_barre== -1 && intro == SDL_FALSE)
                     { // L'utilisateur fait un CTRL - Z
                         if (check_next(&head) == 1)
                         {
@@ -276,12 +311,12 @@ int main(int argc, char *argv[])
                             }
                             DisplayAll(window, renderer,
                                        matrice_Othello, mat_rect_Othello, pts_barre,
-                                       cnt_w, cnt_b, win, team, mode);
+                                       cnt_w, cnt_b, win, team, mode, menu_barre);
                         }
                     }
                     break;
                 case SDLK_s:
-                    if (key_press_ctrl == SDL_TRUE && intro == SDL_FALSE)
+                    if (key_press_ctrl == SDL_TRUE && menu_barre== -1 && intro == SDL_FALSE)
                     { // L'utilisateur fait un CTRL - S
                         // cas de la sauvegarde du plateau dans un fichier txt
                         FILE *f;
@@ -303,7 +338,7 @@ int main(int argc, char *argv[])
                     }
                     break;
                 case SDLK_o:
-                    if (key_press_ctrl == SDL_TRUE && intro == SDL_FALSE)
+                    if (key_press_ctrl == SDL_TRUE && menu_barre== -1 && intro == SDL_FALSE)
                     { // L'utilisateur fait un CTRL - O
                         // cas de l'ouverture du fichier sauvegarde
                         FILE *f;
@@ -326,7 +361,7 @@ int main(int argc, char *argv[])
                         fclose(f);
                         DisplayAll(window, renderer,
                                    matrice_Othello, mat_rect_Othello, pts_barre,
-                                   cnt_w, cnt_b, win, team, mode);
+                                   cnt_w, cnt_b, win, team, mode, menu_barre);
                     }
                     break;
 

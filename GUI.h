@@ -35,7 +35,7 @@ points* Intro_bouttons(SDL_Window* window, SDL_Renderer* renderer);
 points* Barre_txt(SDL_Window* window, SDL_Renderer* renderer);
 void DisplayAll(SDL_Window* window, SDL_Renderer* renderer,
                     cell** matrice_Othello, points** mat_rect_Othello, points* pts_barre,
-                    int cnt_w, int cnt_b, int win, int team, int mode);
+                    int cnt_w, int cnt_b, int win, int team, int mode, int menu_barre);
 
 
 
