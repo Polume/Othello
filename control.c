@@ -1,4 +1,5 @@
 #include "control.h"
+#include "GUI_init.h"
 
 points* Exten_Fichier(SDL_Window* window, SDL_Renderer* renderer, points pts_barre)
 {
@@ -184,9 +185,9 @@ points* Exten_Option(SDL_Window* window, SDL_Renderer* renderer, points pts_barr
              (pts_selec[3].y1 + decalage_y), 
              "Mode", font, BLUE_COLOR);
     Ecrit_txt(renderer, 
-             (pts_selec[3].x2 - 100), 
+             (pts_selec[3].x2 - 20), 
              (pts_selec[3].y1 + decalage_y), 
-             "( --> )", font, BLUE_COLOR);
+             ">", font, BLUE_COLOR);
 
     TTF_CloseFont(font);
     return pts_selec;
@@ -195,7 +196,7 @@ points* Exten_Option_Mode(SDL_Window* window, SDL_Renderer* renderer, points pts
 {
     /* Elden Ring + UwU */
     // On a 2 sous categories !
-    // Fichier est pts_barre[2] qui est pts_selec[2] de Option
+    // Fichier est pts_barre[3] qui est pts_selec[3] de Option
 
     partie ecran100 = slice_screen_100(get_screen_size(window).w, get_screen_size(window).h);
     points* pts_selec = malloc(3*sizeof(points));
@@ -207,7 +208,7 @@ points* Exten_Option_Mode(SDL_Window* window, SDL_Renderer* renderer, points pts
 
     // Chargement du rectangle en fond
     SDL_SetRenderDrawColor(renderer, LIGHT_BLACK_COLOR.r, LIGHT_BLACK_COLOR.g, LIGHT_BLACK_COLOR.b, LIGHT_BLACK_COLOR.a); // On change la couleur de dessin en gris
-    SDL_Rect rect_ext  = { pts_barre.x2, pts_barre.y2, rect_weight, rect_height }; // Pour le fond de la barre
+    SDL_Rect rect_ext  = { pts_barre.x2, pts_barre.y1, rect_weight, rect_height }; // Pour le fond de la barre
     SDL_RenderFillRect(renderer, &rect_ext); // On charge le bandeau de la barre
     Dessine_coter_rect(renderer, rect_ext, BLUE_COLOR); // colore les bords du rectangle
     SDL_SetRenderDrawColor(renderer, BLACK_COLOR.r, BLACK_COLOR.g, BLACK_COLOR.b, BLACK_COLOR.a); // On reinitialise la couleur de dessin en noir
@@ -215,7 +216,7 @@ points* Exten_Option_Mode(SDL_Window* window, SDL_Renderer* renderer, points pts
     /*------------------------------------------------------1------------------------------------------------------*/
     // Definit Les limites d'emplacement du boutton
     pts_selec[0].x1 = pts_barre.x2;
-    pts_selec[0].y1 = pts_barre.y2;
+    pts_selec[0].y1 = pts_barre.y1;
     pts_selec[0].x2 = rect_weight; // definit la longueur clicable
     pts_selec[0].y2 = pts_selec[0].y1 + (int)(ecran100.h * 4);
     Ecrit_txt(renderer, 
@@ -339,6 +340,8 @@ SDL_Event interaction_barre(SDL_Window* window, SDL_Renderer* renderer, points *
     SDL_Event event;
     int mouse_x, mouse_y;
     SDL_GetMouseState(&mouse_x, &mouse_y);
+    points * pts_ext = NULL;
+    points * pts_sous_ext = NULL;
 
     // menu_barre Fichier = 1
     // pts_barre = 0
@@ -347,45 +350,43 @@ SDL_Event interaction_barre(SDL_Window* window, SDL_Renderer* renderer, points *
         {
             *menu_barre = 1;
             // Afficher l'extention de Fichier
-            points * pts_fichier = Exten_Fichier(window, renderer, pts_barre[0]);
-            free(pts_fichier);
-            // if(menu_barre == 1)
-            // {
-            //     // Afficher l'extention de Fichier
-            //     Exten_Fichier(window, renderer, pts_barre[0]);
-            //     // Si on clic sur Fichier -> quitter 
-            //     event.type = SDL_KEYDOWN;
-            //     event.key.keysym.sym = SDLK_q;
-            //     *menu_barre = -1;
-            // }
+            pts_ext = Exten_Fichier(window, renderer, pts_barre[0]);
         }
-    else
-    {*menu_barre = 0;}
+    
 
     // menu_barre Option = 2
     // pts_barre = 1
-    if(*menu_barre == 2)
+    else if((pts_barre[1].x1 < mouse_x && mouse_x < pts_barre[1].x2) &&
+            (pts_barre[1].y1 < mouse_y && mouse_y < pts_barre[1].y2) )
     {
+        *menu_barre = 2;
         // Afficher l'extention de Fichier
-        // Exten_Option();
-        // Si on clic sur Fichier -> quitter 
-        event.type = SDL_KEYDOWN;
-        event.key.keysym.sym = SDLK_q;
-        *menu_barre = -1;
+        pts_ext = Exten_Option(window, renderer, pts_barre[1]);
+
+        // Fichier->option est pts_selec[3] de Option
+        // manu_barre Option->Mode = 4
+        if( (pts_ext[3].x1 < mouse_x && mouse_x < pts_ext[3].x2) &&
+            (pts_ext[3].y1 < mouse_y && mouse_y < pts_ext[3].y2) )
+        {
+            *menu_barre = 4;
+            pts_sous_ext = Exten_Option_Mode(window, renderer, pts_ext[3]);
+        }
+        
     }
 
     // menu_barre Affichage = 3
     // pts_barre = 2
-    if(*menu_barre == 3)
+    else if((pts_barre[2].x1 < mouse_x && mouse_x < pts_barre[2].x2) &&
+            (pts_barre[2].y1 < mouse_y && mouse_y < pts_barre[2].y2) )
     {
         // Afficher l'extention de Fichier
-        // Exten_Affichage();
-        // Si on clic sur Fichier -> quitter 
-        event.type = SDL_KEYDOWN;
-        event.key.keysym.sym = SDLK_q;
-        *menu_barre = -1;
+        pts_ext = Exten_Affichage(window, renderer, pts_barre[1]);
+        *menu_barre = 3;
     }
-
+    else{*menu_barre = -1;}
+    printf("menu_barre : %d\n", *menu_barre);
+    free(pts_sous_ext);
+    free(pts_ext);
     return event;
 }
 
@@ -407,9 +408,10 @@ void Aff_interaction_barre(SDL_Window* window, SDL_Renderer* renderer, points * 
             break;
         case 4 :
             // Afficher l'extention de Option
-            Exten_Option(window, renderer, pts_barre[1]);
+            points * p_ext_Option = Exten_Option(window, renderer, pts_barre[1]);
             // Afficher l'extention de Option-->Mode
-            Exten_Option_Mode(window, renderer, pts_barre[1]);
+            Exten_Option_Mode(window, renderer, p_ext_Option[3]);
+            free(p_ext_Option);
             break;
     }
 }

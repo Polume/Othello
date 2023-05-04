@@ -27,7 +27,7 @@ int main(int argc, char *argv[])
     points *pts_barre;
     points *pts_bouttons;
 
-    int mode = 0, change_amb = 1, menu_barre = 0, tag_val;
+    int mode = 0, change_amb = 1, menu_barre = -1, tag_val;
     int i, j, IA_p = 0, mouse_x, mouse_y;
     int team = BLANC, cnt_b = 0, cnt_w = 0, win = 0;
     int intro = SDL_TRUE, choix = 0;
@@ -253,7 +253,7 @@ int main(int argc, char *argv[])
                     continue;
                 case SDLK_n:
                     // Retourne a la selection du mode de jeu
-                    if (key_press_ctrl == SDL_TRUE && menu_barre== -1 && intro == SDL_FALSE)
+                    if (key_press_ctrl == SDL_TRUE && menu_barre == -1 && intro == SDL_FALSE)
                     { // L'utilisateur fait un CTRL - N
                         freeBoard(matrice_Othello);
                         free_linked_list(head);
