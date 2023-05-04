@@ -10,6 +10,7 @@
 
 #define MAX_EVAL -10000
 #define MIN_EVAL 10000
+#define AUX_VALUE 500
 
 typedef struct tree
 {
@@ -32,9 +33,9 @@ void printCurrentLevel(tree *root, int level);
 void printTree(tree *root);
 
 float **gameState();
-float *tree_values(cell **board, int **possible, int move, int color);
+float *tree_values(cell **board, int **possible, int move, int color, int *tmp_numMoves);
 
-float minimax(tree *root, int depth, int color);
+float minimax(tree *root, int depth, float alpha, float beta, int color);
 int hard_mode(cell **board, int color);
 
 #endif

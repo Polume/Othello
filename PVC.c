@@ -168,7 +168,7 @@ float **gameState()
     return BeginPositionScore;
 }
 
-float *tree_values(cell **board, int **possible, int move, int color)
+float *tree_values(cell **board, int **possible, int move, int color, int *tmp_numMoves)
 // Renvoie le tableau des valeurs contenues dans gameState en fonction des indices des cases valides
 {
     // Creation d un nouveau plateau où on posera une des cases possibles
@@ -182,28 +182,26 @@ float *tree_values(cell **board, int **possible, int move, int color)
     else
         color = BLANC; // changement de team
 
-    int tmp_numMoves = show_valid(tmp_board, color);
-    int **tmp_possible = possibilities(tmp_board, tmp_numMoves);
+    *tmp_numMoves = show_valid(tmp_board, color);
+    int **tmp_possible = possibilities(tmp_board, *tmp_numMoves);
     // On regarde ensuite les differentes possibilites du coup adverse
-    // printBoard(tmp_board);
-    float **state = gameState(); // Importance des cases
-    float *tree_values = calloc(tmp_numMoves, sizeof(float));
 
-    for (int i = 0; i < tmp_numMoves; i++)
+    float **state = gameState(); // Importance des cases
+    float *tree_values = calloc(*tmp_numMoves, sizeof(float));
+
+    for (int i = 0; i < *tmp_numMoves; i++)
     {
         float value = state[tmp_possible[i][0]][tmp_possible[i][1]];
         tree_values[i] = value;
-        // printf("%f %d %d ", value, tmp_possible[i][0], tmp_possible[i][1]);
     }
-    // printf("\n");
     free_matrix_float(state, SIZE_OTHELLO);
-    free_matrix_int(tmp_possible, tmp_numMoves);
+    // free_matrix_int(tmp_possible, *tmp_numMoves);
     freeBoard(tmp_board);
 
     return tree_values; // puis on renvoie l'arbre des differentes valeurs obtenues
 }
 
-float minimax(tree *root, int depth, int color)
+float minimax(tree *root, int depth, float alpha, float beta, int color)
 // Blanc - MAXIMIZE
 // Noir - MINIMIZE
 {
@@ -215,15 +213,21 @@ float minimax(tree *root, int depth, int color)
     if (color == BLANC)
     // On cherche ici la valeur max, pour chaque fils du noeud courant
     {
-        int maxEval = MAX_EVAL;
+        float maxEval = MAX_EVAL;
         if (root->left != NULL)
         {
-            eval = minimax(root->left, depth - 1, NOIR);
+            eval = minimax(root->left, depth - 1, alpha, beta, NOIR);
             maxEval = max(maxEval, eval);
+            alpha = max(alpha, eval);
+            if (beta <= alpha)
+            {
+                root->val = maxEval; // alpha beta pruning -> on a pas besoin d'évaluer la prochaine branche
+                return maxEval;
+            }
         }
         if (root->right != NULL)
         {
-            eval = minimax(root->right, depth - 1, NOIR);
+            eval = minimax(root->right, depth - 1, alpha, beta, NOIR);
             maxEval = max(maxEval, eval);
         }
         root->val = maxEval; // On attribue la valeur maximale au noeud pour l'affichage
@@ -231,15 +235,21 @@ float minimax(tree *root, int depth, int color)
     }
     else
     { // On cherche ici la valeur min
-        int minEval = MIN_EVAL;
+        float minEval = MIN_EVAL;
         if (root->left != NULL)
         {
-            eval = minimax(root->left, depth - 1, BLANC);
+            eval = minimax(root->left, depth - 1, alpha, beta, BLANC);
             minEval = min(minEval, eval);
+            beta = min(beta, eval);
+            if (beta <= alpha)
+            {
+                root->val = minEval;
+                return minEval;
+            }
         }
         if (root->right != NULL)
         {
-            eval = minimax(root->right, depth - 1, BLANC);
+            eval = minimax(root->right, depth - 1, alpha, beta, BLANC);
             minEval = min(minEval, eval);
         }
         root->val = minEval; // On attribue la valeur minimale au noeud pour l'affichage
@@ -252,16 +262,19 @@ int hard_mode(cell **board, int color)
     On doit faire en sorte d'adapter la taille de notre tableau pour remplir correctement notre arbre binaire
     par rapport à la puissance de 2 du nombre de coups possibles
     ex : numMoves = 8 alors l'arbre sera de profondeur 4 et on a les valeurs -1, 3, 5, 1, -6, -4, 0, 9
-    notre arbre sera donc de la forme suivante après la fonction minimax
+    notre arbre sera donc de la forme suivante après la fonction minimax (en utilisant la couleur blanche)
                                                                  3.000000
                               3.000000                                                           -4.000000
-                3.000000                         5.000000                      -4.000000                         9.000000
+                3.000000                         5.000000                      -4.000000                         500.000000
         -1.000000       3.000000        5.000000        1.000000        -6.000000       -4.000000       0.000000        9.000000
-    On a donc besoin de créer 7 noeuds auparavant pour qu'ils puissent contenir les différentes valeurs min et max
-    ce qui correspond à numMoves - 1
-    Pour chaque arbre, on utilisera minimax et nous prendrons la solution la plus adéquate */
+    On a donc besoin de créer 7 noeuds auparavant qu'on initialisera à AUX_VALUE pour le débuguage
+    pour qu'ils puissent contenir les différentes valeurs min et max
+    ce qui correspond à numMoves - 1.
+    Pour chaque coup possible, on créera un nouveau plateau afin de placer un pion , pour au final
+    utiliser minimax ce qui permettra de prendre la solution la plus adéquate */
 {
     int numMoves = show_valid(board, color);
+
     int finalSize = 0;
     int original_color = color;
     if (numMoves == 0) // pas de cases valides
@@ -269,38 +282,40 @@ int hard_mode(cell **board, int color)
         return 0;
     }
 
-    float log = log2(numMoves);
-    int is_power_of_2 = (ceilf(log) == log); // Renvoie 1 si f est entier sinon 0
-    int log_int = (int)log;
-
-    // Si notre nombre de cases valides n'est pas une puissance de 2, log2 sera un float
-    // on convertira alors le log2 en entier et on ajoute 1 pour ajuster l'arbre
-    if (is_power_of_2)
-        finalSize = numMoves - 1 + numMoves;
-    else
-    {
-        finalSize = powf(2.0, log_int + 1) - 1 + numMoves;
-    }
-
-    float *final_array = calloc(finalSize, sizeof(float));
     float bestMoveWhite = MAX_EVAL;
     float bestMoveBlack = MIN_EVAL;
     float bestMove;
     int best_index;
 
     int **possible = possibilities(board, numMoves); // tableau des indices des cases valides
-
     // Pour tout les moves possibles, on va observer les possibles
     // coups adverses pour voir quelle est la meilleure case à utiliser
     for (int move = 0; move < numMoves; move++)
     {
         int tree_index = 0;
-        float *tree_val = tree_values(board, possible, move, color);
+        int tmp_numMoves = 0;
+
+        float *tree_val = tree_values(board, possible, move, color, &tmp_numMoves);
 
         // tableau qui contiendra les valeurs de l'arbre binaire
+        float log = log2(tmp_numMoves);
+        int is_power_of_2 = (ceilf(log) == log); // Renvoie 1 si f est entier sinon 0
+        int log_int = (int)log;
+
+        // Si notre nombre de cases valides n'est pas une puissance de 2, log2 sera un float
+        // on convertira alors le log2 en entier et on ajoute 1 pour ajuster la taille de l'arbre
+        if (is_power_of_2)
+            finalSize = tmp_numMoves - 1 + tmp_numMoves;
+        else
+        {
+            finalSize = powf(2.0, log_int + 1) - 1 + tmp_numMoves;
+        }
+
+        float *final_array = calloc(finalSize, sizeof(float));
+
         if (is_power_of_2)
         {
-            for (int i = numMoves - 1; i < finalSize; i++)
+            for (int i = tmp_numMoves - 1; i < finalSize; i++)
             {
                 final_array[i] = tree_val[tree_index];
                 tree_index++;
@@ -314,13 +329,17 @@ int hard_mode(cell **board, int color)
                 tree_index++;
             }
         }
+        for (int i = 0; i < finalSize - tmp_numMoves; i++)
+            final_array[i] = AUX_VALUE; // On remplit le début du tableau avec une valeur auxiliaire
+                                        // Afin de vérifier que l'élagage alpha beta s'est bien execute
+
         tree *root = insertInTree(final_array, 0, finalSize);
         if (color == BLANC)
             color = NOIR;
         else
             color = BLANC; // changement de team comme dans tree_values pour garder la bonne couleur
 
-        float minmax = minimax(root, height(root), color);
+        float minmax = minimax(root, height(root), MAX_EVAL, MIN_EVAL, color);
 
         if (color == BLANC) // choix de la meilleure valeur et du meilleur indice
         {
@@ -334,7 +353,7 @@ int hard_mode(cell **board, int color)
             if (bestMove == minmax)
                 best_index = move;
         }
-        color = original_color; // On reviens à la couleur de base pour reboucler
+        color = original_color; // On revient à la couleur de base pour reboucler
     }
     fill(board, possible[best_index][0], possible[best_index][1], color);
     return 1;
