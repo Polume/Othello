@@ -3,10 +3,16 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <gtk/gtk.h>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
+
 #include "GUI_init.h"
 #include "GUI.h"
+
+char * explorateur_de_fichier();
+void demande_fichier(char** filename);
+void ajout_extension(char** filename, const char* extension);
 
 points* Exten_Fichier(SDL_Window* window, SDL_Renderer* renderer, points pts_barre);
 points* Exten_Option(SDL_Window* window, SDL_Renderer* renderer, points pts_barre);

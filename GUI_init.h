@@ -35,6 +35,7 @@ void freeMat(points** board);
 // UTILITAIRE
 char* int_to_char(int num);
 void get_coord(points** mat_rect_Othello, int* i, int* j);
+char * add_to_end_str(char* str, char* str_add, int place);
 // ECRAN - TAILLE
 partie get_screen_size(SDL_Window* window);
 partie slice_screen_10(float w, float h);
@@ -44,6 +45,4 @@ void Dessine_coter_rect(SDL_Renderer *renderer, SDL_Rect rect, SDL_Color couleur
 void Place_image(SDL_Renderer* renderer, void * rect_place, char* fichier);
 int Ecrit_txt(SDL_Renderer* renderer, int x, int y, char* text, TTF_Font* font, SDL_Color textColor);
 
-
-char * add_to_end_str(char* str, char* str_add, int place);
 #endif

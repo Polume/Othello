@@ -48,6 +48,7 @@ int check_next(list **head)
         return 1;
     return 0;
 }
+
 list *newList(cell **board)
 {
     list *new = (list *)malloc(sizeof(list));

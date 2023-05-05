@@ -1,8 +1,11 @@
 CC = gcc
 CFLAGS = -Wall -std=c99
-IFLAGS = -lSDL2 -lSDL2_image -lSDL2_ttf -lSDL2_mixer -lm
+IFLAGS = -lSDL2 -lSDL2_image -lSDL2_ttf -lSDL2_mixer `pkg-config --cflags --libs gtk+-3.0` -lm
 
-all: run
+all: install-deps run 
+
+install-deps:
+	sudo apt-get install libsdl2-image-dev libsdl2-ttf-dev libsdl2-dev libsdl2-mixer-dev build-essential libgtk-3-dev
 
 run: game
 	./game

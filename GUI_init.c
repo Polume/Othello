@@ -1,26 +1,5 @@
 #include "GUI_init.h"
 
-char * add_to_end_str(char* str1, char* str2, int place)
-{
-    int len1 = strlen(str1);
-    int len2 = strlen(str2);
-
-    // verifier si l'emplacement est valide
-    if (place < 0 || place > len1) {
-        Error("Erreur : emplacement invalide.\n");
-    }
-
-    char temp1[len1 - place + 1]; // partie apres l'emplacement
-    char * temp2 = malloc(sizeof(char)*(len1+len2+1)); // partie avant l'emplacement qui serra retourner
-
-    strncpy(temp1, str1 + len1 - place, place);
-    strncpy(temp2, str1, len1 - place);
-    
-    strcat(temp2, str2);
-    strcat(temp2, temp1);
-    temp2[len1+len2] = '\0';
-    return temp2;
-}
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
 /* - - - - - - - - - - - - - INIT - - - - - - - - - - - - -*/
@@ -137,6 +116,28 @@ void get_coord(points** mat_rect_Othello, int* i, int* j)
             }
         }
     }
+}
+
+char * add_to_end_str(char* str1, char* str2, int place)
+{// Fonction permettant d'ajouet une chaine de caractere a une autre a un emplacement donne appartir de la fin
+    int len1 = strlen(str1);
+    int len2 = strlen(str2);
+
+    // verifier si l'emplacement est valide
+    if (place < 0 || place > len1) {
+        Error("Erreur : emplacement invalide.\n");
+    }
+
+    char temp1[len1 - place + 1]; // partie apres l'emplacement
+    char * temp2 = malloc(sizeof(char)*(len1+len2+1)); // partie avant l'emplacement qui serra retourner
+
+    strncpy(temp1, str1 + len1 - place, place);
+    strncpy(temp2, str1, len1 - place);
+    
+    strcat(temp2, str2);
+    strcat(temp2, temp1);
+    temp2[len1+len2] = '\0';
+    return temp2;
 }
 
 // ECRAN - TAILLE
