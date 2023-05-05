@@ -340,7 +340,7 @@ int hard_mode(cell **board, int color)
             color = BLANC; // changement de team comme dans tree_values pour garder la bonne couleur
 
         float minmax = minimax(root, height(root), MAX_EVAL, MIN_EVAL, color);
-
+        printTree(root);
         if (color == BLANC) // choix de la meilleure valeur et du meilleur indice
         {
             bestMove = max(bestMoveWhite, minmax);
