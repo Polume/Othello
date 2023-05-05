@@ -8,35 +8,37 @@
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
 
 void Dessine_pion(SDL_Window* window, SDL_Renderer* renderer, int x, int y, int team, int mode)
-{// dessine un pion là ou l'utilisateur ca cliquer
+{// dessine un pion la ou l'utilisateur ca cliquer
     partie ecran100 = slice_screen_100(get_screen_size(window).w, get_screen_size(window).h);
     int decalage_x =  (int)(0.39 * ecran100.w);
     int decalage_y =  (int)(0.27 * ecran100.h);
     // Definir un rectcangle pour l'emplacement et la taille de l'image
     SDL_Rect rect_pion = { x + decalage_x, y + decalage_y, (int)(4.3 * ecran100.w), (int)(8.1 * ecran100.h) };
     char* fichier = NULL;
-    if (mode == 1)
+    switch(mode)
     {
-        if (team == 1)
-        {
-            fichier = "Pictures/White.png";
-        }
-        else if (team == 2)
-        {
-            fichier = "Pictures/Black.png";
-        }
+        case 1 :
+            if (team == 1)
+                fichier = "Pictures/White.png";
+            else if (team == 2)
+                fichier = "Pictures/Black.png";
+            break;
+        case 2 :
+            if (team == 1)
+                fichier = "Pictures/White2.png";
+            else if (team == 2)
+                fichier = "Pictures/Black2.png";
+            break;
+        case 3 :
+            if (team == 1)
+                fichier = "Pictures/White3.png";
+            else if (team == 2)
+                fichier = "Pictures/Black3.png";
+            break;
+        default :
+            break;
     }
-    else if (mode == 2)
-    {
-        if (team == 1)
-        {
-            fichier = "Pictures/White1.png";
-        }
-        else if (team == 2)
-        {
-            fichier = "Pictures/Black1.png";
-        }
-    }
+
     if (fichier == NULL)
         Error("Recuperation de l'image echoue !");
     Place_image(renderer, &rect_pion, fichier);
@@ -51,28 +53,30 @@ void Dessine_pion_valid(SDL_Window* window, SDL_Renderer* renderer,
     // Definir un rectangle pour l'emplacement et la taille de l'image
     SDL_Rect rect_pion = { x + decalage_x, y + decalage_y, (int)(4.3 * ecran100.w), (int)(8.1 * ecran100.h) };
     char* fichier = NULL;
-    if (mode == 1)
+    switch(mode)
     {
-        if (team == 1)
-        {
-            fichier = "Pictures/White_Border.png";
-        }
-        else if (team == 2)
-        {
-            fichier = "Pictures/Black_Border.png";
-        }
+        case 1 :
+            if (team == 1)
+                fichier = "Pictures/White_Border.png";
+            else if (team == 2)
+                fichier = "Pictures/Black_Border.png";
+            break;
+        case 2 :
+            if (team == 1)
+                fichier = "Pictures/White_Border2.png";
+            else if (team == 2)
+                fichier = "Pictures/Black_Border2.png";
+            break;
+        case 3 :
+            if (team == 1)
+                fichier = "Pictures/White_Border3.png";
+            else if (team == 2)
+                fichier = "Pictures/Black_Border3.png";
+            break;
+        default :
+            break;
     }
-    else if (mode == 2)
-    {
-        if (team == 1)
-        {
-            fichier = "Pictures/White1_Border.png";
-        }
-        else if (team == 2)
-        {
-            fichier = "Pictures/Black1_Border.png";
-        }
-    }
+
     if (fichier == NULL)
         Error("Recuperation de l'image echoue !");
     Place_image(renderer, &rect_pion, fichier);
@@ -86,13 +90,15 @@ void Dessine_pion_valid(SDL_Window* window, SDL_Renderer* renderer,
 void BG_image(SDL_Renderer *renderer, int mode)
 {
     // Recuperation de l'image
-    char* fichier ="Pictures/BG_Othello.png";
+    char* fichier =NULL;
     if (mode == 0)
         fichier = "Pictures/Oth.png"; 
     else if (mode == 1)
         fichier = "Pictures/BG_Othello.png";
     else if (mode == 2)
-        fichier = "Pictures/BG_UwU.png";
+        fichier = "Pictures/BG_Othello2.png";
+    else if (mode == 3)
+        fichier = "Pictures/BG_Othello3.png";
     if (fichier == NULL)
         Error("Recuperation de l'image echoue !");
 
@@ -105,16 +111,21 @@ void Base_Othello(SDL_Window *window, SDL_Renderer *renderer, int mode)
     partie ecran10 = slice_screen_10(get_screen_size(window).w, get_screen_size(window).h);
     SDL_Rect rect_sides = { (int)(3 * ecran10.w), (int)(1.5 * ecran10.h), (int)(8 * ecran10.h), (int)(8 * ecran10.h) };
     char* fichier = NULL;
-    if (mode == 1)
+    switch(mode)
     {
-        // Recuperation de l'image
-        fichier = "Pictures/Base_Othello.png";
+        case 1 :
+            fichier = "Pictures/Base_Othello.png";
+            break;
+        case 2 :
+            fichier = "Pictures/Base_Othello2.png";
+            break;
+        case 3 :
+            fichier = "Pictures/Base_Othello3.png";
+            break;
+        default :
+            break;
     }
-    else if (mode == 2)
-    {
-        // Recuperation de l'image
-        fichier = "Pictures/Base_Othello_UwU.png";
-    }
+
     if (fichier == NULL)
         Error("Recuperation de l'image_base echoue !");
 
@@ -292,15 +303,6 @@ points* Barre_txt(SDL_Window* window, SDL_Renderer* renderer)
     Dessine_coter_rect(renderer, rect_boutton_barre_A, BLUE_COLOR); // colore les bords du rectangle
 
     TTF_CloseFont(font);
-
-    // points* oui1 = Exten_Fichier(window, renderer, pts_barre[0]);
-    // points* oui2 = Exten_Option(window, renderer, pts_barre[1]);
-    // points* oui3 = Exten_Affichage(window, renderer, pts_barre[2]);
-    // points* oui4 = Exten_Option_Mode(window, renderer, oui2[2]);
-    // free(oui1);
-    // free(oui2);
-    // free(oui3);
-    // free(oui4);
     return pts_barre;
 }
 

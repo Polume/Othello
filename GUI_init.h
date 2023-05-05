@@ -45,14 +45,5 @@ void Place_image(SDL_Renderer* renderer, void * rect_place, char* fichier);
 int Ecrit_txt(SDL_Renderer* renderer, int x, int y, char* text, TTF_Font* font, SDL_Color textColor);
 
 
-
-
-
-
-
-
-
-
-
-
+char * add_to_end_str(char* str, char* str_add, int place);
 #endif

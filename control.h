@@ -14,7 +14,7 @@ points* Exten_Affichage(SDL_Window* window, SDL_Renderer* renderer, points pts_b
 
 points* Exten_Option_Mode(SDL_Window* window, SDL_Renderer* renderer, points pts_barre);
 
-SDL_Event interaction_barre(SDL_Window* window, SDL_Renderer* renderer, points * pts_barre, int * menu_barre);
+void interaction_barre(SDL_Window* window, SDL_Renderer* renderer, SDL_Event * event, points * pts_barre, int * menu_barre);
 void Aff_interaction_barre(SDL_Window* window, SDL_Renderer* renderer, points * pts_barre, int menu_barre);
 
 #endif
