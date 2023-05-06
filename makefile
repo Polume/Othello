@@ -10,7 +10,7 @@ install-deps:
 run: game
 	./game
 
-game: othello.o linked_list.o main.o GUI.o GUI_init.o PVP.o PVC.o control.o
+game: othello.o linked_list.o main.o GUI.o GUI_init.o PVC.o control.o
 	$(CC) $(CFLAGS) $^ -o $@ $(IFLAGS)
 
 %.o: %.c

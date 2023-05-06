@@ -11,7 +11,6 @@
 #include "othello.h"
 #include "linked_list.h"
 #include "GUI.h"
-#include "PVP.h"
 #include "PVC.h"
 
 int main(int argc, char *argv[])
