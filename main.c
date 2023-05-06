@@ -124,7 +124,26 @@ int main(int argc, char *argv[])
 
             menu_barre = -1;
         }
-        else if (menu_barre == -8 && intro == SDL_FALSE) // MODE SELECTIONNE : 2 ----------------------------------------
+        else if (menu_barre == -7 && intro == SDL_FALSE && choix == 2) // DIFFICULTE SELECTIONNE : (Facile) ----------------------------------------
+        {
+            choix = 2;
+            menu_barre = -1;
+        }
+        else if (menu_barre == -8 && intro == SDL_FALSE && choix == 2) // DIFFICULTE SELECTIONNE : (Normal) ----------------------------------------
+        {
+            choix = 3;
+            menu_barre = -1;
+        }
+        else if (menu_barre == -10 && intro == SDL_FALSE) // MODE SELECTIONNE : 1 (Basique) ----------------------------------------    
+        {
+            mode = 1;
+            Mix_PlayChannel(0, ambiance_sound, -1);
+            DisplayAll(window, renderer,
+                       matrice_Othello, mat_rect_Othello, pts_barre,
+                       cnt_w, cnt_b, win, team, mode, menu_barre);
+            menu_barre = -1;
+        }
+        else if (menu_barre == -11 && intro == SDL_FALSE) // MODE SELECTIONNE : 2 (Elden Ring)----------------------------------------
         {
             mode = 2;
             Mix_PlayChannel(0, ambiance_sound_Elden_Ring, -1);
@@ -133,7 +152,7 @@ int main(int argc, char *argv[])
                        cnt_w, cnt_b, win, team, mode, menu_barre);
             menu_barre = -1;
         }
-        else if (menu_barre == -9 && intro == SDL_FALSE) // MODE SELECTIONNE : 3 ----------------------------------------
+        else if (menu_barre == -12 && intro == SDL_FALSE) // MODE SELECTIONNE : 3 (UwU)----------------------------------------
         {
             mode = 3;
             Mix_PlayChannel(0, ambiance_sound_UwU, -1);
@@ -260,7 +279,7 @@ int main(int argc, char *argv[])
                                            cnt_w, cnt_b, win, team, mode, menu_barre);
 
                                 ////////////////////////////////////// VS IA //////////////////////////////////////
-                                if (choix == 2)
+                                if (choix == 2)// MODE FACILE
                                 {
                                     reset_valid(matrice_Othello);
                                     IA_p = easy_mode(matrice_Othello, team);
@@ -269,11 +288,21 @@ int main(int argc, char *argv[])
 
                                     if (IA_p != 0)
                                     {
-                                        if (team == BLANC)
-                                            team = NOIR;
-                                        else
-                                            team = BLANC;
+                                        Mix_PlayChannel(-1, click_sound, 0);
+                                        DisplayAll(window, renderer,
+                                                   matrice_Othello, mat_rect_Othello, pts_barre,
+                                                   cnt_w, cnt_b, win, team, mode, menu_barre);
+                                    }
+                                }
+                                if (choix == 3)// MODE NORMALE
+                                {
+                                    reset_valid(matrice_Othello);
+                                    IA_p = easy_mode(matrice_Othello, team);
+                                    push(&head, matrice_Othello);
+                                    // printBoard(matrice_Othello); affiche sur le terminal l'othello
 
+                                    if (IA_p != 0)
+                                    {
                                         Mix_PlayChannel(-1, click_sound, 0);
                                         DisplayAll(window, renderer,
                                                    matrice_Othello, mat_rect_Othello, pts_barre,

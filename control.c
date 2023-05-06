@@ -40,12 +40,12 @@ void ajout_extension(char **filename, const char *extension)
     char *dot = strrchr(*filename, '.');
     if (dot == NULL)
     {
-        // Pas d'extension, ajoute l'extension à la fin
+        // Pas d'extension, ajoute l'extension a la fin
         strcat(*filename, extension);
     }
     else
     {
-        // Verifie si l extension existe déjà
+        // Verifie si l extension existe deja
         if (strcmp(dot, extension) != 0)
         {
             // Remplace l ancienne extension par la nouvelle
@@ -167,13 +167,13 @@ points *Exten_Fichier(SDL_Window *window, SDL_Renderer *renderer, points pts_bar
 points *Exten_Option(SDL_Window *window, SDL_Renderer *renderer, points pts_barre)
 {
     /* retour_au_coup_precedent (CTRL - Z)  + musique (ON/OFF) + mode */
-    // On a 3 sous categories !
-    // Fichier est pts_barre[1]
+    // On a 4 sous categories !
+    // Option est pts_barre[1]
 
     partie ecran100 = slice_screen_100(get_screen_size(window).w, get_screen_size(window).h);
     points *pts_selec = malloc(4 * sizeof(points));
     int rect_weight = pts_barre.x1 + (int)(ecran100.w * 20);
-    int rect_height = pts_barre.y2 * 3;
+    int rect_height = pts_barre.y2 * 4;
     int decalage_x = (int)(ecran100.w * 0.75);
     int decalage_y = (int)(ecran100.h * 0.75);
     TTF_Font *font = TTF_OpenFont("arial.ttf", (int)(ecran100.h * 2));
@@ -199,7 +199,7 @@ points *Exten_Option(SDL_Window *window, SDL_Renderer *renderer, points pts_barr
               (pts_selec[0].x2 - 100),
               (pts_selec[0].y1 + decalage_y),
               "(ctrl + Z)", font, BLUE_COLOR);
-    /*------------------------------------------------------ 3 ------------------------------------------------------*/
+    /*------------------------------------------------------ 2 ------------------------------------------------------*/
     // Definit Les limites d'emplacement du bouton
     pts_selec[1].x1 = pts_barre.x1;
     pts_selec[1].y1 = pts_selec[0].y2;
@@ -213,7 +213,7 @@ points *Exten_Option(SDL_Window *window, SDL_Renderer *renderer, points pts_barr
               (pts_selec[1].x2 - 100),
               (pts_selec[1].y1 + decalage_y),
               "(ON/OFF)", font, BLUE_COLOR);
-    /*------------------------------------------------------ 4 ------------------------------------------------------*/
+    /*------------------------------------------------------ 3 ------------------------------------------------------*/
     // Definit Les limites d'emplacement du bouton
     pts_selec[2].x1 = pts_barre.x1;
     pts_selec[2].y1 = pts_selec[1].y2;
@@ -227,18 +227,87 @@ points *Exten_Option(SDL_Window *window, SDL_Renderer *renderer, points pts_barr
               (pts_selec[2].x2 - 20),
               (pts_selec[2].y1 + decalage_y),
               ">", font, BLUE_COLOR);
+    /*------------------------------------------------------ 4 ------------------------------------------------------*/
+    // Definit Les limites d'emplacement du bouton
+    pts_selec[3].x1 = pts_barre.x1;
+    pts_selec[3].y1 = pts_selec[2].y2;
+    pts_selec[3].x2 = rect_weight; // Definit la longueur clicable
+    pts_selec[3].y2 = (int)(pts_barre.y2 * 5);
+    Ecrit_txt(renderer,
+              (pts_selec[3].x1 + decalage_x),
+              (pts_selec[3].y1 + decalage_y),
+              "Difficulte", font, BLUE_COLOR);
+    Ecrit_txt(renderer,
+              (pts_selec[3].x2 - 20),
+              (pts_selec[3].y1 + decalage_y),
+              ">", font, BLUE_COLOR);
 
     TTF_CloseFont(font);
     return pts_selec;
 }
 points *Exten_Option_Mode(SDL_Window *window, SDL_Renderer *renderer, points pts_barre)
 {
-    /* Elden Ring + UwU */
-    // On a 2 sous categories !
+    /* Basique + Elden Ring + UwU */
+    // On a 3 sous categories !
     // Fichier est pts_barre[2] qui est pts_selec[2] de Option
 
     partie ecran100 = slice_screen_100(get_screen_size(window).w, get_screen_size(window).h);
     points *pts_selec = malloc(3 * sizeof(points));
+    int rect_weight = (int)(10 * ecran100.w);
+    int rect_height = (int)(13 * ecran100.h);
+    int decalage_x = (int)(ecran100.w * 0.75);
+    int decalage_y = (int)(ecran100.h * 0.75);
+    TTF_Font *font = TTF_OpenFont("arial.ttf", (int)(ecran100.h * 2));
+
+    // Chargement du rectangle en fond
+    SDL_SetRenderDrawColor(renderer, LIGHT_BLACK_COLOR.r, LIGHT_BLACK_COLOR.g, LIGHT_BLACK_COLOR.b, LIGHT_BLACK_COLOR.a); // On change la couleur de dessin en gris
+    SDL_Rect rect_ext = {pts_barre.x2, pts_barre.y1, rect_weight, rect_height};                                           // Pour le fond de la barre
+    SDL_RenderFillRect(renderer, &rect_ext);                                                                              // On charge le bandeau de la barre
+    Dessine_coter_rect(renderer, rect_ext, BLUE_COLOR);                                                                   // Colorie les bords du rectangle
+    SDL_SetRenderDrawColor(renderer, BLACK_COLOR.r, BLACK_COLOR.g, BLACK_COLOR.b, BLACK_COLOR.a);                         // On reinitialise la couleur de dessin en noir
+
+    /*------------------------------------------------------ 1 ------------------------------------------------------*/
+    // Definit Les limites d'emplacement du bouton
+    pts_selec[0].x1 = pts_barre.x2;
+    pts_selec[0].y1 = pts_barre.y1;
+    pts_selec[0].x2 = pts_selec[0].x1 + rect_weight; // Definit la longueur clicable
+    pts_selec[0].y2 = pts_selec[0].y1 + (int)(ecran100.h * 4);
+    Ecrit_txt(renderer,
+              (pts_selec[0].x1 + decalage_x),
+              (pts_selec[0].y1 + decalage_y),
+              "Mode Basique", font, BLUE_COLOR);
+    /*------------------------------------------------------ 2 ------------------------------------------------------*/
+    // Definit Les limites d'emplacement du bouton
+    pts_selec[1].x1 = pts_barre.x2;
+    pts_selec[1].y1 = pts_selec[0].y2;
+    pts_selec[1].x2 = pts_selec[1].x1 + rect_weight; // Definit la longueur clicable
+    pts_selec[1].y2 = pts_selec[1].y1 + (int)(ecran100.h * 4);
+    Ecrit_txt(renderer,
+              (pts_selec[1].x1 + decalage_x),
+              (pts_selec[1].y1 + decalage_y),
+              "Mode Elden Ring", font, BLUE_COLOR);
+    /*------------------------------------------------------ 3 ------------------------------------------------------*/
+    // Definit Les limites d'emplacement du bouton
+    pts_selec[2].x1 = pts_barre.x2;
+    pts_selec[2].y1 = pts_selec[1].y2;
+    pts_selec[2].x2 = pts_selec[2].x1 + rect_weight; // Definit la longueur clicable
+    pts_selec[2].y2 = pts_selec[2].y1 + rect_height;
+    Ecrit_txt(renderer,
+              (pts_selec[2].x1 + decalage_x),
+              (pts_selec[2].y1 + decalage_y),
+              "Mode UwU", font, BLUE_COLOR);
+    TTF_CloseFont(font);
+    return pts_selec;
+}
+
+points *Exten_Option_Difficulte(SDL_Window *window, SDL_Renderer *renderer, points pts_barre)
+{
+    /* Facile + Normal */
+    // On a 2 sous categories !
+    // Fichier est pts_barre[3] qui est pts_selec[3] de Option
+
+    partie ecran100 = slice_screen_100(get_screen_size(window).w, get_screen_size(window).h);
+    points *pts_selec = malloc(2 * sizeof(points));
     int rect_weight = (int)(10 * ecran100.w);
     int rect_height = (int)(4 * ecran100.h) * 2;
     int decalage_x = (int)(ecran100.w * 0.75);
@@ -261,18 +330,17 @@ points *Exten_Option_Mode(SDL_Window *window, SDL_Renderer *renderer, points pts
     Ecrit_txt(renderer,
               (pts_selec[0].x1 + decalage_x),
               (pts_selec[0].y1 + decalage_y),
-              "Mode Elden Ring", font, BLUE_COLOR);
+              "IA Facile", font, BLUE_COLOR);
     /*------------------------------------------------------ 2 ------------------------------------------------------*/
     // Definit Les limites d'emplacement du bouton
     pts_selec[1].x1 = pts_barre.x2;
     pts_selec[1].y1 = pts_selec[0].y2;
-    pts_selec[1].x2 = pts_selec[0].x1 + rect_weight; // Definit la longueur clicable
-    pts_selec[1].y2 = pts_selec[0].y1 + rect_weight;
+    pts_selec[1].x2 = pts_selec[1].x1 + rect_weight; // Definit la longueur clicable
+    pts_selec[1].y2 = pts_selec[1].y1 + (int)(ecran100.h * 6);
     Ecrit_txt(renderer,
               (pts_selec[1].x1 + decalage_x),
               (pts_selec[1].y1 + decalage_y),
-              "Mode UwU", font, BLUE_COLOR);
-
+              "AI Normal", font, BLUE_COLOR);
     TTF_CloseFont(font);
     return pts_selec;
 }
@@ -470,7 +538,7 @@ void interaction_barre(SDL_Window *window, SDL_Renderer *renderer, SDL_Event *e,
             free(pts_ext);
         }
     }
-    else if (*menu_barre == 2) // Option : retour_au_coup_precedent (CTRL - Z) + musique (ON/OFF) + mode ----------------------------------
+    else if (*menu_barre == 2) // Option : retour_au_coup_precedent (CTRL - Z) + musique (ON/OFF) + mode + difficulte ----------------------------------
     {
         // Afficher l'extension de Option
         pts_ext = Exten_Option(window, renderer, pts_barre[1]);
@@ -497,6 +565,12 @@ void interaction_barre(SDL_Window *window, SDL_Renderer *renderer, SDL_Event *e,
                  (pts_ext[2].y1 < mouse_y && mouse_y < pts_ext[2].y2))   // pts_selec[2] de Option
         {
             *menu_barre = 4;
+            free(pts_ext);
+        }
+        else if ((pts_ext[3].x1 < mouse_x && mouse_x < pts_ext[3].x2) && // Option->Difficulte
+                 (pts_ext[3].y1 < mouse_y && mouse_y < pts_ext[3].y2))   // pts_selec[3] de Option
+        {
+            *menu_barre = 5;
             free(pts_ext);
         }
         else
@@ -569,23 +643,58 @@ void interaction_barre(SDL_Window *window, SDL_Renderer *renderer, SDL_Event *e,
             free(pts_ext);
         }
     }
-    else if (*menu_barre == 4) // Option->Mode : Elden Ring + UwU ------------------------------------------------------------------------------------------------------
+    else if (*menu_barre == 4) // Option->Mode : Normal + Elden Ring + UwU ------------------------------------------------------------------------------------------------------
     {
         // Afficher l'extension de Option
         pts_ext = Exten_Option(window, renderer, pts_barre[1]);
         // Afficher l'extension de Mode
         pts_sous_ext = Exten_Option_Mode(window, renderer, pts_ext[2]);
-        if ((pts_sous_ext[0].x1 < mouse_x && mouse_x < pts_sous_ext[0].x2) && // Option->Mod->Elden Ring
+        if ((pts_sous_ext[0].x1 < mouse_x && mouse_x < pts_sous_ext[0].x2) && // Option->Mod->Basique
             (pts_sous_ext[0].y1 < mouse_y && mouse_y < pts_sous_ext[0].y2))   // pts_selec[0] de Affichage
         {
-            *menu_barre = -8;
+            *menu_barre = -10;
             free(pts_sous_ext);
             free(pts_ext);
         }
-        else if ((pts_sous_ext[1].x1 < mouse_x && mouse_x < pts_sous_ext[1].x2) && // Option->Mod->UwU
+        else if ((pts_sous_ext[1].x1 < mouse_x && mouse_x < pts_sous_ext[1].x2) && // Option->Mod->Elden Ring
                  (pts_sous_ext[1].y1 < mouse_y && mouse_y < pts_sous_ext[1].y2))   // pts_selec[1] de Option
         {
-            *menu_barre = -9;
+            *menu_barre = -11;
+            free(pts_sous_ext);
+            free(pts_ext);
+        }
+        else if ((pts_sous_ext[2].x1 < mouse_x && mouse_x < pts_sous_ext[2].x2) && // Option->Mod->UwU
+                 (pts_sous_ext[2].y1 < mouse_y && mouse_y < pts_sous_ext[2].y2))   // pts_selec[1] de Option
+        {
+            *menu_barre = -12;
+            free(pts_sous_ext);
+            free(pts_ext);
+        }
+        else
+        {
+            *menu_barre = -1;
+            free(pts_sous_ext);
+            free(pts_ext);
+        }
+    }
+    else if (*menu_barre == 5) // Option->Difficulte : Facile + Normal ------------------------------------------------------------------------------------------------------
+    {
+        // Afficher l'extension de Option
+        pts_ext = Exten_Option(window, renderer, pts_barre[1]);
+        // Afficher l'extension de Mode
+        pts_sous_ext = Exten_Option_Difficulte(window, renderer, pts_ext[3]);
+
+        if ((pts_sous_ext[0].x1 < mouse_x && mouse_x < pts_sous_ext[0].x2) && // Option->Difficulte->Facile
+            (pts_sous_ext[0].y1 < mouse_y && mouse_y < pts_sous_ext[0].y2))   // pts_selec[0] de Affichage
+        {
+            *menu_barre = -7;
+            free(pts_sous_ext);
+            free(pts_ext);
+        }
+        else if ((pts_sous_ext[1].x1 < mouse_x && mouse_x < pts_sous_ext[1].x2) && // Option->Difficulte->Normal
+                 (pts_sous_ext[1].y1 < mouse_y && mouse_y < pts_sous_ext[1].y2))   // pts_selec[1] de Option
+        {
+            *menu_barre = -8;
             free(pts_sous_ext);
             free(pts_ext);
         }
@@ -620,10 +729,17 @@ void Aff_interaction_barre(SDL_Window *window, SDL_Renderer *renderer, points *p
         break;
     case 4:
         // Afficher l'extension de Option
-        points *p_ext_Option = Exten_Option(window, renderer, pts_barre[1]);
+        points *p_ext_Option_mode = Exten_Option(window, renderer, pts_barre[1]);
         // Afficher l'extension de Option-->Mode
-        Exten_Option_Mode(window, renderer, p_ext_Option[2]);
-        free(p_ext_Option);
+        Exten_Option_Mode(window, renderer, p_ext_Option_mode[2]);
+        free(p_ext_Option_mode);
+        break;
+    case 5:
+        // Afficher l'extension de Option
+        points *p_ext_Option_difficulte = Exten_Option(window, renderer, pts_barre[1]);
+        // Afficher l'extension de Option-->Difficulte
+        Exten_Option_Difficulte(window, renderer, p_ext_Option_difficulte[3]);
+        free(p_ext_Option_difficulte);
         break;
     }
 }
