@@ -18,7 +18,7 @@ cell **copyBoard(cell **board, cell **board2);
 cell *copyArray(cell *board, cell *board2);
 list *newList(cell **board);
 
-void backBoard(cell** actual_board, cell** last_board2);
+void backBoard(cell **actual_board, cell **last_board2);
 void push(list **head, cell **board);
 void display_linked_list(list *ptr);
 void free_linked_list(list *head);

@@ -20,7 +20,8 @@ typedef struct tree
 } tree;
 
 int **possibilities(cell **board, int size);
-int easy_mode(cell **board, int team);
+int random_mode(cell **board, int team);
+int easy_mode(cell **board, int color);
 
 void free_matrix_int(int **tab, int size);
 void free_matrix_float(float **tab, int size);

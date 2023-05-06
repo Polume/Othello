@@ -24,7 +24,7 @@ int **possibilities(cell **board, int size)
     return possible;
 }
 
-int easy_mode(cell **board, int color)
+int random_mode(cell **board, int color)
 /* Fonction qui permet de jouer contre un ordinateur qui pose des cases au hasard
    Renvoie 0 si l'ordinateur doit passer son tour */
 {
@@ -39,6 +39,55 @@ int easy_mode(cell **board, int color)
     // On récupère un indice du tableau des cases valides au hasard et on remplit le tableau
     fill(board, possible[num][0], possible[num][1], color);
     free_matrix_int(possible, 2);
+    return 1;
+}
+
+int easy_mode(cell **board, int color)
+/* Fonction qui permet de jouer contre un ordinateur qui cherche uniquement à poser le maximum de pions
+   N'etant pas une strategie tres efficace, nous utiliserons cet ordinateur comme mode facile */
+{
+    int nb_valid = show_valid(board, color);
+    if (nb_valid == 0) // pas de cases valides
+    {
+        return 0;
+    }
+    int cnt_w = 0, cnt_b = 0;
+    int **possible = possibilities(board, nb_valid);
+    count_score(board, &cnt_w, &cnt_b); // On compte le score au début du tour
+
+    int max_point_w = cnt_w;
+    int max_point_b = cnt_b;
+    int best_index = 0;
+
+    for (int move = 0; move < nb_valid; move++)
+    {
+        cell **tmp_board = initializeBoard();
+        copyBoard(board, tmp_board);
+        fill(tmp_board, possible[move][0], possible[move][1], color);
+
+        if (color == BLANC)
+        {
+            count_score(board, &cnt_w, &cnt_b); // Et on recompte le score pour voir quel maximum de points
+            if (cnt_w > max_point_w)            // on peut recuperer en fonction de la couleur color
+            {
+                max_point_w = cnt_w;
+                best_index = move;
+            }
+        }
+        else
+        {
+            count_score(board, &cnt_w, &cnt_b);
+            if (cnt_b > max_point_b)
+            {
+                max_point_b = cnt_b;
+                best_index = move;
+            }
+        }
+        freeBoard(tmp_board);
+    }
+    fill(board, possible[best_index][0], possible[best_index][1], color);
+
+    free_matrix_int(possible, nb_valid);
     return 1;
 }
 
@@ -64,7 +113,7 @@ void free_matrix_float(float **tab, int size)
 }
 
 tree *newNode(float data)
-// Crée un nouveau noeud pour un arbre
+// Cree un nouveau noeud pour un arbre
 {
     tree *temp = (tree *)malloc(sizeof(tree));
     temp->val = data;
@@ -195,7 +244,7 @@ float *tree_values(cell **board, int **possible, int move, int color, int *tmp_n
         tree_values[i] = value;
     }
     free_matrix_float(state, SIZE_OTHELLO);
-    // free_matrix_int(tmp_possible, *tmp_numMoves);
+    free_matrix_int(tmp_possible, *tmp_numMoves);
     freeBoard(tmp_board);
 
     return tree_values; // puis on renvoie l'arbre des differentes valeurs obtenues
@@ -268,7 +317,7 @@ int hard_mode(cell **board, int color)
                 3.000000                         5.000000                      -4.000000                         500.000000
         -1.000000       3.000000        5.000000        1.000000        -6.000000       -4.000000       0.000000        9.000000
     On a donc besoin de créer 7 noeuds auparavant qu'on initialisera à AUX_VALUE pour le débuguage
-    pour qu'ils puissent contenir les différentes valeurs min et max
+    pour qu'ils puissent contenir ensuite les différentes valeurs min et max
     ce qui correspond à numMoves - 1.
     Pour chaque coup possible, on créera un nouveau plateau afin de placer un pion , pour au final
     utiliser minimax ce qui permettra de prendre la solution la plus adéquate */

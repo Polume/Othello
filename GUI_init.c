@@ -1,6 +1,5 @@
 #include "GUI_init.h"
 
-
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
 /* - - - - - - - - - - - - - INIT - - - - - - - - - - - - -*/
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
@@ -21,11 +20,10 @@ void Error(char *chaine)
     exit(EXIT_FAILURE);
 }
 
-
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
 /* - - - - - - - - - - - - - MATRICE - - - - - - - - - - - - -*/
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
-points **Cree_mat(SDL_Window* window)
+points **Cree_mat(SDL_Window *window)
 {
     // Creation des rectangles de l'Othello
     points **mat_Othello = calloc(8, sizeof(points));
@@ -37,9 +35,7 @@ points **Cree_mat(SDL_Window* window)
     points p_rect;
     partie ecran100 = slice_screen_100(get_screen_size(window).w, get_screen_size(window).h);
 
-    int rect_Othello[4] = { (int)(32.3* ecran100.w)
-                          , (int)(18.8* ecran100.h)
-                          ,  0, (int)(5.2 * ecran100.w) };
+    int rect_Othello[4] = {(int)(32.3 * ecran100.w), (int)(18.8 * ecran100.h), 0, (int)(5.2 * ecran100.w)};
     for (int i = 0; i < 8; i++)
     {
         for (int j = 0; j < 8; j++)
@@ -47,7 +43,7 @@ points **Cree_mat(SDL_Window* window)
             // On modifie la place du rectangle
             rect_Othello[0] = rect_Othello[0] + rect_Othello[2];
             rect_Othello[1] = rect_Othello[1];
-            rect_Othello[2] = (int)(ecran100.h/0.11);            
+            rect_Othello[2] = (int)(ecran100.h / 0.11);
             rect_Othello[3] = rect_Othello[3];
             // On ajoute en memoire les indices des rectangles
             p_rect.x1 = rect_Othello[0];
@@ -64,7 +60,7 @@ points **Cree_mat(SDL_Window* window)
     return mat_Othello;
 }
 
-void freeMat(points** board)
+void freeMat(points **board)
 // Libere la memoire d'une matrice
 {
     for (int i = 0; i < SIZE_OTHELLO; i++)
@@ -74,25 +70,26 @@ void freeMat(points** board)
     free(board);
 }
 
-
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
 /* - - - - - - - - - - - - - UTILITAIRE - - - - - - - - - - - - -*/
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
-char* int_to_char(int num)
+char *int_to_char(int num)
 { // permet de passer un entier en chaine de caractère
     int i = 0;
-    char* str = NULL;
+    char *str = NULL;
     // compte le nombre de digit
     int temp = num;
-    while (temp != 0) {
+    while (temp != 0)
+    {
         i++;
         temp /= 10;
     }
     // Allocate memoire pour la chaine
-    str = (char*)malloc(sizeof(char) * (i + 1));
+    str = (char *)malloc(sizeof(char) * (i + 1));
     // convertir en chaine
     str[i] = '\0';
-    while (i > 0) {
+    while (i > 0)
+    {
         str[i - 1] = (num % 10) + '0';
         num /= 10;
         i--;
@@ -100,8 +97,8 @@ char* int_to_char(int num)
     return str;
 }
 
-void get_coord(points** mat_rect_Othello, int* i, int* j)
-{ // Fonction permettant d'avoir les coordonees du carre a l'intereur duquel le joueur a cliquer.
+void get_coord(points **mat_rect_Othello, int *i, int *j)
+{ // Fonction permettant d'avoir les coordonees du carre a l'interieur duquel le joueur a clique.
     int mouse_x, mouse_y;
     SDL_GetMouseState(&mouse_x, &mouse_y);
     for (int y = 0; y < 8; y++)
@@ -118,25 +115,26 @@ void get_coord(points** mat_rect_Othello, int* i, int* j)
     }
 }
 
-char * add_to_end_str(char* str1, char* str2, int place)
-{// Fonction permettant d'ajouet une chaine de caractere a une autre a un emplacement donne appartir de la fin
+char *add_to_end_str(char *str1, char *str2, int place)
+{ // Fonction permettant d'ajouter une chaine de caractere a une autre a un emplacement donne a partir de la fin
     int len1 = strlen(str1);
     int len2 = strlen(str2);
 
     // verifier si l'emplacement est valide
-    if (place < 0 || place > len1) {
+    if (place < 0 || place > len1)
+    {
         Error("Erreur : emplacement invalide.\n");
     }
 
-    char temp1[len1 - place + 1]; // partie apres l'emplacement
-    char * temp2 = malloc(sizeof(char)*(len1+len2+1)); // partie avant l'emplacement qui serra retourner
+    char temp1[len1 - place + 1];                           // partie apres l'emplacement
+    char *temp2 = malloc(sizeof(char) * (len1 + len2 + 1)); // partie avant l'emplacement qui serra retourner
 
     strncpy(temp1, str1 + len1 - place, place);
     strncpy(temp2, str1, len1 - place);
-    
+
     strcat(temp2, str2);
     strcat(temp2, temp1);
-    temp2[len1+len2] = '\0';
+    temp2[len1 + len2] = '\0';
     return temp2;
 }
 
@@ -173,47 +171,47 @@ void Dessine_coter_rect(SDL_Renderer *renderer, SDL_Rect rect, SDL_Color couleur
     // On reinitialise la couleur de dessin de base (noir)
     SDL_SetRenderDrawColor(renderer, BLACK_COLOR.r, BLACK_COLOR.g, BLACK_COLOR.b, BLACK_COLOR.a);
 }
-void Place_image(SDL_Renderer* renderer, void * rect_place, char* fichier)
-{// Place l'image de fichier au coordonee x-y
-    SDL_Surface* image = NULL;
-    SDL_Texture* texture = NULL;
+void Place_image(SDL_Renderer *renderer, void *rect_place, char *fichier)
+{ // Place l'image de fichier aux coordonees x-y
+    SDL_Surface *image = NULL;
+    SDL_Texture *texture = NULL;
 
     // Recuperation de l'image
     image = IMG_Load(fichier);
     if (image == NULL)
         Error("Recuperation de l'image echoue !");
 
-    // Creer la texture avec l'image
+    // Cree la texture avec l'image
     texture = SDL_CreateTextureFromSurface(renderer, image);
     if (texture == NULL)
         Error("Chargement de la texture echoue !");
 
-    // Dessiner la texture dans le rendue
+    // Dessine la texture dans le rendu
     SDL_RenderCopy(renderer, texture, NULL, rect_place);
 
     SDL_DestroyTexture(texture);
     SDL_FreeSurface(image);
 }
-int Ecrit_txt(SDL_Renderer* renderer, int x, int y, char* text, TTF_Font* font, SDL_Color textColor)
-{// ecrit du texte a un emplacement saisie
-    SDL_Texture* texture = NULL;
-    SDL_Surface* surface = NULL;
+int Ecrit_txt(SDL_Renderer *renderer, int x, int y, char *text, TTF_Font *font, SDL_Color textColor)
+{ // ecrit du texte a un emplacement saisi
+    SDL_Texture *texture = NULL;
+    SDL_Surface *surface = NULL;
     SDL_Rect rect;
 
     int text_width;
     int text_height;
-    
+
     surface = TTF_RenderText_Solid(font, text, textColor);
     texture = SDL_CreateTextureFromSurface(renderer, surface);
     text_width = surface->w;
     text_height = surface->h;
-    
+
     rect.x = x;
     rect.y = y;
     rect.w = text_width;
     rect.h = text_height;
 
-    SDL_RenderCopy(renderer, texture, NULL, &rect);    
+    SDL_RenderCopy(renderer, texture, NULL, &rect);
 
     SDL_DestroyTexture(texture);
     SDL_FreeSurface(surface);

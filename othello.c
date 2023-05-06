@@ -114,7 +114,7 @@ int is_valid(cell **board, int i, int j, int color)
         maxi = max(j, check_lines(board, i, color));
         mini = min(j, check_lines(board, i, color));
         mini++; // La case actuelle sera soit de la couleur correspondante soit verte, on avance donc d'un cran
-        if(mini == maxi)
+        if (mini == maxi)
             return 0;
         while (mini < maxi && board[i][mini].color != VERT && board[i][mini].color != color)
             mini++; // on boucle entre les indices j et l'indice de la colonne
@@ -130,7 +130,7 @@ int is_valid(cell **board, int i, int j, int color)
         maxi = max(i, check_rows(board, j, color));
         mini = min(i, check_rows(board, j, color));
         mini++;
-        if(mini == maxi)
+        if (mini == maxi)
             return 0;
         while (mini < maxi && board[mini][j].color != VERT && board[mini][j].color != color)
             mini++;
@@ -203,7 +203,7 @@ int check_rows(cell **board, int j, int color)
 }
 
 int get_last_color_lines(cell **board, int i, int color)
-// Verifie si color se trouve sur la ligne i et renvoie son indice
+// Verifie si color se trouve sur la ligne i et renvoie le dernier indice
 {
     for (int j = SIZE_OTHELLO - 1; j >= 0; j--)
     {
@@ -218,6 +218,7 @@ int get_last_color_lines(cell **board, int i, int color)
 }
 
 int get_last_color_rows(cell **board, int j, int color)
+// Verifie si color se trouve sur la colonne j et renvoie le dernier indice
 {
     for (int i = SIZE_OTHELLO - 1; i >= 0; i--)
     {
@@ -331,7 +332,7 @@ int check_diag(cell **board, int i, int j, int color)
 }
 
 int show_valid(cell **board, int color)
-// Affiche toutes les cases valides du plateau
+// Modifie l'attribut valide à 1 de toutes les cases du plateau si elles sont valides
 {
     int cpt = 0;
     for (int i = 0; i < SIZE_OTHELLO; i++)
@@ -342,7 +343,6 @@ int show_valid(cell **board, int color)
             {
                 board[i][j].valide = 1;
                 cpt++;
-                // printf("Case %s valide\n", board[i][j].id_cell);
             }
         }
     }
@@ -350,7 +350,7 @@ int show_valid(cell **board, int color)
 }
 
 void reset_valid(cell **board)
-// Enlève toutes les cases valides du plateau
+// Enleve toutes les cases valides du plateau
 {
     for (int i = 0; i < SIZE_OTHELLO; i++)
     {

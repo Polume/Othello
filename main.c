@@ -25,7 +25,7 @@ int main(int argc, char *argv[])
 
     cell **matrice_Othello;
     list *head;
-    cell ***memory_z = malloc(sizeof(cell*)*10);
+    cell ***memory_z = malloc(sizeof(cell *) * 10);
     points **mat_rect_Othello;
     points *pts_barre;
     points *pts_bouttons;
@@ -65,10 +65,10 @@ int main(int argc, char *argv[])
 
     // Init de l'affichage de presentation
     SDL_RenderClear(renderer);
-    BG_image(renderer, mode);// Ccharge l'image de fond
-    pts_bouttons = Intro_bouttons(window, renderer);// charge les bouttons
-    pts_barre = Barre_txt(window, renderer);// charge la menu barre
-    Aff_interaction_barre(window, renderer, pts_barre, menu_barre);// Charge les extentions de la menu barre
+    BG_image(renderer, mode);                                       // Charge l'image de fond
+    pts_bouttons = Intro_bouttons(window, renderer);                // Charge les bouttons
+    pts_barre = Barre_txt(window, renderer);                        // Charge la barre de menu
+    Aff_interaction_barre(window, renderer, pts_barre, menu_barre); // Charge les extentions de la barre de menu
     SDL_RenderPresent(renderer);
 
     // Jouer la musique d'ambiance
@@ -77,15 +77,15 @@ int main(int argc, char *argv[])
     Mix_Volume(1, MIX_MAX_VOLUME * 0.1);
     //////////////////////////////////////////////////////////
     //-------------------------------------------------------
-    /* || Code after init : Event Code  || */
+
     SDL_bool quit = SDL_FALSE;
     while (!quit)
     {
         if (menu_barre == -4) // MUSIQUE ON/OFF----------------------------------------
         {
-            if(tag_sound == 1)
+            if (tag_sound == 1)
             {
-                Mix_HaltChannel(0);// Stopper la musique en cours
+                Mix_HaltChannel(0); // Stopper la musique en cours
                 tag_sound = 0;
             }
             else
@@ -102,31 +102,31 @@ int main(int argc, char *argv[])
         }
         else if (menu_barre == -5) // MODIFICATION DE LA FENETRE ----------------------------------------
         {
-            // Remise a 0 des param graphiques
+            // Remise a 0 des parametres graphiques
             freeMat(mat_rect_Othello);
             mat_rect_Othello = NULL;
             pts_barre = NULL;
             // Recreation des parametres graphique avec la nouvelle dimention
-            mat_rect_Othello = Cree_mat(window);// charge la grille
-            // reaffichage avec nes nouveau param graphiques
-            if(intro == SDL_TRUE) // si on est dans l'intro
+            mat_rect_Othello = Cree_mat(window); // Charge la grille
+            // Reaffichage avec les nouveaux parametres graphiques
+            if (intro == SDL_TRUE) // si on est dans l'intro
             {
                 // Init de l'affichage de presentation
                 SDL_RenderClear(renderer);
-                BG_image(renderer, mode);// Ccharge l'image de fond
-                pts_bouttons = Intro_bouttons(window, renderer);// charge les bouttons
-                pts_barre = Barre_txt(window, renderer);// charge la menu barre
+                BG_image(renderer, mode);                        // Ccharge l'image de fond
+                pts_bouttons = Intro_bouttons(window, renderer); // Charge les bouttons
+                pts_barre = Barre_txt(window, renderer);         // Charge la barre de menu
                 SDL_RenderPresent(renderer);
-            }  
+            }
             else // sinon si on est en jeu
                 DisplayAll(window, renderer,
-                        matrice_Othello, mat_rect_Othello, pts_barre,
-                        cnt_w, cnt_b, win, team, mode, menu_barre);
+                           matrice_Othello, mat_rect_Othello, pts_barre,
+                           cnt_w, cnt_b, win, team, mode, menu_barre);
 
             menu_barre = -1;
         }
         else if (menu_barre == -8 && intro == SDL_FALSE) // MODE SELECTIONNE : 2 ----------------------------------------
-        {  
+        {
             mode = 2;
             Mix_PlayChannel(0, ambiance_sound_Elden_Ring, -1);
             DisplayAll(window, renderer,
@@ -138,7 +138,7 @@ int main(int argc, char *argv[])
         {
             mode = 3;
             Mix_PlayChannel(0, ambiance_sound_UwU, -1);
-            //Mix_PlayChannel(-1, sus_sound, 0); // Pour rigoler un peu
+            // Mix_PlayChannel(-1, sus_sound, 0); // Pour rigoler un peu
             DisplayAll(window, renderer,
                        matrice_Othello, mat_rect_Othello, pts_barre,
                        cnt_w, cnt_b, win, team, mode, menu_barre);
@@ -146,7 +146,7 @@ int main(int argc, char *argv[])
         }
 
         if (isEndGame(matrice_Othello) && win == 0) // FIN DE PARTIE ----------------------------------------
-        { // FIN de partie
+        {
             count_score(matrice_Othello, &cnt_w, &cnt_b);
             if (cnt_w > cnt_b)
             {
@@ -171,22 +171,22 @@ int main(int argc, char *argv[])
             { // Page d'intro / choix de jeu
                 switch (e.type)
                 {
-                case SDL_MOUSEBUTTONDOWN: // Click de souris
+                case SDL_MOUSEBUTTONDOWN: // Clic de souris
                     SDL_GetMouseState(&mouse_x, &mouse_y);
                     tag_val = menu_barre;
-                    //printf("x : %d\ty : %d\n", mouse_x, mouse_y);
+                    // printf("x : %d\ty : %d\n", mouse_x, mouse_y);
 
-                    /////////////////// L'utilisateur interagie avec la menu barre /////////////////// 
+                    /////////////////// L'utilisateur interagit avec la barre de menu ///////////////////
                     interaction_barre(window, renderer, &e, pts_barre, &menu_barre);
                     // printf("\t%d\t%d\n",e.type == SDL_KEYDOWN, e.key.keysym.sym == SDLK_n);
-                    printf("menu_barre = %d\n",menu_barre);
-                    if(menu_barre != tag_val)
+                    printf("menu_barre = %d\n", menu_barre);
+                    if (menu_barre != tag_val)
                     {
                         SDL_RenderClear(renderer);
-                        BG_image(renderer, mode);// Ccharge l'image de fond
-                        pts_bouttons = Intro_bouttons(window, renderer);// charge les bouttons
-                        pts_barre = Barre_txt(window, renderer);// charge la menu barre
-                        Aff_interaction_barre(window, renderer, pts_barre, menu_barre);// Charge les extentions de la menu barre
+                        BG_image(renderer, mode);                                       // Charge l'image de fond
+                        pts_bouttons = Intro_bouttons(window, renderer);                // Charge les bouttons
+                        pts_barre = Barre_txt(window, renderer);                        // Charge la barre de menu
+                        Aff_interaction_barre(window, renderer, pts_barre, menu_barre); // Charge les extentions de la barre de menu
                         SDL_RenderPresent(renderer);
                     }
 
@@ -213,33 +213,33 @@ int main(int argc, char *argv[])
                 {
                     mode = 1;
                     DisplayAll(window, renderer,
-                                matrice_Othello, mat_rect_Othello, pts_barre,
-                                cnt_w, cnt_b, win, team, mode, menu_barre);
+                               matrice_Othello, mat_rect_Othello, pts_barre,
+                               cnt_w, cnt_b, win, team, mode, menu_barre);
                 }
             }
             else if (intro == SDL_FALSE)
-            { // Page de jeux
-            
+            { // Page de jeu
+
                 if (e.type != 1024)
                 {
                     switch (e.type)
                     {
                     case SDL_MOUSEBUTTONDOWN:
-                        
+
                         // SDL_GetMouseState(&mouse_x, &mouse_y);
                         // printf("x : %d\ty : %d\n", mouse_x, mouse_y);
                         tag_val = menu_barre;
 
-                        /////////////////// L'utilisateur interagie avec la menu barre ///////////////////                        
+                        /////////////////// L'utilisateur interagie avec la menu barre ///////////////////
                         interaction_barre(window, renderer, &e, pts_barre, &menu_barre);
-                        
-                        if(menu_barre != tag_val)
+
+                        if (menu_barre != tag_val)
                             DisplayAll(window, renderer,
                                        matrice_Othello, mat_rect_Othello, pts_barre,
                                        cnt_w, cnt_b, win, team, mode, menu_barre);
-                        
+
                         /////////////////// L'utilisateur selectionne une case ///////////////////
-                        // Click de souris placement des pions sur les cases disponibles
+                        // Clic de souris placement des pions sur les cases disponibles
                         // printf("i : %d\tj : %d",i,j);
                         get_coord(mat_rect_Othello, &i, &j);
                         if (show_valid(matrice_Othello, team) > 0)
@@ -329,10 +329,10 @@ int main(int argc, char *argv[])
 
                         // Init de l'affichage de presentation
                         SDL_RenderClear(renderer);
-                        BG_image(renderer, mode);// Ccharge l'image de fond
-                        pts_bouttons = Intro_bouttons(window, renderer);// charge les bouttons
-                        pts_barre = Barre_txt(window, renderer);// charge la menu barre
-                        Aff_interaction_barre(window, renderer, pts_barre, menu_barre);// Charge les extentions de la menu barre
+                        BG_image(renderer, mode);                                       // Charge l'image de fond
+                        pts_bouttons = Intro_bouttons(window, renderer);                // Charge les bouttons
+                        pts_barre = Barre_txt(window, renderer);                        // Charge la barre de menu
+                        Aff_interaction_barre(window, renderer, pts_barre, menu_barre); // Charge les extensions de la barre de menu
                         SDL_RenderPresent(renderer);
                     }
                     break;
@@ -358,7 +358,7 @@ int main(int argc, char *argv[])
                         {
                             ctrl_z++;
                             if (ctrl_z < 11)
-                                memory_z[ctrl_z-1] = matrice_Othello;
+                                memory_z[ctrl_z - 1] = matrice_Othello;
                             if (choix == 1)
                             { // Version joueur vs joueur
                                 go_back(&head);
@@ -401,7 +401,7 @@ int main(int argc, char *argv[])
                             for (int j = 0; j < SIZE_OTHELLO; j++)
                             {
                                 fwrite(&matrice_Othello[i][j].valide, sizeof(int), 1, f);
-                                fwrite(&matrice_Othello[i][j].color, sizeof(int), 1, f);                                                                                                                                         
+                                fwrite(&matrice_Othello[i][j].color, sizeof(int), 1, f);
                             }
                         }
                         fclose(f);
@@ -410,7 +410,7 @@ int main(int argc, char *argv[])
                     { // L'utilisateur fait un CTRL - MAJ - S
                         // cas de la sauvegarde du plateau dans un fichier txt
                         FILE *f;
-                        char * name_file;
+                        char *name_file;
                         demande_fichier(&name_file); //////////////////////// ICI OUVERTURE DE FENETRE, FERMETURE BUG... ////////////////////////----------------------
                         ajout_extension(&name_file, ".oth");
                         printf("fichier : %s", name_file);
@@ -466,7 +466,7 @@ int main(int argc, char *argv[])
                 case SDLK_LCTRL: // Touche CTRL gauche pressee
                     key_press_ctrl = SDL_TRUE;
                     break;
-                case SDLK_LSHIFT : // Touche MAJ gauche pressee
+                case SDLK_LSHIFT: // Touche MAJ gauche pressee
                     key_press_shift = SDL_TRUE;
                     break;
                 }
@@ -478,7 +478,7 @@ int main(int argc, char *argv[])
                 case SDLK_LCTRL: // Touche CTRL gauche pressee
                     key_press_ctrl = SDL_FALSE;
                     break;
-                case SDLK_LSHIFT : // Touche MAJ gauche pressee
+                case SDLK_LSHIFT: // Touche MAJ gauche pressee
                     key_press_shift = SDL_FALSE;
                     break;
                 default:
@@ -491,10 +491,10 @@ int main(int argc, char *argv[])
             SDL_RenderClear(renderer);
         }
     }
-    //-----------Desttruction des variables pointeurs-----------//
+    //-----------Destruction des variables pointeurs-----------//
     SDL_RenderClear(renderer);
 
-    /* Deinit Audio */
+    /* Deinitialisation Audio */
     Mix_HaltChannel(0);
     Mix_HaltChannel(1);
     Mix_HaltChannel(2);
@@ -504,26 +504,21 @@ int main(int argc, char *argv[])
     Mix_FreeChunk(fin_sound);
     Mix_CloseAudio();
 
-    /* denit pointeurs */
+    /* Deinitialisation pointeurs */
     free(pts_barre);
     free(pts_bouttons);
     freeBoard(matrice_Othello);
     freeMat(mat_rect_Othello);
     free_linked_list(head);
 
-    /* denit renderer */
+    /* Deinitialisation renderer */
     SDL_DestroyWindow(window);
     SDL_DestroyRenderer(renderer);
 
-    /* denit fenetres */
+    /* Deinitialisation fenetres */
     Mix_Quit();
     TTF_Quit();
     SDL_Quit();
-
-    // float final_array[15] = {1999, 1999, 1999, 1999, 1999, 1999, 1999, -1, 3, 5, 1, -6, -4, 0, 9};
-    // tree *root = insertInTree(final_array, 0, 15);
-    // minimax(root, 3, BLANC);
-    // printTree(root);
 
     return EXIT_SUCCESS;
 }

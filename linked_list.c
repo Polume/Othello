@@ -1,6 +1,7 @@
 #include "linked_list.h"
 
 cell **newBoard()
+// Cree un nouveau tableau de cellules vide
 {
     cell **new_board = calloc(SIZE_OTHELLO, sizeof(cell *));
     for (int i = 0; i < SIZE_OTHELLO; i++)
@@ -11,6 +12,7 @@ cell **newBoard()
 }
 
 cell *copyArray(cell *board, cell *board2)
+// Copie un tableau de cellules dans un autre
 {
     for (int i = 0; i < SIZE_OTHELLO; i++)
     {
@@ -20,6 +22,7 @@ cell *copyArray(cell *board, cell *board2)
 }
 
 cell **copyBoard(cell **board, cell **board2)
+// Copie un plateau dans un autre
 {
     for (int i = 0; i < SIZE_OTHELLO; i++)
     {
@@ -31,7 +34,7 @@ cell **copyBoard(cell **board, cell **board2)
     return board2;
 }
 
-void backBoard(cell** actual_board, cell** last_board)
+void backBoard(cell **actual_board, cell **last_board)
 {
     for (int i = 0; i < SIZE_OTHELLO; i++)
     {
@@ -43,6 +46,7 @@ void backBoard(cell** actual_board, cell** last_board)
 }
 
 int check_next(list **head)
+// Verifie sur le membre suivant n est pas vide
 {
     if ((*head)->next != NULL)
         return 1;
@@ -50,6 +54,7 @@ int check_next(list **head)
 }
 
 list *newList(cell **board)
+// Creation d un maillon contenant un plateau de jeu
 {
     list *new = (list *)malloc(sizeof(list));
     new->board = newBoard();
@@ -60,6 +65,7 @@ list *newList(cell **board)
 }
 
 void push(list **head, cell **board)
+// Ajoute un maillon a une liste doublement chainee
 {
     list *new_node = newList(board);
 
