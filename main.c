@@ -134,7 +134,7 @@ int main(int argc, char *argv[])
             choix = 3;
             menu_barre = -1;
         }
-        else if (menu_barre == -10 && intro == SDL_FALSE) // MODE SELECTIONNE : 1 (Basique) ----------------------------------------    
+        else if (menu_barre == -10 && intro == SDL_FALSE) // MODE SELECTIONNE : 1 (Basique) ----------------------------------------
         {
             mode = 1;
             Mix_PlayChannel(0, ambiance_sound, -1);
@@ -279,7 +279,7 @@ int main(int argc, char *argv[])
                                            cnt_w, cnt_b, win, team, mode, menu_barre);
 
                                 ////////////////////////////////////// VS IA //////////////////////////////////////
-                                if (choix == 2)// MODE FACILE
+                                if (choix == 2) // MODE FACILE
                                 {
                                     reset_valid(matrice_Othello);
                                     IA_p = easy_mode(matrice_Othello, team);
@@ -288,21 +288,29 @@ int main(int argc, char *argv[])
 
                                     if (IA_p != 0)
                                     {
+                                        if (team == BLANC)
+                                            team = NOIR;
+                                        else
+                                            team = BLANC;
                                         Mix_PlayChannel(-1, click_sound, 0);
                                         DisplayAll(window, renderer,
                                                    matrice_Othello, mat_rect_Othello, pts_barre,
                                                    cnt_w, cnt_b, win, team, mode, menu_barre);
                                     }
                                 }
-                                if (choix == 3)// MODE NORMALE
+                                if (choix == 3) // MODE NORMALE
                                 {
                                     reset_valid(matrice_Othello);
-                                    IA_p = easy_mode(matrice_Othello, team);
+                                    IA_p = random_mode(matrice_Othello, team);
                                     push(&head, matrice_Othello);
                                     // printBoard(matrice_Othello); affiche sur le terminal l'othello
 
                                     if (IA_p != 0)
                                     {
+                                        if (team == BLANC)
+                                            team = NOIR;
+                                        else
+                                            team = BLANC;
                                         Mix_PlayChannel(-1, click_sound, 0);
                                         DisplayAll(window, renderer,
                                                    matrice_Othello, mat_rect_Othello, pts_barre,

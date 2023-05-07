@@ -393,7 +393,7 @@ void fill_lines(cell **board, int i, int j, int color)
         int second_color = get_last_color_lines(board, i, color);
         // Puis on retourne les cases de la droite vers la gauche puis de la gauche vers la droite
         copy_j--;
-        while (copy_j >= 0 && board[i][copy_j].color != VERT && board[i][copy_j].color != color && copy_j > second_color)
+        while (copy_j >= 0 && board[i][copy_j].color != VERT && board[i][copy_j].color != color && copy_j > line_index)
         {
             board[i][copy_j].color = color; // et tant qu on ne retrouve pas la meme couleur, on remplit avec celle-ci
             copy_j--;
@@ -421,7 +421,7 @@ void fill_rows(cell **board, int i, int j, int color)
     {
         int second_color = get_last_color_rows(board, j, color);
         copy_i--;
-        while (copy_i >= 0 && board[copy_i][j].color != VERT && board[copy_i][j].color != color && copy_i > second_color)
+        while (copy_i >= 0 && board[copy_i][j].color != VERT && board[copy_i][j].color != color && copy_i > row_index)
         {
             board[copy_i][j].color = color; // et tant qu on ne retrouve pas la meme couleur, on remplit avec celle-ci
             copy_i--;
