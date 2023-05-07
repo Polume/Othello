@@ -329,6 +329,40 @@ int main(int argc, char *argv[])
                             DisplayAll(window, renderer,
                                        matrice_Othello, mat_rect_Othello, pts_barre,
                                        cnt_w, cnt_b, win, team, mode, menu_barre);
+                            if (choix == 2) // MODE FACILE
+                            {
+                                reset_valid(matrice_Othello);
+                                IA_p = easy_mode(matrice_Othello, team);
+                                push(&head, matrice_Othello);
+                                if (team == BLANC)
+                                    team = NOIR;
+                                else
+                                    team = BLANC;
+                                if (IA_p != 0)
+                                {
+                                    Mix_PlayChannel(-1, click_sound, 0);
+                                    DisplayAll(window, renderer,
+                                               matrice_Othello, mat_rect_Othello, pts_barre,
+                                               cnt_w, cnt_b, win, team, mode, menu_barre);
+                                }
+                            }
+                            if (choix == 3) // MODE NORMALE
+                            {
+                                reset_valid(matrice_Othello);
+                                IA_p = random_mode(matrice_Othello, team);
+                                push(&head, matrice_Othello);
+                                if (team == BLANC)
+                                    team = NOIR;
+                                else
+                                    team = BLANC;
+                                if (IA_p != 0)
+                                {
+                                    Mix_PlayChannel(-1, click_sound, 0);
+                                    DisplayAll(window, renderer,
+                                               matrice_Othello, mat_rect_Othello, pts_barre,
+                                               cnt_w, cnt_b, win, team, mode, menu_barre);
+                                }
+                            }
                         }
                         break;
 
