@@ -197,7 +197,7 @@ int main(int argc, char *argv[])
                     /////////////////// L'utilisateur interagit avec la barre de menu ///////////////////
                     interaction_barre(window, renderer, &e, pts_barre, &menu_barre);
                     // printf("\t%d\t%d\n",e.type == SDL_KEYDOWN, e.key.keysym.sym == SDLK_n);
-                    printf("menu_barre = %d\n", menu_barre);
+                    // printf("menu_barre = %d\n", menu_barre);
                     if (menu_barre != tag_val)
                     {
                         SDL_RenderClear(renderer);

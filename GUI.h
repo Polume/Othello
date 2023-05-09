@@ -13,8 +13,8 @@
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
 void Dessine_pion(SDL_Window *window, SDL_Renderer *renderer, 
                     int x, int y, int team, int mode);
-void Dessine_pion_border(SDL_Window *window, SDL_Renderer *renderer,
-                    int x, int y, int team, int mode);
+void Dessine_pion_valid(SDL_Window *window, SDL_Renderer *renderer,
+                        int x, int y, int team, int mode);
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
 /* - - - - - - - - - - - - - Fonctions de placements - - - - - - - - - - - - -*/
@@ -25,6 +25,7 @@ void Place_pion(SDL_Window *window, SDL_Renderer *renderer,
                     cell **matrice_Othello, points **mat_rect_Othello, int mode);
 void Place_pion_valid(SDL_Window *window, SDL_Renderer *renderer,
                     cell **matrice_Othello, points **mat_rect_Othello, int mode, int team);
+points *Barre_txt(SDL_Window *window, SDL_Renderer *renderer);
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
 /* - - - - - - - - - - - - - Fonction d'imbrication de dessins/d'affichage - - - - - - - - - - - - -*/

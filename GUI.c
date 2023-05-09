@@ -160,6 +160,38 @@ void Place_pion_valid(SDL_Window *window, SDL_Renderer *renderer,
     }
 }
 
+points *Intro_bouttons(SDL_Window *window, SDL_Renderer *renderer)
+{ // Permet de placer les boutons de la phase d'intro
+    // On prepare la variable de retour et le placement
+    points *pts_bouttons = malloc(2 * sizeof(points));
+    partie ecran10 = slice_screen_10(get_screen_size(window).w, get_screen_size(window).h);
+    char *fichier = NULL;
+
+    //////////////// Premier Boutton ////////////////
+    fichier = "Pictures/Contre_Joueur.png";
+    // Definit Les limites d'emplacement du boutton
+    pts_bouttons[0].x1 = (int)(ecran10.w * 2);
+    pts_bouttons[0].y1 = (int)(ecran10.h * 5);
+    pts_bouttons[0].x2 = (int)((ecran10.w * 2) + (ecran10.w * 2));
+    pts_bouttons[0].y2 = (int)((ecran10.h * 5) + (ecran10.h * 2));
+    // Definit un rectangle pour l'emplacement et la taille de l'image
+    SDL_Rect rect_boutton_Joueurs = {pts_bouttons[0].x1, pts_bouttons[0].y1, (int)(ecran10.w * 2), (int)(ecran10.h * 2)};
+    Place_image(renderer, &rect_boutton_Joueurs, fichier);
+
+    //////////////// Second Boutton ////////////////
+    fichier = "Pictures/Contre_IA.png";
+    // Definit Les limites d'emplacement du boutton
+    pts_bouttons[1].x1 = (int)(ecran10.w * 6);
+    pts_bouttons[1].y1 = (int)(ecran10.h * 5);
+    pts_bouttons[1].x2 = (int)((ecran10.w * 6) + (ecran10.w * 2));
+    pts_bouttons[1].y2 = (int)((ecran10.h * 5) + (ecran10.h * 2));
+    // Definir un rectangle pour l'emplacement et la taille de l'image
+    SDL_Rect rect_boutton_IA = {pts_bouttons[1].x1, pts_bouttons[1].y1, (int)(ecran10.w * 2), (int)(ecran10.h * 2)};
+    Place_image(renderer, &rect_boutton_IA, fichier);
+
+    return pts_bouttons;
+}
+
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
 /* - - - - - - - - - - - - - Fonction d'imbrication de dessins/affichage - - - - - - - - - - - - - -*/
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -*/
@@ -194,38 +226,6 @@ void Interface_txt(SDL_Window *window, SDL_Renderer *renderer,
     TTF_CloseFont(font);
     free(score_w);
     free(score_b);
-}
-
-points *Intro_bouttons(SDL_Window *window, SDL_Renderer *renderer)
-{ // Permet de placer les boutons de la phase d'intro
-    // On prepare la variable de retour et le placement
-    points *pts_bouttons = malloc(2 * sizeof(points));
-    partie ecran10 = slice_screen_10(get_screen_size(window).w, get_screen_size(window).h);
-    char *fichier = NULL;
-
-    //////////////// Premier Boutton ////////////////
-    fichier = "Pictures/Contre_Joueur.png";
-    // Definit Les limites d'emplacement du boutton
-    pts_bouttons[0].x1 = (int)(ecran10.w * 2);
-    pts_bouttons[0].y1 = (int)(ecran10.h * 5);
-    pts_bouttons[0].x2 = (int)((ecran10.w * 2) + (ecran10.w * 2));
-    pts_bouttons[0].y2 = (int)((ecran10.h * 5) + (ecran10.h * 2));
-    // Definit un rectangle pour l'emplacement et la taille de l'image
-    SDL_Rect rect_boutton_Joueurs = {pts_bouttons[0].x1, pts_bouttons[0].y1, (int)(ecran10.w * 2), (int)(ecran10.h * 2)};
-    Place_image(renderer, &rect_boutton_Joueurs, fichier);
-
-    //////////////// Second Boutton ////////////////
-    fichier = "Pictures/Contre_IA.png";
-    // Definit Les limites d'emplacement du boutton
-    pts_bouttons[1].x1 = (int)(ecran10.w * 6);
-    pts_bouttons[1].y1 = (int)(ecran10.h * 5);
-    pts_bouttons[1].x2 = (int)((ecran10.w * 6) + (ecran10.w * 2));
-    pts_bouttons[1].y2 = (int)((ecran10.h * 5) + (ecran10.h * 2));
-    // Definir un rectangle pour l'emplacement et la taille de l'image
-    SDL_Rect rect_boutton_IA = {pts_bouttons[1].x1, pts_bouttons[1].y1, (int)(ecran10.w * 2), (int)(ecran10.h * 2)};
-    Place_image(renderer, &rect_boutton_IA, fichier);
-
-    return pts_bouttons;
 }
 
 points *Barre_txt(SDL_Window *window, SDL_Renderer *renderer)
