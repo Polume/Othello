@@ -107,12 +107,13 @@ int main(int argc, char *argv[])
             pts_barre = NULL;
             // Recreation des parametres graphique avec la nouvelle dimention
             mat_rect_Othello = Cree_mat(window); // Charge la grille
+            pts_barre = Barre_txt(window, renderer); // Recharge l'emplacement du clic de la menu barre
             // Reaffichage avec les nouveaux parametres graphiques
             if (intro == SDL_TRUE) // si on est dans l'intro
             {
                 // Init de l'affichage de presentation
                 SDL_RenderClear(renderer);
-                BG_image(renderer, mode);                        // Ccharge l'image de fond
+                BG_image(renderer, mode);                        // Charge l'image de fond
                 pts_bouttons = Intro_bouttons(window, renderer); // Charge les bouttons
                 pts_barre = Barre_txt(window, renderer);         // Charge la barre de menu
                 SDL_RenderPresent(renderer);
